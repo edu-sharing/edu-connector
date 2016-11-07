@@ -3,9 +3,9 @@
 error_reporting(E_ERROR);
 ini_set('display_errors', 1);
 
-define('WWWURL', 'http://appserver9.metaventis.com/eduConnector');
-define('WWWROOT', 'http://138.201.17.74/eduConnector');
-define('DOCROOT', '/var/www/eduConnector');
+define('WWWURL', 'http://127.0.0.1/eduConnector');
+define('WWWROOT', 'http://127.0.0.1/eduConnector');
+define('DOCROOT', 'C:\xampp\htdocs\eduConnector');
 define('REPOURL', 'http://appserver7.metaventis.com:7001/edu-sharing/');
 define('CONTENT_URL', REPOURL . 'content');
 define('APP_ID', 'educonnector');
@@ -30,17 +30,8 @@ class ConnectorSwitch {
             case 'edu-tool-etherpad':
                 $this -> tool = new EtherpadConnector();
             break;
-			
-			//dok anlegen (aus suche) ohne titel, keine referenz etc.
-			case 'edu-tool-office':
-                header('Location: http://appserver9.metaventis.com/eduConnector/_OnlineEditorsExamplePHP/');
-				exit();
-            break;
-			
 			//nur über skript mit entspr. parametern ansprechbar, pausiert, da nun erst die authentifizierung her muss (lti)
 			case 'edu-tool-onlyoffice':
-                //header('Location: http://appserver9.metaventis.com/eduConnector/OnlineEditorsExamplePHP/');
-				//exit();
 				$this -> tool = new OnlyOfficeConnector();
             break;
             default:
