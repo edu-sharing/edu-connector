@@ -1,18 +1,6 @@
 <?php
 
-if(!defined('REPOURL'))
-	define('REPOURL', 'http://appserver7.metaventis.com:7001/edu-sharing/'); //for saving documents (ajax...)
-
-
-
-
-
-
-
-
-
-
-//todo -> move all to config file!
+require_once 'config.php';
 
 class EduRestClient {
 	

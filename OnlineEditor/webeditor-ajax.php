@@ -7,6 +7,9 @@ require_once( dirname(__FILE__) . '/ajax.php' );
 require_once( dirname(__FILE__) . '/common.php' );
 require_once( dirname(__FILE__) . '/functions.php' );
 
+
+require_once __DIR__ . '/../config.php';
+
 $_trackerStatus = array(
     0 => 'NotFound',
     1 => 'Editing',
@@ -128,17 +131,7 @@ function track() {
             //$userAddress = $_GET["userAddress"];
             $fileName = $_GET["fileName"];
 
-if(!defined('WWWURL'))
-	define('WWWURL', 'http://appserver9.metaventis.com/eduConDev');
-
-
-if(!defined('DOCROOT'))
-	define('DOCROOT', '/var/www/eduConDev');
-
- $storagePath = str_replace(WWWURL, DOCROOT, $fileName);
-
-
-            //$storagePath = getStoragePath($fileName, $userAddress);
+            $storagePath = str_replace(WWWURL, DOCROOT, $fileName);
 
             $downloadUri = $data["url"];
             $saved = 1;

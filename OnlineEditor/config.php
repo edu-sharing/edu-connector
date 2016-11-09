@@ -1,7 +1,6 @@
 <?php
 
-error_reporting(E_ERROR);
-define('WEB_ROOT_URL', 'http://appserver9.metaventis.com/eduConDev/OnlineEditorsExamplePHP');
+define('WEB_ROOT_URL', 'http://appserver9.metaventis.com/eduConDev/OnlineEditor');
 
 
 $GLOBALS['FILE_SIZE_MAX'] = 5242880;

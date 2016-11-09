@@ -55,7 +55,7 @@ if(!isset($_POST['formSubmitted'])) {
 
 }
 
-include('config.php');
+require_once __DIR__ . '/../config.php';
 
 $server = SERVER;
 $protocol = PROTOCOL;

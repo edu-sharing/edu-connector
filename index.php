@@ -3,13 +3,7 @@
 error_reporting(E_ERROR);
 ini_set('display_errors', 1);
 
-define('WWWURL', 'http://appserver9.metaventis.com/eduConDev');
-define('WWWROOT', 'http://138.201.17.74/eduConDev');
-define('DOCROOT', '/var/www/eduConDev');
-define('REPOURL', 'http://appserver7.metaventis.com:7001/edu-sharing/');
-define('CONTENT_URL', REPOURL . 'content');
-define('APP_ID', 'educonnector');
-
+require_once 'config.php';
 require_once 'MoodleConnector.php';
 require_once 'EtherpadConnector.php';
 require_once 'OnlyOfficeConnector.php';

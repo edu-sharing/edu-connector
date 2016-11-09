@@ -1,9 +1,7 @@
 <?php
 
+require_once 'config.php';
 require_once 'EduRestClient.php';
-
-define('MOODLEURL', 'http://138.201.17.74/aMoodleInstance');
-define('MOODLETOKEN', 'b484fddb5d2a6a6ba4b6cb4523fa2293');
 
 class MoodleConnector extends EduRestClient {
 	

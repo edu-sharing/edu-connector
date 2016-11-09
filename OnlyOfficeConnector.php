@@ -1,11 +1,6 @@
 <?php
 
-define('EDITORURL', WWWURL . '/OnlineEditorsExamplePHP/doceditor.php');
-define('STORAGEFOLDER', 'storage');
-define('STORAGEPATH', DOCROOT . '/OnlineEditorsExamplePHP/' . STORAGEFOLDER);
-define('STORAGEURL', WWWURL . '/OnlineEditorsExamplePHP/' . STORAGEFOLDER);
-
-
+require_once 'config.php';
 require_once 'EduRestClient.php';
 
 class OnlyOfficeConnector extends EduRestClient {
