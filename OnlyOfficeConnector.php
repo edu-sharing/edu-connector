@@ -19,6 +19,10 @@ class OnlyOfficeConnector extends EduRestClient {
 		if(isset($_REQUEST['createdocument']) && $_REQUEST['createdocument'] == 'yes' && isset($_REQUEST['title']) && !empty($_REQUEST['title'])){
 			
 			$fileName = $this -> createEmptyDocument($_REQUEST['title']);
+			if(!$fileName) {
+				error_log('Could not create document.');
+				exit();
+			}
 			$this -> forwardToEditor($fileName);
 		}
 		

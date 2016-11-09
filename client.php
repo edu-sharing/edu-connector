@@ -18,7 +18,7 @@ $client = new Client();
 //$client -> callConnector(array('nodeid' => 'a32a030f-d361-4390-8682-d48e2d47f603', 'tool' => 'moodle'));
 
 
-header('Location: ' . CONNECTOR_URL . '?tool=edu-tool-onlyoffice&nodeid=55d30df5-c734-409f-8d3b-011d1d11fe65&doctype=docx');
+header('Location: ' . CONNECTOR_URL . '?tool=edu-tool-onlyoffice&nodeid=91aaf89d-b628-45fe-8d64-bb77e14464f5&doctype=docx');
 /*
 $client -> callConnector(array(
     'nodeid' => '56870c08-952a-4ce9-ad18-d0eac66808c5',
