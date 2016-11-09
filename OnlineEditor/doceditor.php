@@ -154,7 +154,7 @@
 
                         permissions: {
                             edit: <?php echo (in_array(strtolower('.' . pathinfo($filename, PATHINFO_EXTENSION)), $GLOBALS['DOC_SERV_EDITED']) ? "true" : "false") ?>,
-                            download: true
+                            download: false
                         }
                     },
                     editorConfig: {
