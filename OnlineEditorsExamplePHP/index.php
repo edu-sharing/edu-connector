@@ -1,6 +1,6 @@
 <?php
 
-die();
+die('denied');
 
     require_once( dirname(__FILE__) . '/config.php' );
     require_once( dirname(__FILE__) . '/common.php' );
@@ -12,7 +12,7 @@ die();
 
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>ONLYOFFICE™</title>
+        <title>edu office</title>
 
         <link rel="icon" href="./favicon.ico" type="image/x-icon" />
 

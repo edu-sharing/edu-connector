@@ -65,6 +65,13 @@ function HaveExternalIP() {
 }
 
 function FileUri($file_name) {
+
+
+return $file_name;
+
+
+
+
     $uri = getVirtualPath() . $file_name;
 
     if (HaveExternalIP()) {
@@ -127,6 +134,7 @@ function GetExternalFileUri($local_uri) {
 
 
 function DoUpload($fileUri) {
+
     $_fileName = GetCorrectName($fileUri);
 
     $ext = strtolower('.' . pathinfo($_fileName, PATHINFO_EXTENSION));

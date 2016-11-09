@@ -10,7 +10,7 @@
     $externalUrl = $_GET["fileUrl"];
     if (!empty($externalUrl))
     {
-        $filename = DoUpload($externalUrl);
+        $filename = $externalUrl;//DoUpload($externalUrl);// we do not need this, i guess    
     }
     else
     {
@@ -29,37 +29,9 @@
 
     $fileuri = FileUri($filename);
 
-   /* function tryGetDefaultByType($type) {
-        $ext;
-        switch ($type)
-        {
-            case "document":
-                $ext = ".docx";
-                break;
-            case "spreadsheet":
-                $ext = ".xlsx";
-                break;
-            case "presentation":
-                $ext = ".pptx";
-                break;
-            default:
-                return;
-        }
-
-        $demoName = "demo" . $ext;
-        $demoFilename = GetCorrectName($demoName);
-
-        if(!@copy(dirname(__FILE__) . DIRECTORY_SEPARATOR . "app_data" . DIRECTORY_SEPARATOR . $demoName, getStoragePath($demoFilename)))
-        {
-            sendlog("Copy file error to ". getStoragePath($demoFilename), "logs/common.log");
-            //Copy error!!!
-        }
-
-        return $demoFilename;
-    }*/
 
     function getDocEditorKey($fileUri) {
-        return GenerateRevisionId(getCurUserHostAddress() . "/" . basename($fileUri));
+        return GenerateRevisionId(basename($fileUri));
     }
 
     function getDocEditorValidateKey($fileUri) {
@@ -187,7 +159,7 @@
                     },
                     editorConfig: {
                         mode: '<?php echo $GLOBALS['MODE'] != 'view' && in_array(strtolower('.' . pathinfo($filename, PATHINFO_EXTENSION)), $GLOBALS['DOC_SERV_EDITED']) && $_GET["action"] != "view" ? "edit" : "view"  ?>',
-                        lang: "en",
+                        lang: "de",
 
                         callbackUrl: "<?php echo getCallbackUrl($filename) ?>",
 
@@ -199,9 +171,9 @@
                         }
                     },
 					user: {
-						id: 'admin',
-						firstname: 'Admin',
-						lastname: 'Nutzer'
+						id: '<?php echo rand()?>',
+						firstname: 'asdad',
+						lastname: 'fghfghfghfgh'
 						
 					},
                     events: {

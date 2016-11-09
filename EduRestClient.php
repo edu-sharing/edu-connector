@@ -1,5 +1,19 @@
 <?php
 
+if(!defined('REPOURL'))
+	define('REPOURL', 'http://appserver7.metaventis.com:7001/edu-sharing/'); //for saving documents (ajax...)
+
+
+
+
+
+
+
+
+
+
+//todo -> move all to config file!
+
 class EduRestClient {
 	
 	
@@ -40,8 +54,9 @@ class EduRestClient {
 	
 	public function createContentNode($nodeId, $contentpath, $mimetype) {
 
-		$versionComment = time();
+		$versionComment = '';
 		$cfile = curl_file_create($contentpath, $mimetype, 'file');
+
 		$fields = array('file' => $cfile);
 		$ch = curl_init(REPOURL . 'rest/node/v1/nodes/-home-/' . $nodeId . '/content?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
 		$headers = array('Authorization: Basic '. base64_encode("admin:admin"), 'Accept: application/json', 'Content-Type: multipart/form-data');
@@ -57,6 +72,7 @@ class EduRestClient {
 		curl_close($ch);
 
 		if ($httpcode >= 200 && $httpcode < 300) {
+			unlink($contentpath);
 			return json_decode($res);
 		}
 		error_log('Error creating content node');

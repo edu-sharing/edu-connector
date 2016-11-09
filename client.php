@@ -1,6 +1,6 @@
 <?php
 
-define('CONNECTOR_URL', 'http://138.201.17.74/eduConnector/');
+define('CONNECTOR_URL', 'http://138.201.17.74/eduConDev/');
 
 
 class client {
@@ -15,4 +15,14 @@ class client {
 }
 
 $client = new Client();
-$client -> callConnector(array('nodeid' => 'a32a030f-d361-4390-8682-d48e2d47f603', 'tool' => 'moodle'));
+//$client -> callConnector(array('nodeid' => 'a32a030f-d361-4390-8682-d48e2d47f603', 'tool' => 'moodle'));
+
+
+header('Location: ' . CONNECTOR_URL . '?tool=edu-tool-onlyoffice&nodeid=55d30df5-c734-409f-8d3b-011d1d11fe65&doctype=docx');
+/*
+$client -> callConnector(array(
+    'nodeid' => '56870c08-952a-4ce9-ad18-d0eac66808c5',
+    'tool' => 'edu-tool-onlyoffice',
+    'doctype' => 'docx'));
+
+*/

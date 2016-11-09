@@ -140,6 +140,10 @@ function getScheme() {
 }
 
 function getStoragePath($fileName, $userAddress = NULL) {
+
+    return $fileName;
+
+
     $storagePath = trim(str_replace(array('/','\\'), DIRECTORY_SEPARATOR, $GLOBALS['STORAGE_PATH']), DIRECTORY_SEPARATOR);
     $directory = __DIR__ . DIRECTORY_SEPARATOR . $storagePath;
 

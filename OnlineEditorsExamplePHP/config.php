@@ -1,7 +1,7 @@
 <?php
 
 error_reporting(E_ERROR);
-define('WEB_ROOT_URL', 'http://appserver9.metaventis.com/eduConnector/OnlineEditorsExamplePHP');
+define('WEB_ROOT_URL', 'http://appserver9.metaventis.com/eduConDev/OnlineEditorsExamplePHP');
 
 
 $GLOBALS['FILE_SIZE_MAX'] = 5242880;
@@ -15,11 +15,11 @@ $GLOBALS['DOC_SERV_CONVERT'] = array(".doc",".odt",".xls",".ods",".ppt",".pps","
 
 $GLOBALS['DOC_SERV_TIMEOUT'] = "120000";
 
-$GLOBALS['DOC_SERV_STORAGE_URL'] = "http://hub.edu-sharing.com:9080/FileUploader.ashx";
-$GLOBALS['DOC_SERV_CONVERTER_URL'] = "http://hub.edu-sharing.com:9080/ConvertService.ashx";
-$GLOBALS['DOC_SERV_API_URL'] = "http://hub.edu-sharing.com:9080/OfficeWeb/apps/api/documents/api.js";
+$GLOBALS['DOC_SERV_STORAGE_URL'] = "http://appserver7.metaventis.com:9080/FileUploader.ashx";
+$GLOBALS['DOC_SERV_CONVERTER_URL'] = "http://appserver7.metaventis.com:9080/ConvertService.ashx";
+$GLOBALS['DOC_SERV_API_URL'] = "http://appserver7.metaventis.com:9080/OfficeWeb/apps/api/documents/api.js";
 
-$GLOBALS['DOC_SERV_PRELOADER_URL'] = "http://hub.edu-sharing.com:9080/OfficeWeb/apps/api/documents/cache-scripts.html";
+$GLOBALS['DOC_SERV_PRELOADER_URL'] = "http://appserver7.metaventis.com:9080/OfficeWeb/apps/api/documents/cache-scripts.html";
 
 $GLOBALS['ExtsSpreadsheet'] = array(".xls", ".xlsx",
                                     ".ods", ".csv");

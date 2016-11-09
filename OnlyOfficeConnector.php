@@ -82,9 +82,9 @@ class OnlyOfficeConnector extends EduRestClient {
 	
 	private function getUniquifier($new = false) {
 		if($new)
-			return uniqid(true) . '___NEW___';
+			return 'M_INIT_';
 		else
-			return uniqid(true) . '___EDIT___';
+			return 'M_EDIT_';
 	}
 	
 	private function createEmptyDocument($title) {
@@ -99,47 +99,55 @@ class OnlyOfficeConnector extends EduRestClient {
 	}
 	
 	public function saveDocument($storagePath) {
-	
-		if(strpos($storagePath, '___NEW___') !== false) {
-			$filenameArr = explode('___NEW___', $storagePath);
-			$nodeId = $this -> createNode($filenameArr[1]);
-		} else if(strpos($storagePath, '___EDIT___') !== false) {
-			$filenameArr = explode('___EDIT___', $storagePath);
-			$pos = strrpos($filenameArr[1], '.');
-			if ($pos !== false)
-				$nodeId = substr($filenameArr[1], 0, $pos );
-		}
-		
-		if(empty($nodeId)) {
-			error_log('No valid nodeId');
-			exit();
-		}
 
-		switch(array_pop(explode('.', $storagePath))) {
-			case 'docx':
-				$mimetype = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-			break;
-			case 'xlsx':
-				$mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-			break;
-			case 'pptx':
-				$mimetype = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
-			break;
-			case 'odt':
-				$mimetype = 'application/vnd.oasis.opendocument.text';
-			break;
-			case 'ods':
-				$mimetype = 'application/vnd.oasis.opendocument.spreadsheet';
-			break;	
-			case 'odp':
-				$mimetype = 'application/vnd.oasis.opendocument.presentation';
-			break;				
-			default:
-				error_log('No mimetype specified');
+		try {
+	
+			if(strpos($storagePath, 'M_INIT_') !== false) {
+				$filenameArr = explode('M_INIT_', $storagePath);
+				$nodeId = $this -> createNode($filenameArr[1]);
+			} else if(strpos($storagePath, 'M_EDIT_') !== false) {
+				$filenameArr = explode('M_EDIT_', $storagePath);
+				$pos = strrpos($filenameArr[1], '.');
+				if ($pos !== false)
+					$nodeId = substr($filenameArr[1], 0, $pos );
+			}
+			
+			if(empty($nodeId)) {
+				error_log('No valid nodeId');
 				exit();
+			}
+
+			switch(array_pop(explode('.', $storagePath))) {
+				case 'docx':
+					$mimetype = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+				break;
+				case 'xlsx':
+					$mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+				break;
+				case 'pptx':
+					$mimetype = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+				break;
+				case 'odt':
+					$mimetype = 'application/vnd.oasis.opendocument.text';
+				break;
+				case 'ods':
+					$mimetype = 'application/vnd.oasis.opendocument.spreadsheet';
+				break;	
+				case 'odp':
+					$mimetype = 'application/vnd.oasis.opendocument.presentation';
+				break;				
+				default:
+					error_log('No mimetype specified');
+					exit();
+			}
+			
+			$this -> createContentNode($nodeId, $storagePath, $mimetype);
+
+			unlink($storagePath);
+
+		} catch(Exception $e) {
+			error_log('Error saving document ' . $nodeId);
 		}
-		
-		$this -> createContentNode($nodeId, $storagePath, $mimetype);
 		
 	}
 	    

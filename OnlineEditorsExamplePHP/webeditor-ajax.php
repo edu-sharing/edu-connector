@@ -125,9 +125,20 @@ function track() {
         case "MustSave":
         case "Corrupted":
 
-            $userAddress = $_GET["userAddress"];
+            //$userAddress = $_GET["userAddress"];
             $fileName = $_GET["fileName"];
-            $storagePath = getStoragePath($fileName, $userAddress);
+
+if(!defined('WWWURL'))
+	define('WWWURL', 'http://appserver9.metaventis.com/eduConDev');
+
+
+if(!defined('DOCROOT'))
+	define('DOCROOT', '/var/www/eduConDev');
+
+ $storagePath = str_replace(WWWURL, DOCROOT, $fileName);
+
+
+            //$storagePath = getStoragePath($fileName, $userAddress);
 
             $downloadUri = $data["url"];
             $saved = 1;
@@ -140,7 +151,6 @@ function track() {
 				
 					try {
 						require_once( dirname(__FILE__) . '/../OnlyOfficeConnector.php' );
-						define('REPOURL', 'http://appserver7.metaventis.com:7001/edu-sharing/');
 						$onlyOfficeConnector = new OnlyOfficeConnector();
 						$onlyOfficeConnector -> saveDocument($storagePath);
 					} catch (Exception $e) {
