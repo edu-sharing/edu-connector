@@ -1,4 +1,7 @@
 <?php
+session_id($_GET['sess']);
+session_start();
+
 /**
  * WebEditor AJAX Process Execution.
  */
@@ -141,8 +144,7 @@ function track() {
             } else {
                 file_put_contents($storagePath, $new_data, LOCK_EX);
 				
-				
-					try {
+				try {
 						require_once( dirname(__FILE__) . '/../OnlyOfficeConnector.php' );
 						$onlyOfficeConnector = new OnlyOfficeConnector();
 						$onlyOfficeConnector -> saveDocument($storagePath);

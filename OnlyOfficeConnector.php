@@ -12,9 +12,9 @@ class OnlyOfficeConnector extends EduRestClient {
 	private $doctype = '';
     
     public function __construct() {
-		
-		if(isset($_REQUEST['doctype']))
-			$this -> doctype = $_REQUEST['doctype'];
+
+		if(isset($_REQUEST['tool_subtype']))
+			$this -> doctype = $_REQUEST['tool_subtype'];
 		
 		if(isset($_REQUEST['createdocument']) && $_REQUEST['createdocument'] == 'yes' && isset($_REQUEST['title']) && !empty($_REQUEST['title'])){
 			
@@ -25,15 +25,16 @@ class OnlyOfficeConnector extends EduRestClient {
 			}
 			$this -> forwardToEditor($fileName);
 		}
+
 		
-		if(isset($_REQUEST['nodeid'])) {
-			$fileName = $this -> getFile($_REQUEST['nodeid']);
+		if(isset($_REQUEST['node_id']) && !empty($_REQUEST['node_id'])) {
+			$fileName = $this -> getFile($_REQUEST['node_id']);
 			$this -> forwardToEditor($fileName);
 		}
     }
 	
 	private function forwardToEditor($fileName) {
-		header('Location: ' . EDITORURL . '?fileUrl=' . urlencode(STORAGEURL . '/' . $fileName));
+		header('Location: ' . EDITORURL . '?sess='.session_id().'&fileUrl=' . urlencode(STORAGEURL . '/' . $fileName));
 		exit();
 	}
 	
@@ -65,7 +66,7 @@ class OnlyOfficeConnector extends EduRestClient {
 				exit();
             }
             
-			$fileName = $this -> getUniquifier() . $nodeId . '.' . $this -> doctype;
+			$fileName = $this -> getFlag() . $nodeId . '.' . $this -> doctype;
 			
             $handle = fopen(STORAGEPATH . '/' . $fileName , 'w');
             fwrite($handle, $content);
@@ -79,7 +80,7 @@ class OnlyOfficeConnector extends EduRestClient {
         }
     }
 	
-	private function getUniquifier($new = false) {
+	private function getFlag($new = false) {
 		if($new)
 			return 'M_INIT_';
 		else
@@ -88,7 +89,7 @@ class OnlyOfficeConnector extends EduRestClient {
 	
 	private function createEmptyDocument($title) {
 		try {
-			$fileName = $this -> getUniquifier(true) . $title . '.' . $this -> doctype;
+			$fileName = $this -> getFlag(true) . $title . '.' . $this -> doctype;
 			copy(STORAGEPATH . '/templates/init.' . $this -> doctype, STORAGEPATH . '/' . $fileName);
 			return $fileName;
 		} catch(Exception $e) {

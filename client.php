@@ -1,5 +1,9 @@
 <?php
 
+
+die('use testclient.php');
+
+
 define('CONNECTOR_URL', 'http://138.201.17.74/eduConDev/');
 
 

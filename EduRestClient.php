@@ -9,24 +9,34 @@ class EduRestClient {
 
 	}
 	
+	private function getAccessToken() {
+
+
+		if($_SESSION['oauth_token_expiration_ts'] - time() < 300) {
+			//refresh
+			//set tokens
+			//set ts
+		}
+
+		return $_SESSION['oauth_access_token'];
+
+	}
+
+	private function refreshToken() {
+	
+	
+	}
 
 	public function createNode($title) {
-		
-		$homeNodeId = $this -> getHomeNodeId();
-	
-		$fields = array(
-				array('name' => '{http://www.alfresco.org/model/content/1.0}name', 'values' => array($title)),
-		);
-		
-		$ch = curl_init(REPOURL . 'rest/node/v1/nodes/-home-/' . $homeNodeId . '/children?type=%7Bhttp%3A%2F%2Fwww.campuscontent.de%2Fmodel%2F1.0%7Dio');
-		
-		$headers = array('Authorization: Basic '. base64_encode("admin:admin"), 'Accept: application/json', 'Content-Type: application/json; charset=utf-8');
+
+		$url = REPOURL . 'rest/node/v1/nodes/-home-/' . $_SESSION['parent_id'] . '/children?type=%7Bhttp%3A%2F%2Fwww.campuscontent.de%2Fmodel%2F1.0%7Dio';
+		$ch = curl_init($url);
+		$headers = array('Authorization: Bearer '. $this->getAccessToken(), 'Accept: application/json', 'Content-Type: application/json; charset=utf-8');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 		curl_setopt($ch, CURLOPT_POST, 1);
-
-		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, '{"{http://www.alfresco.org/model/content/1.0}name": ["'.$title.'"]}');
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$res = curl_exec($ch);
 		$httpcode = curl_getinfo ( $ch, CURLINFO_HTTP_CODE );
@@ -35,19 +45,18 @@ class EduRestClient {
 			$node = json_decode($res);
 			return $node->node->ref->id;
 		}
-		error_log('Error creating node');
+		error_log('Error creating io node - HTTP Status ' . $httpcode);
 		return false;
 		
 	}
 	
 	public function createContentNode($nodeId, $contentpath, $mimetype) {
-
 		$versionComment = '';
 		$cfile = curl_file_create($contentpath, $mimetype, 'file');
 
 		$fields = array('file' => $cfile);
 		$ch = curl_init(REPOURL . 'rest/node/v1/nodes/-home-/' . $nodeId . '/content?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
-		$headers = array('Authorization: Basic '. base64_encode("admin:admin"), 'Accept: application/json', 'Content-Type: multipart/form-data');
+		$headers = array('Authorization: Bearer '. $this->getAccessToken(), 'Accept: application/json', 'Content-Type: multipart/form-data');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -60,25 +69,26 @@ class EduRestClient {
 		curl_close($ch);
 
 		if ($httpcode >= 200 && $httpcode < 300) {
-			unlink($contentpath);
 			return json_decode($res);
 		}
-		error_log('Error creating content node');
+		error_log('Error creating content node - HTTP Status ' . $httpcode);
 		return false;
 	} 
 	
-	public function createReference($tool, $title, $url) {
 
-		$homeNodeId = $this -> getHomeNodeId();
+	/*CHECK
+	MAY NOT WORK SINCE JSON ENCODED ARRAYS WON'T BE ACCEPTED BY REPOSITORY IN createNode()
+	*/
+	public function createReference($tool, $title, $url) {
 	
 		$fields = array(
 				array('name' => '{http://www.alfresco.org/model/content/1.0}name', 'values' => array($title)),
 				array('name' => '{http://www.campuscontent.de/model/1.0}wwwurl', 'values' => array($url))
 		);
 		
-		$ch = curl_init(REPOURL . 'rest/node/v1/nodes/-home-/' . $homeNodeId . '/children?type=%7Bhttp%3A%2F%2Fwww.campuscontent.de%2Fmodel%2F1.0%7Dio');
+		$ch = curl_init(REPOURL . 'rest/node/v1/nodes/-home-/' . $_SESSION['parent_id'] . '/children?type=%7Bhttp%3A%2F%2Fwww.campuscontent.de%2Fmodel%2F1.0%7Dio');
 		
-		$headers = array('Authorization: Basic '. base64_encode("admin:admin"), 'Accept: application/json', 'Content-Type: application/json; charset=utf-8');
+		$headers = array('Authorization: Bearer '. $this->getAccessToken(), 'Accept: application/json', 'Content-Type: application/json; charset=utf-8');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -96,7 +106,7 @@ class EduRestClient {
 		echo 'Error setting node';
 		return false;
 	}
-	
+/*	
 	private function getHomeNodeId() {
 		$ch = curl_init(REPOURL . 'rest/iam/v1/people/-home-/-me-');
 		$headers = array('Authorization: Basic '. base64_encode("admin:admin"), 'Accept: application/json');
@@ -114,7 +124,7 @@ class EduRestClient {
 		echo 'Error fetching homeNodeId';
 		return false;
 		
-	}
+	}*/
 	
 	
 }

@@ -42,7 +42,8 @@
         return rtrim(WEB_ROOT_URL, '/') . '/'
                     . "webeditor-ajax.php"
                     . "?type=track&userAddress=" . getClientIp()
-                    . "&fileName=" . urlencode($fileName);
+                    . "&fileName=" . urlencode($fileName)
+                    . "&sess=" . $_GET['sess'];
     }
 
 ?>
@@ -141,7 +142,7 @@
                     type: "<?php echo ($_GET["action"] != "embedded" ?  "desktop" : "embedded") ?>",
                     documentType: "<?php echo getDocumentType($filename) ?>",
                     document: {
-                        title: fileName,
+                        title: '',
                         url: "<?php echo $fileuri ?>",
                         fileType: fileType,
                         key: "<?php echo getDocEditorKey($fileuri) ?>",
@@ -171,7 +172,7 @@
                         }
                     },
 					user: {
-						id: '<?php echo rand()?>',
+						id: 'peter',
 						firstname: 'asdad',
 						lastname: 'fghfghfghfgh'
 						
