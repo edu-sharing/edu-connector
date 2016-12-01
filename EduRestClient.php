@@ -106,6 +106,25 @@ class EduRestClient {
 		echo 'Error setting node';
 		return false;
 	}
+
+
+	public function getNode($nodeId) {
+		$ch = curl_init(REPOURL . 'rest/node/v1/nodes/-home-/'.$nodeId.'/metadata');
+		$headers = array('Authorization: Bearer '. $this->getAccessToken(), 'Accept: application/json');
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$res = curl_exec($ch);
+		$httpcode = curl_getinfo ( $ch, CURLINFO_HTTP_CODE );
+		curl_close($ch);
+		if ($httpcode >= 200 && $httpcode < 300) {
+			$node = json_decode($res);
+			return $node;
+		}
+		echo 'Error fetching node';
+		exit();
+	}
 /*	
 	private function getHomeNodeId() {
 		$ch = curl_init(REPOURL . 'rest/iam/v1/people/-home-/-me-');

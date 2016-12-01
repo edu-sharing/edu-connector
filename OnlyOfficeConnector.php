@@ -39,20 +39,12 @@ class OnlyOfficeConnector extends EduRestClient {
 	}
 	
 	 private function getFile($nodeId) {
-                    
+
+		 $node = $this->getNode($nodeId);
+		                     
         try {       
-            $timestamp = round(microtime(true) * 1000);
-            $signData = $nodeId . $timestamp;
-            include('keyPair.php');       
-            $pkeyid = openssl_get_privatekey($private);      
-            openssl_sign($signData, $signature, $pkeyid);
-            $signature = urlencode(base64_encode($signature));
-            openssl_free_key($pkeyid); 
-            $contentUrl = CONTENT_URL;
-            $contentUrl .= '?appId=' . APP_ID;
-            $contentUrl .= '&nodeId=' . $nodeId;
-            $contentUrl .= '&timeStamp=' . $timestamp;
-            $contentUrl .= '&authToken=' . $signature;
+
+            $contentUrl = $node->node->downloadUrl;
 
             $handle = fopen($contentUrl, "rb");
             if($handle === false) {
