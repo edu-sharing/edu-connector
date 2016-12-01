@@ -44,7 +44,7 @@ class OnlyOfficeConnector extends EduRestClient {
 		                     
         try {       
 
-            $contentUrl = $node->node->downloadUrl;
+            $contentUrl = $node->node->downloadUrl . '&access_token=' . $_REQUEST['title'];
 
             $handle = fopen($contentUrl, "rb");
             if($handle === false) {
