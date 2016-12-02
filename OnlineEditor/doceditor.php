@@ -142,7 +142,7 @@
                     type: "<?php echo ($_GET["action"] != "embedded" ?  "desktop" : "embedded") ?>",
                     documentType: "<?php echo getDocumentType($filename) ?>",
                     document: {
-                        title: '',
+                        title: fileName,
                         url: "<?php echo $fileuri ?>",
                         fileType: fileType,
                         key: "<?php echo getDocEditorKey($fileuri) ?>",

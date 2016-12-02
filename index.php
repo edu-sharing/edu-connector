@@ -23,9 +23,11 @@ class Connector {
     private function setupParameters() {
         //do not override values if index.php is re-called on document creation
         if(!isset($_REQUEST['createdocument'])) {
+            $_SESSION['api_url'] = $_REQUEST['api_url'];
             $_SESSION['oauth_access_token'] = $_REQUEST['oauth_access_token'];
             $_SESSION['oauth_refresh_token'] = $_REQUEST['oauth_refresh_token'];
-            $_SESSION['oauth_token_expiration_ts'] = $_REQUEST['oauth_token_expiration_ts'];
+            $_SESSION['expires_in'] = $_REQUEST['expires_in'];
+            $_SESSION['oauth_token_received'] = $_REQUEST['oauth_token_received'];
             $_SESSION['parent_id'] = $_REQUEST['parent_id'];
         }
     }
