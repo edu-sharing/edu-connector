@@ -7,83 +7,58 @@ class OnlyOfficeConnector extends EduRestClient {
 	
 	const TOOL = 'edu-tool-onlyoffice';
     
-    private $nodeId = '';
-    private $title = '';
-	private $doctype = '';
-    
     public function __construct() {
 
-		if(isset($_REQUEST['tool_subtype']))
-			$this -> doctype = $_REQUEST['tool_subtype'];
-		
-		if(isset($_REQUEST['createdocument']) && $_REQUEST['createdocument'] == 'yes' && isset($_REQUEST['title']) && !empty($_REQUEST['title'])){
-			
-			$fileName = $this -> createEmptyDocument($_REQUEST['title']);
-			if(!$fileName) {
-				error_log('Could not create document.');
-				exit();
-			}
-			$this -> forwardToEditor($fileName);
-		}
+		//todo check params
 
-		
-		if(isset($_REQUEST['node_id']) && !empty($_REQUEST['node_id'])) {
-			$fileName = $this -> getFile($_REQUEST['node_id']);
-			$this -> forwardToEditor($fileName);
+		//if called from index / not from oo ajax script
+		if(isset($_REQUEST['node_id'])) {
+			$this -> getFile($_REQUEST['node_id'], $_REQUEST['tool_subtype']);
+			$this -> forwardToEditor($_REQUEST['node_id'], $_REQUEST['tool_subtype']);
 		}
     }
 	
-	private function forwardToEditor($fileName) {
-		header('Location: ' . EDITORURL . '?sess='.session_id().'&fileUrl=' . urlencode(STORAGEURL . '/' . $fileName));
+	private function forwardToEditor($nodeId, $doctype) {
+		header('Location: ' . EDITORURL . '?sess='.session_id().'&fileUrl=' . urlencode(STORAGEURL . '/' . $nodeId . '.' . $doctype));
 		exit();
 	}
 	
-	 private function getFile($nodeId) {
-
-		 $node = $this->getNode($nodeId);
-		                     
+	 private function getFile($nodeId, $doctype) {
         try {       
-
-            $contentUrl = $node->node->downloadUrl . '&access_token=' . $_REQUEST['title'];
-
-            $handle = fopen($contentUrl, "rb");
-            if($handle === false) {
-                error_log('Error opening ' . $contentUrl);
-            }
-            $content = stream_get_contents($handle);
-            fclose($handle);
-            if($content === false) {
-                error_log('Error fetching content.');
-				echo 'Could not fetch content';
-				exit();
-            }
-            
-			$fileName = $this -> getFlag() . $nodeId . '.' . $this -> doctype;
-			
-            $handle = fopen(STORAGEPATH . '/' . $fileName , 'w');
-            fwrite($handle, $content);
-            fclose($handle);
-
-			return $fileName;
-
+			$node = $this->getNode($nodeId);
+			//node has no content -> create new document
+			if($node->size === NULL) {
+				$this -> createEmptyDocument($nodeId, $doctype);
+			} else {
+				$this -> fetchFileFromRepository($nodeId, $doctype);
+			}
         } catch (Exception $e) {
             error_log($e);   
             return false;
         }
     }
-	
-	private function getFlag($new = false) {
-		if($new)
-			return 'M_INIT_';
-		else
-			return 'M_EDIT_';
+
+	private function fetchFileFromRepository($nodeId, $doctype) {
+		$contentUrl = $node->node->downloadUrl . '&access_token=' . $_REQUEST['oauth_access_token'];
+		$handle = fopen($contentUrl, "rb");
+		if($handle === false) {
+			error_log('Error opening ' . $contentUrl);
+		}
+		$content = stream_get_contents($handle);
+		fclose($handle);
+		if($content === false) {
+			error_log('Error fetching content.');
+			echo 'Could not fetch content';
+			exit();
+		}	
+		$handle = fopen(STORAGEPATH . '/' . $nodeId . '.' . $doctype , 'w');
+		fwrite($handle, $content);
+		fclose($handle);
 	}
-	
-	private function createEmptyDocument($title) {
+
+	private function createEmptyDocument($nodeId, $doctype) {
 		try {
-			$fileName = $this -> getFlag(true) . $title . '.' . $this -> doctype;
-			copy(STORAGEPATH . '/templates/init.' . $this -> doctype, STORAGEPATH . '/' . $fileName);
-			return $fileName;
+			copy(STORAGEPATH . '/templates/init.' . $doctype, STORAGEPATH . '/' . $nodeId . '.' . $doctype);
 		} catch(Exception $e) {
 			error_log($e);
 			return false;
@@ -91,25 +66,17 @@ class OnlyOfficeConnector extends EduRestClient {
 	}
 	
 	public function saveDocument($storagePath) {
-
 		try {
-	
-			if(strpos($storagePath, 'M_INIT_') !== false) {
-				$filenameArr = explode('M_INIT_', $storagePath);
-				$nodeId = $this -> createNode($filenameArr[1]);
-			} else if(strpos($storagePath, 'M_EDIT_') !== false) {
-				$filenameArr = explode('M_EDIT_', $storagePath);
-				$pos = strrpos($filenameArr[1], '.');
-				if ($pos !== false)
-					$nodeId = substr($filenameArr[1], 0, $pos );
-			}
+			$storagePathParts = explode('.', $storagePath);
+			$nodeId = str_replace(STORAGEPATH.'/', '', $storagePathParts[0]);
+			$doctype = $storagePathParts[1];
 			
 			if(empty($nodeId)) {
 				error_log('No valid nodeId');
 				exit();
 			}
 
-			switch(array_pop(explode('.', $storagePath))) {
+			switch($doctype) {
 				case 'docx':
 					$mimetype = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 				break;
