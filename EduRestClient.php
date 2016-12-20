@@ -135,19 +135,26 @@ class EduRestClient {
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$res = curl_exec($ch);
+		
+		if($res === false) {
+			echo 'Cannot reach API';
+			exit();
+		}
 		$httpcode = curl_getinfo ( $ch, CURLINFO_HTTP_CODE );
 		curl_close($ch);
 		if ($httpcode >= 200 && $httpcode < 300) {
 			$node = json_decode($res);
 			return $node;
 		}
-		echo 'Error fetching node';
+		echo 'Error fetching node - HTTP STATUS ' . $httpcode;
 		exit();
 	}
-/*	
-	private function getHomeNodeId() {
-		$ch = curl_init(REPOURL . 'rest/iam/v1/people/-home-/-me-');
-		$headers = array('Authorization: Basic '. base64_encode("admin:admin"), 'Accept: application/json');
+
+		
+
+protected function getPerson() {
+		$ch = curl_init($_SESSION['api_url'] . 'iam/v1/people/-home-/-me-');
+		$headers = array('Authorization: Bearer '. $this->getAccessToken(), 'Accept: application/json');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -156,13 +163,13 @@ class EduRestClient {
 		$httpcode = curl_getinfo ( $ch, CURLINFO_HTTP_CODE );
 		curl_close($ch);
 		if ($httpcode >= 200 && $httpcode < 300) {
-			$node = json_decode($res);
-			return $node->person->homeFolder->id;
+			$person = json_decode($res);
+			return $person->person;
 		}
-		echo 'Error fetching homeNodeId';
+		echo 'Error fetching person';
 		return false;
 		
-	}*/
+	}
 	
 	
 }

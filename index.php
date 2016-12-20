@@ -8,6 +8,7 @@ require_once 'config.php';
 //require_once 'MoodleConnector.php';
 //require_once 'EtherpadConnector.php';
 require_once 'OnlyOfficeConnector.php';
+require_once 'OnyxConnector.php';
 
 class Connector {
        
@@ -40,6 +41,9 @@ class Connector {
             break;
 			case 'edu-tool-onlyoffice':
 				$this -> tool = new OnlyOfficeConnector();
+            break;
+            case 'edu-tool-onyx':
+                $this -> tool = new OnyxConnector();
             break;
             default:
                 echo 'Unknown tool';

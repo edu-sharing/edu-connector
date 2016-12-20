@@ -154,13 +154,13 @@
                         },
 
                         permissions: {
-                            edit: <?php echo (in_array(strtolower('.' . pathinfo($filename, PATHINFO_EXTENSION)), $GLOBALS['DOC_SERV_EDITED']) ? "true" : "false") ?>,
+                            edit: true,
                             download: false
                         }
                     },
                     editorConfig: {
-                        mode: '<?php echo $GLOBALS['MODE'] != 'view' && in_array(strtolower('.' . pathinfo($filename, PATHINFO_EXTENSION)), $GLOBALS['DOC_SERV_EDITED']) && $_GET["action"] != "view" ? "edit" : "view"  ?>',
-                        lang: "de",
+                        mode: 'edit',
+                        lang: "en",
 
                         callbackUrl: "<?php echo getCallbackUrl($filename) ?>",
 
@@ -171,12 +171,7 @@
                             toolbarDocked: "top"
                         }
                     },
-					user: {
-						id: 'peter',
-						firstname: 'asdad',
-						lastname: 'fghfghfghfgh'
-						
-					},
+
                     events: {
                         'onReady': onReady,
                         'onBack': <?php echo ($_GET["action"] != "embeded" ?  "onBack" : "undefined") ?>,

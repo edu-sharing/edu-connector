@@ -14,11 +14,11 @@ $GLOBALS['DOC_SERV_CONVERT'] = array(".doc",".odt",".xls",".ods",".ppt",".pps","
 
 $GLOBALS['DOC_SERV_TIMEOUT'] = "120000";
 
-$GLOBALS['DOC_SERV_STORAGE_URL'] = "http://appserver7.metaventis.com:9080/FileUploader.ashx";
-$GLOBALS['DOC_SERV_CONVERTER_URL'] = "http://appserver7.metaventis.com:9080/ConvertService.ashx";
-$GLOBALS['DOC_SERV_API_URL'] = "http://appserver7.metaventis.com:9080/OfficeWeb/apps/api/documents/api.js";
+$GLOBALS['DOC_SERV_STORAGE_URL'] = "http://appserver7.metaventis.com:7777/FileUploader.ashx";
+$GLOBALS['DOC_SERV_CONVERTER_URL'] = "http://appserver7.metaventis.com:7777/ConvertService.ashx";
+$GLOBALS['DOC_SERV_API_URL'] = "http://appserver7.metaventis.com:7777/OfficeWeb/apps/api/documents/api.js";
 
-$GLOBALS['DOC_SERV_PRELOADER_URL'] = "http://appserver7.metaventis.com:9080/OfficeWeb/apps/api/documents/cache-scripts.html";
+$GLOBALS['DOC_SERV_PRELOADER_URL'] = "http://appserver7.metaventis.com:7777/OfficeWeb/apps/api/documents/cache-scripts.html";
 
 $GLOBALS['ExtsSpreadsheet'] = array(".xls", ".xlsx",
                                     ".ods", ".csv");

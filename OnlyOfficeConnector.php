@@ -24,13 +24,15 @@ class OnlyOfficeConnector extends EduRestClient {
 	}
 	
 	 private function getFile($nodeId, $doctype) {
-        try {       
+
+	     try {       
 			$node = $this->getNode($nodeId);
+
 			//node has no content -> create new document
-			if($node->size === NULL) {
+			if($node->node->size === NULL) {
 				$this -> createEmptyDocument($nodeId, $doctype);
 			} else {
-				$this -> fetchFileFromRepository($nodeId, $doctype);
+				$this -> fetchFileFromRepository($node, $nodeId, $doctype);
 			}
         } catch (Exception $e) {
             error_log($e);   
@@ -38,8 +40,9 @@ class OnlyOfficeConnector extends EduRestClient {
         }
     }
 
-	private function fetchFileFromRepository($nodeId, $doctype) {
-		$contentUrl = $node->node->downloadUrl . '&access_token=' . $_REQUEST['oauth_access_token'];
+	private function fetchFileFromRepository($node, $nodeId, $doctype) {
+		$contentUrl = $node->node->downloadUrl . '&accessToken=' . $_REQUEST['oauth_access_token'];
+
 		$handle = fopen($contentUrl, "rb");
 		if($handle === false) {
 			error_log('Error opening ' . $contentUrl);
