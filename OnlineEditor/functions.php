@@ -1,84 +1,43 @@
 <?php
+/*
+ *
+ * (c) Copyright Ascensio System Limited 2010-2016
+ *
+ * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
+ * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
+ * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
+ * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
+ * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
+ *
+ * You can contact Ascensio System SIA by email at sales@onlyoffice.com
+ *
+ * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
+ * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
+ *
+ * Pursuant to Section 7 � 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
+ * relevant author attributions when distributing the software. If the display of the logo in its graphic 
+ * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
+ * in every copy of the program you distribute. 
+ * Pursuant to Section 7 � 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ *
+*/
+?>
+
+<?php
 
 require_once( dirname(__FILE__) . '/config.php' );
 require_once( dirname(__FILE__) . '/common.php' );
 
-
-function servConvGetKey() {
-    if (defined('ServiceConverterTenantId'))
-        return ServiceConverterTenantId;
-    return "OnlyOfficeAppsExample";
-}
-
-function servConvGetSKey() {
-    if (defined('ServiceConverterKey'))
-        return ServiceConverterKey;
-    return "ONLYOFFICE";
-}
-
-function HaveExternalIP() {
-    $_haveExternalIPCacheFile = "cache/haveExternalIP.txt";
-    $_cacheTimeSeconds = 1 * 60 * 60; // cache for 1 hour
-
-    $_haveExternalIPObj = unserialize(file_get_contents($_haveExternalIPCacheFile));
-
-    if (!(isset($_haveExternalIPObj) &&
-        is_array($_haveExternalIPObj) &&
-        isset($_haveExternalIPObj['haveExternalIP']) &&
-        isset($_haveExternalIPObj['updDate']) &&
-        is_bool($_haveExternalIPObj['haveExternalIP']) &&
-        is_int($_haveExternalIPObj['updDate']) &&
-        $_haveExternalIPObj['updDate'] + $_cacheTimeSeconds >= time()))
-    {
-        $convertUri = "";
-        try
-        {
-            $demoName = "demo.docx";
-            $fileUri = getVirtualPath() . $demoName;
-
-            if (!file_exists($fileUri)){
-                if(!@copy(dirname(__FILE__) . DIRECTORY_SEPARATOR . "app_data" . DIRECTORY_SEPARATOR . $demoName, getStoragePath($demoName)))
-                {
-                    $errors= error_get_last();
-                    $err = "Copy demo file error: " . $errors['type'] . "\r\n".$errors['message'];
-
-                    sendlog("HaveExternalIP errors: " . $err, "logs/common.log");
-                    throw new Exception($err);
-                } else {
-                    GetConvertedUri($fileUri, "docx", "docx", guid(), FALSE, $convertUri);
-                }
-            }
-        }
-        catch (Exception $e) {
-            $convertUri = "";
-        }
-
-        $_haveExternalIPObj = array(
-                            'haveExternalIP' => ($convertUri != ""),
-                            'updDate' => time()
-                           );
-
-        file_put_contents($_haveExternalIPCacheFile, serialize($_haveExternalIPObj));
-    }
-
-    return $_haveExternalIPObj['haveExternalIP'];
-}
 
 function FileUri($file_name) {
 
 
 return $file_name;
 
-
-
-
     $uri = getVirtualPath() . $file_name;
-
-    if (HaveExternalIP()) {
-        return $uri;
-    }
-
-    return GetExternalFileUri($uri);
+	return $uri;
 }
 
 function GetExternalFileUri($local_uri) {
@@ -93,9 +52,7 @@ function GetExternalFileUri($local_uri) {
         } else {
             $contentType =  mime_content_type($local_uri);
 
-            $validateKey = GenerateValidateKey($documentRevisionId, false);
-
-            $urlToService = generateUrlToStorage('', '', '', '', $documentRevisionId, $validateKey);
+            $urlToService = generateUrlToStorage('', '', '', '', $documentRevisionId);
 
             $opts = array('http' => array(
                     'method'  => 'POST',
@@ -134,7 +91,6 @@ function GetExternalFileUri($local_uri) {
 
 
 function DoUpload($fileUri) {
-
     $_fileName = GetCorrectName($fileUri);
 
     $ext = strtolower('.' . pathinfo($_fileName, PATHINFO_EXTENSION));
@@ -154,14 +110,13 @@ function DoUpload($fileUri) {
 }
 
 
-function generateUrlToConverter($document_uri, $from_extension, $to_extension, $title, $document_revision_id, $validateKey, $is_async) {
+function generateUrlToConverter($document_uri, $from_extension, $to_extension, $title, $document_revision_id, $is_async) {
     $urlToConverterParams = array(
                                 "url" => $document_uri,
                                 "outputtype" => trim($to_extension,'.'),
                                 "filetype" => trim($from_extension, '.'),
                                 "title" => $title,
-                                "key" => $document_revision_id,
-                                "vkey" => $validateKey);
+                                "key" => $document_revision_id);
 
     $urlToConverter = $GLOBALS['DOC_SERV_CONVERTER_URL'] . "?" . http_build_query($urlToConverterParams);
 
@@ -172,7 +127,7 @@ function generateUrlToConverter($document_uri, $from_extension, $to_extension, $
 }
 
 
-function generateUrlToStorage($document_uri, $from_extension, $to_extension, $title, $document_revision_id, $validateKey) {
+function generateUrlToStorage($document_uri, $from_extension, $to_extension, $title, $document_revision_id) {
 
     return $GLOBALS['DOC_SERV_STORAGE_URL'] . "?" . http_build_query(
                             array(
@@ -180,34 +135,7 @@ function generateUrlToStorage($document_uri, $from_extension, $to_extension, $ti
                                 "outputtype" => trim($to_extension,'.'),
                                 "filetype" => trim($from_extension, '.'),
                                 "title" => $title,
-                                "key" => $document_revision_id,
-                                "vkey" => $validateKey));
-}
-
-
-/**
-* Encoding string from object
-*
-* @param object $primary_key     Json of primary key
-* @param string $secret          Secret key for encoding
-*
-* @return Encoding string
-*/
-function signature_Create($primary_key, $secret) {
-    $payload = base64_encode( hash( 'sha256', ($primary_key . $secret), true ) ) . "?" . $primary_key;
-    $base64Str = base64_encode($payload);
-
-    $ind = 0;
-    for ($n = strlen($base64Str); $n > 0; $n--){
-        if ($base64Str[$n-1] === '='){
-            $ind++;
-        } else {
-            break;
-        }
-    }
-    $base64Str = str_replace(array('+', '/'), array('-', '_'), trim($base64Str, '==')) . $ind;
-
-    return urlencode($base64Str);
+                                "key" => $document_revision_id));
 }
 
 
@@ -273,43 +201,6 @@ function GenerateRevisionId($expected_key) {
     return $key;
 }
 
-/**
-*  Generate validate key for editor by documentId
-*
-* LFJ7 or "http://helpcenter.onlyoffice.com/content/GettingStarted.pdf"
-*
-* @param string $document_revision_id     Key for caching on service, whose used in editor
-* @param bool   $add_host_for_validate    Add host address to the key
-*
-* @return Validation key
-*/
-function GenerateValidateKey($document_revision_id, $add_host_for_validate = true) {
-    if (empty($document_revision_id)) return '';
-
-    $document_revision_id = GenerateRevisionId($document_revision_id);
-
-    $keyId = servConvGetKey();
-
-    $primaryKey = NULL;
-    $ms = number_format(round(microtime(true) * 1000),0,'.','');
-
-    if ($add_host_for_validate)
-    {
-        $userIp = getClientIp();
-
-        if (!empty($userIp)) {
-            $primaryKey = "{\"expire\":\"\\/Date(" . $ms . ")\\/\",\"key\":\"" . $document_revision_id . "\",\"key_id\":\"" . $keyId . "\",\"user_count\":0,\"ip\":\"" . $userIp . "\"}";
-        }
-    }
-
-    if ($primaryKey == NULL)
-        $primaryKey = "{\"expire\":\"\\/Date(" . $ms . ")\\/\",\"key\":\"" . $document_revision_id . "\",\"key_id\":\"" . $keyId . "\",\"user_count\":0}";
-
-    sendlog("GenerateValidateKey. primaryKey = " . $primaryKey, "logs/common.log");
-
-    return signature_Create($primaryKey, servConvGetSKey());
-}
-
 
 /**
 * Request for conversion to a service
@@ -339,9 +230,8 @@ function SendRequestToConvertService($document_uri, $from_extension, $to_extensi
     }
 
     $document_revision_id = GenerateRevisionId($document_revision_id);
-    $validateKey = GenerateValidateKey($document_revision_id, false);
 
-    $urlToConverter = generateUrlToConverter($document_uri, $from_extension, $to_extension, $title, $document_revision_id, $validateKey, $is_async);
+    $urlToConverter = generateUrlToConverter($document_uri, $from_extension, $to_extension, $title, $document_revision_id, $is_async);
 
     $response_xml_data;
     $countTry = 0;

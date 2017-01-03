@@ -1,6 +1,5 @@
 <?php
 
-require_once 'config.php';
 require_once 'EduRestClient.php';
 
 class OnlyOfficeConnector extends EduRestClient {
@@ -13,6 +12,7 @@ class OnlyOfficeConnector extends EduRestClient {
 
 		//if called from index / not from oo ajax script
 		if(isset($_REQUEST['node_id'])) {
+
 			$this -> getFile($_REQUEST['node_id'], $_REQUEST['tool_subtype']);
 			$this -> forwardToEditor($_REQUEST['node_id'], $_REQUEST['tool_subtype']);
 		}
@@ -70,14 +70,11 @@ class OnlyOfficeConnector extends EduRestClient {
 	
 	public function saveDocument($storagePath) {
 		try {
-			$storagePathParts = explode('.', $storagePath);
-			$nodeId = str_replace(STORAGEPATH.'/', '', $storagePathParts[0]);
-			$doctype = $storagePathParts[1];
-			
-			if(empty($nodeId)) {
-				error_log('No valid nodeId');
-				exit();
-			}
+			$storagePathParts = explode('/', $storagePath);
+			$doc = end($storagePathParts);
+			$docExpl = explode('.', $doc);
+			$nodeId = $docExpl[0];
+			$doctype = $docExpl[1];
 
 			switch($doctype) {
 				case 'docx':
@@ -100,7 +97,7 @@ class OnlyOfficeConnector extends EduRestClient {
 				break;				
 				default:
 					error_log('No mimetype specified');
-					exit();
+					throw new Exception();
 			}
 			
 			$this -> createContentNode($nodeId, $storagePath, $mimetype);

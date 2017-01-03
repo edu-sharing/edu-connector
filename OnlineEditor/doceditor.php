@@ -1,5 +1,31 @@
 <?php
+/*
+ *
+ * (c) Copyright Ascensio System Limited 2010-2016
+ *
+ * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
+ * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
+ * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
+ * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
+ * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
+ *
+ * You can contact Ascensio System SIA by email at sales@onlyoffice.com
+ *
+ * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
+ * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
+ *
+ * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
+ * relevant author attributions when distributing the software. If the display of the logo in its graphic 
+ * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
+ * in every copy of the program you distribute. 
+ * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ *
+*/
+?>
 
+<?php
     require_once( dirname(__FILE__) . '/config.php' );
     require_once( dirname(__FILE__) . '/common.php' );
     require_once( dirname(__FILE__) . '/functions.php' );
@@ -7,26 +33,7 @@
     $filename;
     $fileuri;
 
-    $externalUrl = $_GET["fileUrl"];
-    if (!empty($externalUrl))
-    {
-        $filename = $externalUrl;//DoUpload($externalUrl);// we do not need this, i guess    
-    }
-    else
-    {
-        $filename = $_GET["fileID"];
-    }
-    $type = $_GET["type"];
-
-    if (!empty($type))
-    {
-        $filename = tryGetDefaultByType($type);
-
-        $new_url = "doceditor.php?fileID=" . $filename;
-        header('Location: ' . $new_url, true);
-        exit;
-    }
-
+    $filename = $_GET["fileUrl"];
     $fileuri = FileUri($filename);
 
 
@@ -34,9 +41,6 @@
         return GenerateRevisionId(basename($fileUri));
     }
 
-    function getDocEditorValidateKey($fileUri) {
-        return GenerateValidateKey(getDocEditorKey($fileUri));
-    }
 
     function getCallbackUrl($fileName) {
         return rtrim(WEB_ROOT_URL, '/') . '/'
@@ -95,15 +99,10 @@
         var innerAlert = function (message) {
             if (console && console.log)
                 console.log(message);
-            ;
         };
 
         var onReady = function () {
             innerAlert("Document editor ready");
-        };
-
-        var onBack = function () {
-            location.href = "index.php";
         };
 
         var onDocumentStateChange = function (event) {
@@ -112,24 +111,12 @@
         };
 
         var onRequestEditRights = function () {
-            if (typeof DocsAPI.DocEditor.version == "function") {
-                var version = DocsAPI.DocEditor.version();
-                if ((parseFloat(version) || 0) >= 3) {
-                    location.href = location.href.replace(RegExp("action=view\&?", "i"), "");
-                    return;
-                }
-            }
-            docEditor.applyEditRights(true);
-        };
-
-        var onDocumentSave = function (event) {
-			//console.log(fileName);
-            SaveFileRequest(fileName, fileType, event.data);
+            location.href = location.href.replace(RegExp("action=view\&?", "i"), "");
         };
 
         var onError = function (event) {
-            if (console && console.log && event)
-                console.log(event.data);
+            if (event)
+                innerAlert(event.data);
         };
 
         var сonnectEditor = function () {
@@ -139,46 +126,57 @@
                     width: "100%",
                     height: "100%",
 
-                    type: "<?php echo ($_GET["action"] != "embedded" ?  "desktop" : "embedded") ?>",
+                    type: "desktop", // embedded
                     documentType: "<?php echo getDocumentType($filename) ?>",
                     document: {
                         title: fileName,
                         url: "<?php echo $fileuri ?>",
                         fileType: fileType,
-                        key: "<?php echo getDocEditorKey($fileuri) ?>",
-                        vkey: "<?php echo getDocEditorValidateKey($fileuri) ?>",
+                        key: "<?php echo getDocEditorKey(md5($filename . md5_file($fileuri))) ?>",
 
                         info: {
                             author: "Me",
-                            created: "<?php echo date('d.m.y') ?>"
+                            created: "<?php echo date('d.m.y') ?>",
                         },
 
                         permissions: {
                             edit: true,
-                            download: false
+                            download: true,
                         }
                     },
                     editorConfig: {
                         mode: 'edit',
+
                         lang: "en",
 
                         callbackUrl: "<?php echo getCallbackUrl($filename) ?>",
+
+                        user: {
+                            id: "",
+                            firstname: "John",
+                            lastname: "Smith",
+                        },
 
                         embedded: {
                             saveUrl: "<?php echo $fileuri ?>",
                             embedUrl: "<?php echo $fileuri ?>",
                             shareUrl: "<?php echo $fileuri ?>",
-                            toolbarDocked: "top"
-                        }
-                    },
+                            toolbarDocked: "top",
+                        },
 
+                        customization: {
+                            about: true,
+                            feedback: true,
+                          //  goback: {
+                             //   url: "<?php echo serverPath() ?>/index.php",
+                           // },
+                        },
+                    },
                     events: {
                         'onReady': onReady,
-                        'onBack': <?php echo ($_GET["action"] != "embeded" ?  "onBack" : "undefined") ?>,
                         'onDocumentStateChange': onDocumentStateChange,
                         'onRequestEditRights': onRequestEditRights,
-                        'onSave': onDocumentSave,
-                        'onError': onError
+                        'onError': onError,
                     }
                 });
         };
@@ -204,29 +202,6 @@
                 xmlhttp = new XMLHttpRequest();
             }
             return xmlhttp;
-        }
-
-        function SaveFileRequest(fileName, fileType, fileUri) {
-            var req = getXmlHttp();
-            if (console && console.log) {
-                req.onreadystatechange = function () {
-                    if (req.readyState == 4) {
-                        console.log(req.statusText);
-                        if (req.status == 200) {
-                            console.log(req.responseText);
-                        }
-                    }
-                };
-            }
-
-            var requestAddress = "webeditor-ajax.php"
-                + "?type=save"
-                + "&filename=" + encodeURIComponent(fileName)
-                + "&filetype=" + encodeURIComponent(fileType)
-                + "&fileuri=" + encodeURIComponent(fileUri);
-            req.open('get', requestAddress, true);
-
-            req.send(fileUri);
         }
 
     </script>

@@ -14,7 +14,7 @@ define('STORAGEURL', WWWURL . '/OnlineEditor/' . STORAGEFOLDER);
 // more in OnlineEditor/config.php
 
 /*onyx*/
-define('ONYXURL', 'http://example.com');
+define('ONYXURL', 'https://next.bps-system.de/qualityonyxeditor/directlogin');
 define('ONYXPUP', '-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAryR+PaTupk4AZnphw2Mb
 gBs1vYbZ3185mGzx95G7CpY1ZRiDVi+Cmb40tqLDv273Jx61UR0gse4e4QIJkrDQ

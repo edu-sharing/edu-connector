@@ -1,17 +1,41 @@
 <?php
 session_id($_GET['sess']);
 session_start();
+/*
+ *
+ * (c) Copyright Ascensio System Limited 2010-2016
+ *
+ * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
+ * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
+ * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
+ * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
+ * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
+ *
+ * You can contact Ascensio System SIA by email at sales@onlyoffice.com
+ *
+ * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
+ * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
+ *
+ * Pursuant to Section 7 � 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
+ * relevant author attributions when distributing the software. If the display of the logo in its graphic 
+ * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
+ * in every copy of the program you distribute. 
+ * Pursuant to Section 7 � 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ *
+*/
+?>
 
+<?php
 /**
  * WebEditor AJAX Process Execution.
  */
+require_once( dirname(__FILE__) . '/../config.php' );
 require_once( dirname(__FILE__) . '/config.php' );
 require_once( dirname(__FILE__) . '/ajax.php' );
 require_once( dirname(__FILE__) . '/common.php' );
 require_once( dirname(__FILE__) . '/functions.php' );
-
-
-require_once __DIR__ . '/../config.php';
 
 $_trackerStatus = array(
     0 => 'NotFound',
@@ -30,7 +54,7 @@ if (isset($_GET["type"]) && !empty($_GET["type"])) { //Checks if type value exis
 
     nocache_headers();
 
-    sendlog(serialize($_GET),"logs/webedior-ajax.log");
+    sendlog(serialize($_GET),"logs/webeditor-ajax.log");
 
     $type = $_GET["type"];
 
@@ -41,10 +65,6 @@ if (isset($_GET["type"]) && !empty($_GET["type"])) { //Checks if type value exis
             die (json_encode($response_array));
         case "convert":
             $response_array = convert();
-            $response_array['status'] = 'success';
-            die (json_encode($response_array));
-        case "save":
-            $response_array = save();
             $response_array['status'] = 'success';
             die (json_encode($response_array));
         case "track":
@@ -104,11 +124,12 @@ function upload() {
 }
 
 function track() {
-    sendlog("Track START", "logs/webedior-ajax.log");
-    sendlog("_GET params: " . serialize( $_GET ), "logs/webedior-ajax.log");
+    sendlog("Track START", "logs/webeditor-ajax.log");
+    sendlog("_GET params: " . serialize( $_GET ), "logs/webeditor-ajax.log");
 
     global $_trackerStatus;
     $data;
+    $result["error"] = 0;
 
     if (($body_stream = file_get_contents('php://input'))===FALSE){
         $result["error"] = "Bad Request";
@@ -122,18 +143,15 @@ function track() {
         return $result;
     }
 
-    sendlog("InputStream data: " . serialize($data), "logs/webedior-ajax.log");
+    sendlog("InputStream data: " . serialize($data), "logs/webeditor-ajax.log");
 
     $status = $_trackerStatus[$data["status"]];
 
     switch ($status){
-	
         case "MustSave":
         case "Corrupted":
 
-            //$userAddress = $_GET["userAddress"];
             $fileName = $_GET["fileName"];
-
             $storagePath = str_replace(WWWURL, DOCROOT, $fileName);
 
             $downloadUri = $data["url"];
@@ -143,25 +161,23 @@ function track() {
                 $saved = 0;
             } else {
                 file_put_contents($storagePath, $new_data, LOCK_EX);
-				
-				try {
+			try {
 						require_once( dirname(__FILE__) . '/../OnlyOfficeConnector.php' );
 						$onlyOfficeConnector = new OnlyOfficeConnector();
 						$onlyOfficeConnector -> saveDocument($storagePath);
 					} catch (Exception $e) {
 						error_log($e -> getMessage());
-						sendlog(serialize($e -> getMessage()), "logs/webedior-ajax.log");
+						sendlog(serialize($e -> getMessage()), "logs/webeditor-ajax.log");
 					}
-				
-				
+
             }
 
             $result["c"] = "saved";
             $result["status"] = $saved;
             break;
     }
-	
-    sendlog("track result: " . serialize($result), "logs/webedior-ajax.log");
+
+    sendlog("track result: " . serialize($result), "logs/webeditor-ajax.log");
     return $result;
 }
 
@@ -215,67 +231,6 @@ function convert() {
     }
 
     $result["filename"] = $fileName;
-    return $result;
-}
-
-function save() {
-    $contentType = "text/plain";
-    $downloadUri = $_GET["fileuri"];
-    $fileName = $_GET["filename"];
-
-
-    if (empty($downloadUri) || empty($fileName))
-    {
-        $result["error"] = 'Error request';
-        return $result;
-    }
-
-
-    $newType =  trim(pathinfo($downloadUri, PATHINFO_EXTENSION),'.');
-    $currentType = trim(!empty($_GET["filetype"]) ? $_GET["filetype"] : pathinfo($downloadUri, PATHINFO_EXTENSION),'.');
-
-    if (strtolower($newType) != strtolower($currentType))
-    {
-        $key = GenerateRevisionId($downloadUri);
-
-        $newFileUri;
-
-        try {
-            $percent = GetConvertedUri($downloadUri, $newType, $currentType, $key, FALSE, $newFileUri);
-            if ($percent != 100){
-                $result["error"] = "error: Can't convert file";
-                return $result;
-            }
-        }
-        catch (Exception $e) {
-            $result["error"] = "error: " . $e->getMessage();
-            return $result;
-        }
-				
-       
-        $downloadUri = $newFileUri;
-        $newType = $currentType;
-    }
-
-    
-
-    $path_parts = pathinfo($fileName);
-
-    $ext = $path_parts['extension'];
-    $name = $path_parts['basename'];
-    $baseNameWithoutExt = substr($name, 0, strlen($name) - strlen($ext) - 1);
-
-    $fileName = $baseNameWithoutExt . "." . $newType;
-
-
-    if (($data = file_get_contents(str_replace(" ","%20", $downloadUri)))===FALSE){
-        $result["error"] = 'Bad Request';
-        return $result;
-    } else {
-        file_put_contents(getStoragePath($fileName), $data, LOCK_EX);
-    }
-	
-    $result["success"] = 'success';
     return $result;
 }
 
