@@ -12,14 +12,20 @@ class OnlyOfficeConnector extends EduRestClient {
 
 		//if called from index / not from oo ajax script
 		if(isset($_REQUEST['node_id'])) {
-
+			$this -> setPerson();
 			$this -> getFile($_REQUEST['node_id'], $_REQUEST['tool_subtype']);
 			$this -> forwardToEditor($_REQUEST['node_id'], $_REQUEST['tool_subtype']);
 		}
     }
+
+	private function setPerson() {
+		$_SESSION['person'] = $this->getPerson();
+	}
 	
 	private function forwardToEditor($nodeId, $doctype) {
-		header('Location: ' . EDITORURL . '?sess='.session_id().'&fileUrl=' . urlencode(STORAGEURL . '/' . $nodeId . '.' . $doctype));
+		$_SESSION['fileUrl'] = STORAGEURL . '/' . $nodeId . '.' . $doctype;
+		setcookie('sess', session_id(), time() + 10);
+		header('Location: ' . EDITORURL);
 		exit();
 	}
 	
@@ -27,6 +33,8 @@ class OnlyOfficeConnector extends EduRestClient {
 
 	     try {       
 			$node = $this->getNode($nodeId);
+
+			$_SESSION['node'] = $node;
 
 			//node has no content -> create new document
 			if($node->node->size === NULL) {
