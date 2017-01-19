@@ -39,6 +39,7 @@ class EduRestClient {
             $_SESSION['oauth_refresh_token'] = $return->refresh_token;
             $_SESSION['oauth_expires_in'] = $return->expires_in;
             $_SESSION['oauth_token_received'] = time();
+			return true;
 		}
 		error_log('Error refreshing tokens - HTTP Status ' . $httpcode);
 		return false;

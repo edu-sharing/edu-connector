@@ -1,7 +1,7 @@
 <?php
 
 define('CONNECTOR_URL', 'http://138.201.17.74/eduConDev/');
-define('API_URL', 'http://appserver7.metaventis.com:7133/edu-sharing/rest/');
+define('API_URL', 'http://appserver7.metaventis.com:7138/edu-sharing/rest/');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -109,14 +109,14 @@ button {
 Repository: '.API_URL.'<br/>
 Action: '.CONNECTOR_URL.'
 <form target="_blank" method="POST" action="'.CONNECTOR_URL.'">
-<label>tool</label><input name="tool" value="edu-tool-onyx">
-<label>tool_subtype</label><input name="tool_subtype" value="">
-<label>node_id</label><input name="node_id" value="18cb0b60-7622-4f03-9ad7-a532ca564576">
-<label>oauth_access_token</label><input name="oauth_access_token" value="'.$this->oauth_access_token.'">
-<label>oauth_refresh_token</label><input name="oauth_refresh_token" value="'.$this->oauth_refresh_token.'">
-<label>oauth_expires_in</label><input name="oauth_expires_in" value="'.$this->oauth_expires_in.'">
-<label>api_url</label><input name="api_url_dummy" value="'.API_URL.'" disabled>
-<input type="hidden" name="api_url" value="'.API_URL.'">
+<label>tool</label><input name="tool" value="edu-tool-onlyoffice">
+<label>filetype</label><input name="filetype" value="docx">
+<label>node</label><input name="node" value="3492a30e-a5ae-480e-bc2b-ae76bc4d6368">
+<label>accessToken</label><input name="accessToken" value="'.$this->oauth_access_token.'">
+<label>refreshToken</label><input name="refreshToken" value="'.$this->oauth_refresh_token.'">
+<label>tokenExpires</label><input name="tokenExpires" value="'.$this->oauth_expires_in.'">
+<label>endpoint</label><input name="api_url_dummy" value="'.API_URL.'" disabled>
+<input type="hidden" name="endpoint" value="'.API_URL.'">
 <button type="submit">Go</button>
 </form>
 </body>

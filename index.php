@@ -18,14 +18,13 @@ class Connector {
         $this -> setupParameters();
         $this -> switchTool();
         $this -> runTool();
-        
     }
 
     private function setupParameters() {
-        $_SESSION['api_url'] = $_REQUEST['api_url'];
-        $_SESSION['oauth_access_token'] = $_REQUEST['oauth_access_token'];
-        $_SESSION['oauth_refresh_token'] = $_REQUEST['oauth_refresh_token'];
-        $_SESSION['oauth_expires_in'] = $_REQUEST['oauth_expires_in'];
+        $_SESSION['api_url'] = $_REQUEST['endpoint'];
+        $_SESSION['oauth_access_token'] = $_REQUEST['accessToken'];
+        $_SESSION['oauth_refresh_token'] = $_REQUEST['accessToken'];
+        $_SESSION['oauth_expires_in'] = $_REQUEST['tokenExpires'];
         $_SESSION['oauth_token_received'] = time();
     }
     

@@ -18,7 +18,7 @@ class OnyxConnector extends EduRestClient {
 		//todo check params
 
 		//if called from index / not from oo ajax script
-		if(isset($_REQUEST['node_id'])) {
+		if(isset($_REQUEST['node'])) {
 			$this->person = $this->getPerson();
 			$this -> forwardToEditor();
 		}
@@ -44,7 +44,7 @@ class OnyxConnector extends EduRestClient {
 		$hash-> mail = $this->person->profile->email;
 		$hash-> inst = $this->person->homeFolder->repo;
 		$hash-> username = $this->person->userName;
-		$hash-> nodeid = $_REQUEST['node_id'];
+		$hash-> nodeid = $_REQUEST['node'];
 		$hash-> accessToken = $_SESSION['oauth_access_token'];
         $hash-> refreshToken = $_SESSION['oauth_refresh_token'] ;
 		$hash = json_encode($hash);

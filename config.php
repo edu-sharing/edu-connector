@@ -7,7 +7,7 @@ define('DOCROOT', '/var/www/eduConDev');
 
 
 /*onlyoffice*/
-define('EDITORURL', WWWURL . '/OnlineEditor/doceditor.php');
+define('EDITORPATH', DOCROOT . '/OnlineEditor/doceditor.php');
 define('STORAGEFOLDER', 'storage');
 define('STORAGEPATH', DOCROOT . '/OnlineEditor/' . STORAGEFOLDER);
 define('STORAGEURL', WWWURL . '/OnlineEditor/' . STORAGEFOLDER);

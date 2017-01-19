@@ -1,6 +1,4 @@
 <?php
-session_start();
-
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2016
@@ -25,9 +23,6 @@ session_start();
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
-?>
-
-<?php
 
     require_once( dirname(__FILE__) . '/config.php' );
     require_once( dirname(__FILE__) . '/common.php' );
@@ -35,10 +30,8 @@ session_start();
 
     $filename;
     $fileuri;
-
     $filename = $_SESSION["fileUrl"];
     $fileuri = FileUri($filename);
-
 
     function getDocEditorKey($fileUri) {
         return GenerateRevisionId(basename($fileUri));
