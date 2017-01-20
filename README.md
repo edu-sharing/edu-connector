@@ -15,7 +15,9 @@ Etherpad
 (Nicht Pro User! Dazu Umbau, dass nicht URL des Pads in Ref gespeichert wird, sondern die des Konnektors, der dann immer die Pad-URL mit entspr. Parametern generiert)
 
 Moodle
-- ?
+- grundsätzliche Funktion zum Anlegen (mit Kategorieauswahl)
+- Speichern (nochumbau create node/ update metadata (s. etherpad))
+- anforderungen abwarten
 
 
 Zum Testen --> testclient.php
