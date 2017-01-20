@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 
 require_once 'config.php';
 //require_once 'MoodleConnector.php';
-//require_once 'EtherpadConnector.php';
+require_once 'EtherpadConnector.php';
 require_once 'OnlyOfficeConnector.php';
 require_once 'OnyxConnector.php';
 
@@ -35,7 +35,6 @@ class Connector {
                 $this -> tool = new MoodleConnector();
             break;
             case 'edu-tool-etherpad':
-                die('implement parameters');
                 $this -> tool = new EtherpadConnector();
             break;
 			case 'edu-tool-onlyoffice':
