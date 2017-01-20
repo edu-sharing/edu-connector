@@ -23,7 +23,7 @@ class Connector {
     private function setupParameters() {
         $_SESSION['api_url'] = $_REQUEST['endpoint'];
         $_SESSION['oauth_access_token'] = $_REQUEST['accessToken'];
-        $_SESSION['oauth_refresh_token'] = $_REQUEST['accessToken'];
+        $_SESSION['oauth_refresh_token'] = $_REQUEST['refreshToken'];
         $_SESSION['oauth_expires_in'] = $_REQUEST['tokenExpires'];
         $_SESSION['oauth_token_received'] = time();
     }

@@ -18,7 +18,7 @@ class OnyxConnector extends EduRestClient {
 		//if called from index / not from oo ajax script
 		if(isset($_REQUEST['node'])) {
 			$this->person = $this->getPerson();
-			$this -> forwardToEditor();
+			$this -> forwardToEditor();	
 		}
     }
 	
