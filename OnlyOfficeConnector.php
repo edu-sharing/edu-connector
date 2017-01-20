@@ -3,9 +3,7 @@
 require_once 'EduRestClient.php';
 
 class OnlyOfficeConnector extends EduRestClient {
-
-	const TOOL = 'edu-tool-onlyoffice';
-
+	
     public function __construct() {
 
 		//todo check params

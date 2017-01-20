@@ -1,7 +1,7 @@
 <?php
 
 define('CONNECTOR_URL', 'http://138.201.17.74/eduConDev/');
-define('API_URL', 'http://appserver7.metaventis.com:7138/edu-sharing/rest/');
+define('API_URL', 'http://appserver7.metaventis.com:7137/edu-sharing/rest/');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -109,7 +109,7 @@ button {
 Repository: '.API_URL.'<br/>
 Action: '.CONNECTOR_URL.'
 <form target="_blank" method="POST" action="'.CONNECTOR_URL.'">
-<label>tool</label><input name="tool" value="edu-tool-onlyoffice">
+<label>tool</label><input name="tool" value="ONLY_OFFICE">
 <label>filetype</label><input name="filetype" value="docx">
 <label>node</label><input name="node" value="3492a30e-a5ae-480e-bc2b-ae76bc4d6368">
 <label>accessToken</label><input name="accessToken" value="'.$this->oauth_access_token.'">

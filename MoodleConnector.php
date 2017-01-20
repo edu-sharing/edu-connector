@@ -4,9 +4,7 @@ require_once 'config.php';
 require_once 'EduRestClient.php';
 
 class MoodleConnector extends EduRestClient {
-	
-	const TOOL = 'edu-szenario-moodle';
-    
+	    
     private $nodeId = '';
     private $categoryId = '';
     private $title = '';

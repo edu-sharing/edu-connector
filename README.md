@@ -1,19 +1,21 @@
-Anlegen von
---
+OnlyOffice
+- Erstellen/Bearbeiten von Dokumenten
+- Content wird vom Repo gezogen und an den Document Server weiter gegeben
+- Nach Editende wird die aktuelle Version ins Repo geschoben
 
-- OnlyOffice Dokument
-- Etherpad / Moodle Anpassung an neue Parameter nötig
+Onyx
+- Weiterleitung auf Onyxeditor
+- Laden/Speichern des Objektes wird vom Onyxeditor erledigt
 
-(Referenz/Dokument wird im Repository abgespeichert)
+Etherpad
+- Neues Pad wird erstellt
+- URL generiert
+- In Repo Referenz gespeichert
+- Weiterleitung zum Pad
+(Nicht Pro User! Dazu Umbau, dass nicht URL des Pads in Ref gespeichert wird, sondern die des Konnektors, der dann immer die Pad-URL mit entspr. Parametern generiert)
 
-Bearbeiten von
---
-- OnlyOffice Dokument
-
-
-Open issues
---
-- Momemtan werden keine Versionen berücksichtigt, wenn ein Dokument vom Repo geladen wird (wahrscheinlich sollte auch immernur die letzte bearbeitet werden können)
+Moodle
+- ?
 
 
 Zum Testen --> testclient.php

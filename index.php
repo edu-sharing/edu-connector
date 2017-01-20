@@ -30,17 +30,17 @@ class Connector {
     
     private function switchTool() {
         switch($_REQUEST['tool']) {
-            case 'edu-szenario-moodle':
+            case 'MOODLE':
                 die('implement parameters');
                 $this -> tool = new MoodleConnector();
             break;
-            case 'edu-tool-etherpad':
+            case 'ETHERPAD':
                 $this -> tool = new EtherpadConnector();
             break;
-			case 'edu-tool-onlyoffice':
+			case 'ONLY_OFFICE':
 				$this -> tool = new OnlyOfficeConnector();
             break;
-            case 'edu-tool-onyx':
+            case 'ONYX':
                 $this -> tool = new OnyxConnector();
             break;
             default:

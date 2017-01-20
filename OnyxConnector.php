@@ -9,8 +9,6 @@ ini_set('display_errors', 1);
 
 class OnyxConnector extends EduRestClient {
 	
-	const TOOL = 'edu-tool-onyx';
-
 	private $person;
     
     public function __construct() {
