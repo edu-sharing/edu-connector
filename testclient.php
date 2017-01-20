@@ -1,7 +1,7 @@
 <?php
 
 define('CONNECTOR_URL', 'http://138.201.17.74/eduConDev/');
-define('API_URL', 'http://appserver7.metaventis.com:7137/edu-sharing/rest/');
+define('API_URL', 'http://appserver7.metaventis.com:7138/edu-sharing/rest/');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 

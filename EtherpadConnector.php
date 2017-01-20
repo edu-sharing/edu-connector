@@ -12,15 +12,28 @@ class EtherpadConnector extends EduRestClient {
 
 		//if(empty($_GET['title']))
 		//	$this -> showDialog();
-		
-		$courseId = $resource_link_id = uniqid('etherpad_');
-		$userId = $fname = 'dummyuser';
+
+
+		$node = $this->getNode($_REQUEST['node']);
+		$person = $this->getPerson();
+		$courseId = $resource_link_id = $_REQUEST['node'];
+		$userId = $fname = $person->userName;
 		$params = '?fname=' . $fname . '&course_id=' . $courseId . '&resource_link_id=' . $resource_link_id . '&user_id=' . $userId;		
 		$padUrl = WWWROOT . '/etherpad/' . $params;
-		$this->updateReferenceUrl($_REQUEST['node'], $padUrl);
+
+		//if(!empty($node->node->properties->{'ccm:wwwurl'}[0])) {
+			$this->updateReferenceUrl($_REQUEST['node'], $padUrl);
+		//}
+
+
 		header('HTTP/1.1 303 See other');
-		header('Location: ' . $padUrl);
-		exit(0);		
+		header('Location: ' . $padUrl);	
+		exit(0);
+
+
+		//var_dump($person->userName);die();
+
+
 	}
 
 	

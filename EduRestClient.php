@@ -155,7 +155,7 @@ class EduRestClient {
 */
 
 	public function getNode($nodeId) {
-		$ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/'.$nodeId.'/metadata');
+		$ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/'.$nodeId.'/metadata?propertyFilter=-all-');
 		$headers = array('Authorization: Bearer '. $this->getAccessToken(), 'Accept: application/json');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);

@@ -12,7 +12,7 @@ Etherpad
 - URL generiert
 - In Repo Referenz gespeichert
 - Weiterleitung zum Pad
-(Nicht Pro User! Dazu Umbau, dass nicht URL des Pads in Ref gespeichert wird, sondern die des Konnektors, der dann immer die Pad-URL mit entspr. Parametern generiert)
+- Achtung funktioniert nur mit einem dummyuser, da in wwwurl der nutzername drin steckt -> lösung schwierig wenn url z.b. auch in lms steckt (da nutzer darin statisch)
 
 Moodle
 - grundsätzliche Funktion zum Anlegen (mit Kategorieauswahl)
