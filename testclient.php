@@ -107,7 +107,8 @@ button {
 </head>
 <body>
 Repository: '.API_URL.'<br/>
-Action: '.CONNECTOR_URL.'
+Action: '.CONNECTOR_URL.'<br/>
+Tipp: Die voreingestellten Werte für tool/filetype/node funktionieren wahrscheinlich nicht :)
 <form target="_blank" method="POST" action="'.CONNECTOR_URL.'">
 <label>tool</label><input name="tool" value="ONLY_OFFICE">
 <label>filetype</label><input name="filetype" value="docx">

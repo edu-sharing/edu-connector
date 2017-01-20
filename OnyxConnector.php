@@ -45,6 +45,7 @@ class OnyxConnector extends EduRestClient {
 		$hash-> nodeid = $_REQUEST['node'];
 		$hash-> accessToken = $_SESSION['oauth_access_token'];
         $hash-> refreshToken = $_SESSION['oauth_refresh_token'] ;
+
 		$hash = json_encode($hash);
 		$hash = $this->encrypt($hash);
 		$hash = base64_encode($hash);
