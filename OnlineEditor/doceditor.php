@@ -84,7 +84,7 @@
         }
     </style>
 
-    <script type="text/javascript" src="<?php echo $GLOBALS["DOC_SERV_API_URL"] ?>"></script>
+    <script type="text/javascript" src="<?php echo $GLOBALS["DOC_SERV_API_URL"] ."?balancerkey=". getDocEditorKey(md5($filename . md5_file($fileuri))) ?>"></script>
 
     <script type="text/javascript">
 

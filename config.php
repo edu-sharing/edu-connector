@@ -15,7 +15,11 @@ define('STORAGEURL', WWWURL . '/OnlineEditor/' . STORAGEFOLDER);
 
 /*onyx*/
 define('ONYXURL', 'https://next.bps-system.de/qualityonyxeditor/directlogin');
-define('REPOSITORY', 'a243d024252-2a35-b45e-923569234659');
+#define('REPOSITORY', 'a243d024252-2a35-b45e-923569234659');
+
+define('REPOSITORY', 'a243d024252-2a35-b45e-923569234660');
+
+
 define('ONYXPUP', '-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAryR+PaTupk4AZnphw2Mb
 gBs1vYbZ3185mGzx95G7CpY1ZRiDVi+Cmb40tqLDv273Jx61UR0gse4e4QIJkrDQ

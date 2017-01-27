@@ -1,7 +1,7 @@
 <?php
 
 define('CONNECTOR_URL', 'http://138.201.17.74/eduConDev/');
-define('API_URL', 'http://appserver7.metaventis.com:7138/edu-sharing/rest/');
+define('API_URL', 'http://appserver7.metaventis.com:7137/edu-sharing/rest/');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -112,7 +112,7 @@ Tipp: Die voreingestellten Werte für tool/filetype/node funktionieren wahrschei
 <form target="_blank" method="POST" action="'.CONNECTOR_URL.'">
 <label>tool</label><input name="tool" value="ONLY_OFFICE">
 <label>filetype</label><input name="filetype" value="docx">
-<label>node</label><input name="node" value="3492a30e-a5ae-480e-bc2b-ae76bc4d6368">
+<label>node</label><input name="node" value="42a4dc35-a33f-49bb-b1e0-e9b1644f87f4">
 <label>accessToken</label><input name="accessToken" value="'.$this->oauth_access_token.'">
 <label>refreshToken</label><input name="refreshToken" value="'.$this->oauth_refresh_token.'">
 <label>tokenExpires</label><input name="tokenExpires" value="'.$this->oauth_expires_in.'">
