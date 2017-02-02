@@ -33,6 +33,8 @@
     $filename = $_SESSION["fileUrl"];
     $fileuri = FileUri($filename);
 
+    setcookie('EDUCONNECTOR', getDocEditorKey(md5($filename . md5_file($fileuri))), 0, '/', 'metaventis.com');
+
     function getDocEditorKey($fileUri) {
         return GenerateRevisionId(basename($fileUri));
     }
