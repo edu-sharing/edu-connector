@@ -30,6 +30,12 @@ class OnlyOfficeConnector extends EduRestClient {
 
 	     try {
 			$node = $this->getNode($nodeId);
+
+			if(!in_array('Write', $node->node->access)) {
+				echo 'No writing permission for this node.';
+				exit();
+			}
+
 			$_SESSION['node'] = $node;
 
 			//node has no content -> create new document
