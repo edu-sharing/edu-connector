@@ -13,11 +13,29 @@ $GLOBALS['DOC_SERV_CONVERT'] = array(".doc",".odt",".xls",".ods",".ppt",".pps","
 
 $GLOBALS['DOC_SERV_TIMEOUT'] = "120000";
 
+
+
+//ein document server
 $GLOBALS['DOC_SERV_STORAGE_URL'] = "http://onlyoffice.metaventis.com/FileUploader.ashx";
 $GLOBALS['DOC_SERV_CONVERTER_URL'] = "http://onlyoffice.metaventis.com/ConvertService.ashx";
 $GLOBALS['DOC_SERV_API_URL'] = "http://onlyoffice.metaventis.com/web-apps/apps/api/documents/api.js";
-
 $GLOBALS['DOC_SERV_PRELOADER_URL'] = "http://onlyoffice.metaventis.com/web-apps/apps/api/documents/cache-scripts.html";
+
+
+
+/*
+//document server cluster (in entwicklung)
+$GLOBALS['DOC_SERV_STORAGE_URL'] = "https://lbonlyoffice.metaventis.com/FileUploader.ashx";
+$GLOBALS['DOC_SERV_CONVERTER_URL'] = "https://lbonlyoffice.metaventis.com/FileUploader.ashx";
+$GLOBALS['DOC_SERV_API_URL'] = "https://lbonlyoffice.metaventis.com/web-apps/apps/api/documents/api.js";
+$GLOBALS['DOC_SERV_PRELOADER_URL'] = "https://lbonlyoffice.metaventis.com/web-apps/apps/api/documents/cache-scripts.html";
+
+
+$GLOBALS['DOC_SERV_STORAGE_URL'] = "https://appserver7.metaventis.com/FileUploader.ashx";
+$GLOBALS['DOC_SERV_CONVERTER_URL'] = "https://appserver7.metaventis.com/FileUploader.ashx";
+$GLOBALS['DOC_SERV_API_URL'] = "https://appserver7.metaventis.com/web-apps/apps/api/documents/api.js";
+$GLOBALS['DOC_SERV_PRELOADER_URL'] = "https://appserver7.metaventis.com/web-apps/apps/api/documents/cache-scripts.html";
+*/
 
 
 $GLOBALS['ExtsSpreadsheet'] = array(".xls", ".xlsx",

@@ -33,7 +33,7 @@
     $filename = $_SESSION["fileUrl"];
     $fileuri = FileUri($filename);
 
-    setcookie('EDUCONNECTOR', getDocEditorKey(md5($filename . md5_file($fileuri))), 0, '/', 'metaventis.com');
+    setcookie('EDUCONNECTOR', getDocEditorKey(md5($filename . md5_file($fileuri))), 0, '/', '.metaventis.com');
 
     function getDocEditorKey($fileUri) {
         return GenerateRevisionId(basename($fileUri));
@@ -86,7 +86,7 @@
         }
     </style>
 
-    <script type="text/javascript" src="<?php echo $GLOBALS["DOC_SERV_API_URL"] ."?balancerkey=". getDocEditorKey(md5($filename . md5_file($fileuri))) ?>"></script>
+    <script type="text/javascript" src="<?php echo $GLOBALS["DOC_SERV_API_URL"] ?>"></script>
 
     <script type="text/javascript">
 
