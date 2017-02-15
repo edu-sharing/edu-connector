@@ -116,6 +116,10 @@
                 innerAlert(event.data);
         };
 
+        api_url = "<?php echo $_SESSION['api_url'] ?>";
+        oauth_access_token = "<?php echo $_SESSION['oauth_access_token'] ?>";
+        oauth_refresh_token = "<?php echo $_SESSION['oauth_refresh_token'] ?>";
+
         var сonnectEditor = function () {
 
             docEditor = new DocsAPI.DocEditor("iframeEditor",
@@ -166,6 +170,14 @@
                              //   url: "<?php echo serverPath() ?>/index.php",
                            // },
                         },
+                        plugins: {
+                            pluginsData: [
+                                //"templates/config.json",
+                               // "edu-sharing/config.json",
+                                "edu-sharing-search/config.json"
+                            ],
+                            url: "http://onlyoffice.metaventis.com/docEditorPlugins/"
+                        }
                     },
                     events: {
                         'onReady': onReady,
