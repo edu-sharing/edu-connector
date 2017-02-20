@@ -9,6 +9,7 @@ require_once 'config.php';
 require_once 'EtherpadConnector.php';
 require_once 'OnlyOfficeConnector.php';
 require_once 'OnyxConnector.php';
+require_once 'LTI.php';
 
 class Connector {
        
@@ -42,6 +43,9 @@ class Connector {
             break;
             case 'ONYX':
                 $this -> tool = new OnyxConnector();
+            break;
+            case 'LTI':
+                $this -> tool = new LTI();
             break;
             default:
                 echo 'Unknown tool';

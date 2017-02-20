@@ -14,7 +14,7 @@ define('STORAGEURL', WWWURL . '/OnlineEditor/' . STORAGEFOLDER);
 // more in OnlineEditor/config.php
 
 /*onyx*/
-define('ONYXURL', 'http://appserver7.metaventis.com:7300/');
+define('ONYXURL', 'http://appserver7.metaventis.com:7300/onyxeditor/directlogin');
 define('REPOSITORY', 'a243d024252-2a35-b45e-923569234660');
 define('ONYXPUP', '-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAryR+PaTupk4AZnphw2Mb
