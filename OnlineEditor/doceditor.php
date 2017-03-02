@@ -169,6 +169,7 @@
                         plugins: {
                             pluginsData: [
                                 "edu-sharing/config.json?accessToken=<?php echo $_SESSION['oauth_access_token'] ?>"
+                                //"edu-sharing/config.json"
                             ],
                             url: "http://onlyoffice.metaventis.com/docEditorPlugins/"
                         }
