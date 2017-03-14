@@ -14,9 +14,9 @@ class OnyxConnector extends EduRestClient {
 			$this->person = $this->getPerson();
 			$this -> forwardToEditor();	
 		} else {
-			echo 'Missing parameter "node"';
-			exit();
-		}
+		    echo 'Missing parameter "node"';
+		    exit();
+        }
     }
 	
 	private function forwardToEditor() {
