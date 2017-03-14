@@ -4,21 +4,18 @@ require_once 'config.php';
 require_once 'EduRestClient.php';
 
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 class OnyxConnector extends EduRestClient {
 	
 	private $person;
     
     public function __construct() {
 
-		//todo check params
-
-		//if called from index / not from oo ajax script
 		if(isset($_REQUEST['node'])) {
 			$this->person = $this->getPerson();
 			$this -> forwardToEditor();	
+		} else {
+			echo 'Missing parameter "node"';
+			exit();
 		}
     }
 	
@@ -30,9 +27,13 @@ class OnyxConnector extends EduRestClient {
 	private function encrypt($data) {
 		$publicKey = openssl_pkey_get_public(ONYXPUP);
 		$encrypted = '';
-		openssl_public_encrypt($data, $encrypted, $publicKey);
+		openssl_seal($data, $sealed, $ekeys, array($publicKey));
 		openssl_free_key($publicKey);
-		return $encrypted;
+		if(empty($sealed)) {
+			echo 'Encryption error';
+			exit();
+		}
+		return $sealed . '::' . $ekeys[0];
 	}
 
 	private function getHash() {
@@ -53,9 +54,9 @@ class OnyxConnector extends EduRestClient {
 	}
 
 
-private function getRepoId() {
-	return REPOSITORY;
-}
+	private function getRepoId() {
+		return REPOSITORY;
+	}
 
 	private function run() {
 
