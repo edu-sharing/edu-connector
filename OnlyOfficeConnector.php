@@ -31,10 +31,11 @@ class OnlyOfficeConnector extends EduRestClient {
 	     try {
 			$node = $this->getNode($nodeId);
 
-			if(!in_array('Write', $node->node->access)) {
-				echo 'No writing permission for this node.';
-				exit();
-			}
+			if(in_array('Write', $node->node->access)) {
+                $_SESSION['edit'] = true;
+			} else {
+                $_SESSION['edit'] = false;
+            }
 
 			$_SESSION['node'] = $node;
 

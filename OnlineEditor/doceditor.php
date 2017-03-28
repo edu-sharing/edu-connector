@@ -137,7 +137,7 @@
                         },
 
                         permissions: {
-                            edit: true,
+                            edit: <?php echo $_SESSION['edit'] ?>,
                             download: false,
                         }
                     },
