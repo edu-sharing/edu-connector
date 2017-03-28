@@ -11,7 +11,8 @@ define('EDITORPATH', DOCROOT . '/OnlineEditor/doceditor.php');
 define('STORAGEFOLDER', 'storage');
 define('STORAGEPATH', DOCROOT . '/OnlineEditor/' . STORAGEFOLDER);
 define('STORAGEURL', WWWURL . '/OnlineEditor/' . STORAGEFOLDER);
-// more in OnlineEditor/config.php
+define('DOCUMENT_SERVER', 'http://onlyoffice.metaventis.com');
+define('PLUGIN_URL', 'http://onlyoffice.metaventis.com/docEditorPlugins');
 
 /*onyx*/
 define('ONYXURL', 'http://appserver7.metaventis.com:7300/onyxeditor/directlogin');

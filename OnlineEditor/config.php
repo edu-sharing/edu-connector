@@ -1,6 +1,8 @@
 <?php
 
-define('WEB_ROOT_URL', 'http://appserver9.metaventis.com/eduConDev/OnlineEditor');
+require_once __DIR__ . '/../config.php';
+
+define('WEB_ROOT_URL', WWWURL . '/OnlineEditor');
 
 $GLOBALS['FILE_SIZE_MAX'] = 5242880;
 $GLOBALS['STORAGE_PATH'] = "storage";
@@ -16,10 +18,10 @@ $GLOBALS['DOC_SERV_TIMEOUT'] = "120000";
 
 
 //ein document server
-$GLOBALS['DOC_SERV_STORAGE_URL'] = "http://onlyoffice.metaventis.com/FileUploader.ashx";
-$GLOBALS['DOC_SERV_CONVERTER_URL'] = "http://onlyoffice.metaventis.com/ConvertService.ashx";
-$GLOBALS['DOC_SERV_API_URL'] = "http://onlyoffice.metaventis.com/web-apps/apps/api/documents/api.js";
-$GLOBALS['DOC_SERV_PRELOADER_URL'] = "http://onlyoffice.metaventis.com/web-apps/apps/api/documents/cache-scripts.html";
+$GLOBALS['DOC_SERV_STORAGE_URL'] = DOCUMENT_SERVER . "/FileUploader.ashx";
+$GLOBALS['DOC_SERV_CONVERTER_URL'] = DOCUMENT_SERVER . "/ConvertService.ashx";
+$GLOBALS['DOC_SERV_API_URL'] = DOCUMENT_SERVER . "/web-apps/apps/api/documents/api.js";
+$GLOBALS['DOC_SERV_PRELOADER_URL'] = DOCUMENT_SERVER . "/web-apps/apps/api/documents/cache-scripts.html";
 
 
 

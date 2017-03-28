@@ -137,7 +137,7 @@
                         },
 
                         permissions: {
-                            edit: <?php echo $_SESSION['edit'] ?>,
+                            edit: <?php echo $_SESSION['edit'] ? 'true' : 'false'; ?>,
                             download: false,
                         }
                     },
@@ -171,7 +171,7 @@
                                 "edu-sharing/config.json?accessToken=<?php echo $_SESSION['oauth_access_token'] ?>"
                                 //"edu-sharing/config.json"
                             ],
-                            url: "http://onlyoffice.metaventis.com/docEditorPlugins/"
+                            url: "<?php echo PLUGIN_URL ?>/"
                         }
                     },
                     events: {
