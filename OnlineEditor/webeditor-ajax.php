@@ -151,12 +151,11 @@ function track() {
         case "MustSave":
         case "Corrupted":
 
-            $fileName = $_GET["fileName"];
             $downloadUri = $data["url"];
+            $nodeId = $_GET['nodeId'];
+            $fileType = $_GET['fileType'];
             $saved = 1;
-            $tmpPath = parse_url($fileName, PHP_URL_PATH);
-            $tmpParts = pathinfo($tmpPath);
-            $tmpSavePath = STORAGEPATH . '/' . $tmpParts['filename'] .'_'. uniqid() . '.' .  $tmpParts['extension'];
+            $tmpSavePath = STORAGEPATH . '/' . $nodeId .'_'. uniqid() . '.' .  $fileType;
 
             if (($new_data = file_get_contents($downloadUri))===FALSE){
                 $saved = 0;
@@ -165,11 +164,11 @@ function track() {
 			    try {
                     require_once( dirname(__FILE__) . '/../OnlyOfficeConnector.php' );
                     $onlyOfficeConnector = new OnlyOfficeConnector();
-                    if($onlyOfficeConnector -> createContentNode($tmpParts['filename'], $tmpSavePath, $onlyOfficeConnector -> getMimetype($tmpParts['extension'])))
+                    if($onlyOfficeConnector -> createContentNode($nodeId, $tmpSavePath, $onlyOfficeConnector -> getMimetype($fileType)))
                         unlink($tmpSavePath);
                 } catch (Exception $e) {
                     error_log($e -> getMessage());
-                    sendlog(serialize($e -> getMessage()), "logs/webeditor-ajax.log");
+                    sendlog('ERROR saving file - ' . serialize($e -> getMessage()), "logs/webeditor-ajax.log");
                 }
             }
 

@@ -43,9 +43,9 @@
     function getCallbackUrl($filename) {
         return rtrim(WEB_ROOT_URL, '/') . '/'
                     . "webeditor-ajax.php"
-                    . "?type=track&userAddress=" . getClientIp()
-                    . "&fileName=" . urlencode($filename)
-                    . "&sess=" . session_id();
+                    . "?sess=" . session_id()
+                    . "&fileType=" . $_SESSION['fileType']
+                    . "&nodeId=" . $_SESSION['node']->node->ref->id;
     }
 
 ?>
@@ -153,9 +153,9 @@
                         },
 
                         embedded: {
-                            saveUrl: "<?php echo $fileuri ?>",
-                            embedUrl: "<?php echo $fileuri ?>",
-                            shareUrl: "<?php echo $fileuri ?>",
+                            saveUrl: "",
+                            embedUrl: "",
+                            shareUrl: "",
                             toolbarDocked: "top",
                         },
 
