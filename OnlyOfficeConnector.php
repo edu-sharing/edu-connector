@@ -33,19 +33,21 @@ class OnlyOfficeConnector extends EduRestClient {
 		exit();
 	}
 
-	 private function setNode() {
-	     try {
-			$node = $this->getNode($this->nodeId);
-			if(in_array('Write', $node->node->access)) {
+    private function setNode() {
+        try {
+            $node = $this->getNode($this->nodeId);
+            if(in_array('Write', $node->node->access)) {
                 $_SESSION['edit'] = true;
-			} else {
+            } else {
                 $_SESSION['edit'] = false;
             }
-			$_SESSION['node'] = $node;
 
-			if($node->node->size === NULL) {
+            if($node->node->size === NULL) {
                 $this -> createContentNode($this->nodeId, STORAGEPATH . '/templates/init.' . $this->fileType, $this -> getMimetype($this->fileType));
-			}
+                $node = $this->getNode($this->nodeId);
+            }
+
+            $_SESSION['node'] = $node;
         } catch (Exception $e) {
             error_log($e);
             return false;
