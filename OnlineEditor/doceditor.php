@@ -42,8 +42,8 @@
 
     function getCallbackUrl($filename) {
         return rtrim(WEB_ROOT_URL, '/') . '/'
-                    . "webeditor-ajax.php"
-                    . "?sess=" . session_id()
+                    . "webeditor-ajax.php?type=track"
+                    . "&sess=" . session_id()
                     . "&fileType=" . $_SESSION['fileType']
                     . "&nodeId=" . $_SESSION['node']->node->ref->id;
     }
