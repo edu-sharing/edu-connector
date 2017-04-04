@@ -152,24 +152,25 @@ function track() {
         case "Corrupted":
 
             $fileName = $_GET["fileName"];
-            $storagePath = str_replace(WWWURL, DOCROOT, $fileName);
-
             $downloadUri = $data["url"];
             $saved = 1;
+            $tmpPath = parse_url($fileName, PHP_URL_PATH);
+            $tmpParts = pathinfo($tmpPath);
+            $tmpSavePath = STORAGEPATH . '/' . $tmpParts['filename'] .'_'. uniqid() . '.' .  $tmpParts['extension'];
 
             if (($new_data = file_get_contents($downloadUri))===FALSE){
                 $saved = 0;
             } else {
-                file_put_contents($storagePath, $new_data, LOCK_EX);
-			try {
-						require_once( dirname(__FILE__) . '/../OnlyOfficeConnector.php' );
-						$onlyOfficeConnector = new OnlyOfficeConnector();
-						$onlyOfficeConnector -> saveDocument($storagePath);
-					} catch (Exception $e) {
-						error_log($e -> getMessage());
-						sendlog(serialize($e -> getMessage()), "logs/webeditor-ajax.log");
-					}
-
+                file_put_contents($tmpSavePath, $new_data, LOCK_EX);
+			    try {
+                    require_once( dirname(__FILE__) . '/../OnlyOfficeConnector.php' );
+                    $onlyOfficeConnector = new OnlyOfficeConnector();
+                    if($onlyOfficeConnector -> createContentNode($tmpParts['filename'], $tmpSavePath, $onlyOfficeConnector -> getMimetype($tmpParts['extension'])))
+                        unlink($tmpSavePath);
+                } catch (Exception $e) {
+                    error_log($e -> getMessage());
+                    sendlog(serialize($e -> getMessage()), "logs/webeditor-ajax.log");
+                }
             }
 
             $result["c"] = "saved";

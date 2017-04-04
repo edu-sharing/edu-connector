@@ -40,11 +40,11 @@
     }
 
 
-    function getCallbackUrl($fileName) {
+    function getCallbackUrl($filename) {
         return rtrim(WEB_ROOT_URL, '/') . '/'
                     . "webeditor-ajax.php"
                     . "?type=track&userAddress=" . getClientIp()
-                    . "&fileName=" . urlencode($fileName)
+                    . "&fileName=" . urlencode($filename)
                     . "&sess=" . session_id();
     }
 
@@ -55,7 +55,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="icon" href="./favicon.ico" type="image/x-icon" />
-    <title>ONLYOFFICE™</title>
+    <title>edu-sharing ONLYOFFICE</title>
 
     <style>
         html {
@@ -91,7 +91,7 @@
     <script type="text/javascript">
 
         var docEditor;
-        var fileType = "<?php echo strtolower(pathinfo($filename, PATHINFO_EXTENSION)) ?>";
+        var fileType = "<?php echo $_SESSION['fileType'] ?>";
 
         var innerAlert = function (message) {
             if (console && console.log)

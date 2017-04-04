@@ -3,16 +3,22 @@
 require_once 'EduRestClient.php';
 
 class OnlyOfficeConnector extends EduRestClient {
-	
+
+    private $nodeId = '';
+    private $fileType = '';
+
     public function __construct() {
 
 		//todo check params
 
+        $this->nodeId = $_REQUEST['node'];
+        $this->fileType = $_REQUEST['filetype'];
+
 		//if called from index / not from oo ajax script
-		if(isset($_REQUEST['node'])) {
+		if(!empty($this->nodeId)) {
 			$this -> setPerson();
-			$this -> getFile($_REQUEST['node'], $_REQUEST['filetype']);
-			$this -> forwardToEditor($_REQUEST['node'], $_REQUEST['filetype']);
+			$this -> setNode();
+			$this -> forwardToEditor();
 		}
     }
 
@@ -20,30 +26,25 @@ class OnlyOfficeConnector extends EduRestClient {
 		$_SESSION['person'] = $this->getPerson();
 	}
 
-	private function forwardToEditor($nodeId, $doctype) {
-		$_SESSION['fileUrl'] = STORAGEURL . '/' . $nodeId . '.' . $doctype;
+	private function forwardToEditor() {
+        $_SESSION['fileUrl'] = $_SESSION['node']->node->downloadUrl . '&accessToken=' . $_REQUEST['accessToken'];
+        $_SESSION['fileType'] = $this->fileType;
 		include(EDITORPATH);
 		exit();
 	}
 
-	 private function getFile($nodeId, $doctype) {
-
+	 private function setNode() {
 	     try {
-			$node = $this->getNode($nodeId);
-
+			$node = $this->getNode($this->nodeId);
 			if(in_array('Write', $node->node->access)) {
                 $_SESSION['edit'] = true;
 			} else {
                 $_SESSION['edit'] = false;
             }
-
 			$_SESSION['node'] = $node;
 
-			//node has no content -> create new document
 			if($node->node->size === NULL) {
-				$this -> createEmptyDocument($nodeId, $doctype);
-			} else {
-				$this -> fetchFileFromRepository($node, $nodeId, $doctype);
+                $this -> createContentNode($this->nodeId, STORAGEPATH . '/templates/init.' . $this->fileType, $this -> getMimetype($this->fileType));
 			}
         } catch (Exception $e) {
             error_log($e);
@@ -51,75 +52,32 @@ class OnlyOfficeConnector extends EduRestClient {
         }
     }
 
-	private function fetchFileFromRepository($node, $nodeId, $doctype) {
-		$contentUrl = $node->node->downloadUrl . '&accessToken=' . $_REQUEST['accessToken'];
-
-		$handle = fopen($contentUrl, "rb");
-		if($handle === false) {
-			error_log('Error opening ' . $contentUrl);
-		}
-		$content = stream_get_contents($handle);
-		fclose($handle);
-		if($content === false) {
-			error_log('Error fetching content.');
-			echo 'Could not fetch content';
-			exit();
-		}
-		$handle = fopen(STORAGEPATH . '/' . $nodeId . '.' . $doctype , 'w');
-		fwrite($handle, $content);
-		fclose($handle);
-	}
-
-	private function createEmptyDocument($nodeId, $doctype) {
-		try {
-			copy(STORAGEPATH . '/templates/init.' . $doctype, STORAGEPATH . '/' . $nodeId . '.' . $doctype);
-		} catch(Exception $e) {
-			error_log($e);
-			return false;
-		}
-	}
-
-	public function saveDocument($storagePath) {
-		try {
-			$storagePathParts = explode('/', $storagePath);
-			$doc = end($storagePathParts);
-			$docExpl = explode('.', $doc);
-			$nodeId = $docExpl[0];
-			$doctype = $docExpl[1];
-
-			switch($doctype) {
-				case 'docx':
-					$mimetype = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-				break;
-				case 'xlsx':
-					$mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-				break;
-				case 'pptx':
-					$mimetype = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
-				break;
-				case 'odt':
-					$mimetype = 'application/vnd.oasis.opendocument.text';
-				break;
-				case 'ods':
-					$mimetype = 'application/vnd.oasis.opendocument.spreadsheet';
-				break;
-				case 'odp':
-					$mimetype = 'application/vnd.oasis.opendocument.presentation';
-				break;
-				default:
-					error_log('No mimetype specified');
-					throw new Exception();
-			}
-
-			$this -> createContentNode($nodeId, $storagePath, $mimetype);
-
-			unlink($storagePath);
-
-		} catch(Exception $e) {
-			error_log('Error saving document ' . $nodeId);
-		}
-
-	}
+	public function getMimetype($doctype) {
+        switch($doctype) {
+            case 'docx':
+                $mimetype = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+                break;
+            case 'xlsx':
+                $mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                break;
+            case 'pptx':
+                $mimetype = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+                break;
+            case 'odt':
+                $mimetype = 'application/vnd.oasis.opendocument.text';
+                break;
+            case 'ods':
+                $mimetype = 'application/vnd.oasis.opendocument.spreadsheet';
+                break;
+            case 'odp':
+                $mimetype = 'application/vnd.oasis.opendocument.presentation';
+                break;
+            default:
+                error_log('No mimetype specified');
+                throw new Exception();
+        }
+        return $mimetype;
+    }
 
     public function run() {
         $this -> showDialog();

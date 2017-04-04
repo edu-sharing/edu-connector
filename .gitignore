@@ -4,3 +4,5 @@
 .idea/workspace.xml
 config.php
 OnlineEditor/config.php
+OnlineEditor/storage
+!OnlineEditor/storage/templates
