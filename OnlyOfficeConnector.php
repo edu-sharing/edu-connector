@@ -29,7 +29,7 @@ class OnlyOfficeConnector extends EduRestClient {
 	private function forwardToEditor() {
         $_SESSION['fileUrl'] = $_SESSION['node']->node->downloadUrl . '&accessToken=' . $_REQUEST['accessToken'];
         $_SESSION['fileType'] = $this->fileType;
-		include(EDITORPATH);
+        header('Location: ' . WWWURL . EDITORPATH);
 		exit();
 	}
 

@@ -1,4 +1,5 @@
 <?php
+session_start();
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2016
@@ -28,15 +29,13 @@
     require_once( dirname(__FILE__) . '/common.php' );
     require_once( dirname(__FILE__) . '/functions.php' );
 
-    $filename;
-    $fileuri;
     $filename = $_SESSION["fileUrl"];
     $fileuri = FileUri($filename);
 
-    setcookie('EDUCONNECTOR', getDocEditorKey(md5($filename . md5_file($fileuri))), 0, '/', '.metaventis.com');
+    setcookie('EDUCONNECTOR', getDocEditorKey(), 0, '/', '.metaventis.com');
 
-    function getDocEditorKey($fileUri) {
-        return GenerateRevisionId(basename($fileUri));
+    function getDocEditorKey() {
+        return GenerateRevisionId(md5($_SESSION['node']->node->ref->id . $_SESSION['node']->node->contentVersion));
     }
 
 
@@ -129,7 +128,7 @@
                         title: "<?php echo $_SESSION['node']->node->title ?>",
                         url: "<?php echo $fileuri ?>",
                         fileType: fileType,
-                        key: "<?php echo getDocEditorKey(md5($filename . md5_file($fileuri))) ?>",
+                        key: "<?php echo getDocEditorKey() ?>",
 
                         info: {
                             author: "<?php echo $_SESSION['node']->node->createdBy->firstName . ' ' . $_SESSION['node']->node->createdBy->lastName ?>",
