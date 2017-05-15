@@ -23,8 +23,9 @@ class Connector {
         $this->checkPrivateKey();
         $privateKey = $this->getPrivateKey();
         $decrypted = '';
-        if(false === openssl_private_decrypt ( $encrypted , $decrypted , $privateKey))
+        if(false === openssl_private_decrypt ( $encrypted, $decrypted, $privateKey))
             throw new Exception('Cannot decrypt data');
+        openssl_free_key($privateKey);
         return json_decode($decrypted);
     }
 
@@ -34,6 +35,7 @@ class Connector {
         $privateKey = openssl_pkey_get_private (__DIR__ . '/../../assets/private.key');
         if(false === $privateKey)
             throw new Exception('Cannot load private key');
+        openssl_free_key($privateKey);
         return true;
 
     }
@@ -49,8 +51,8 @@ class Connector {
             'private_key_type' => OPENSSL_KEYTYPE_RSA,
         ));
         openssl_pkey_export_to_file($privateKey, __DIR__ . '/../../assets/private.key');
-        $a_key = openssl_pkey_get_details($privateKey);
-        file_put_contents(__DIR__ . '/../../assets/public.key', $a_key['key']);
+        $keyStr = openssl_pkey_get_details($privateKey);
+        file_put_contents(__DIR__ . '/../../assets/public.key', $keyStr['key']);
         openssl_free_key($privateKey);
     }
 
