@@ -35,6 +35,7 @@ class EduRestClient {
 		curl_close($ch);
 
 		if ($httpcode >= 200 && $httpcode < 300) {
+            $return = json_decode($return);
 			$_SESSION['oauth_access_token'] = $return->access_token;
             $_SESSION['oauth_refresh_token'] = $return->refresh_token;
             $_SESSION['oauth_expires_in'] = $return->expires_in;
