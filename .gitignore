@@ -6,3 +6,5 @@ config.php
 OnlineEditor/config.php
 OnlineEditor/storage
 !OnlineEditor/storage/templates
+assets/private.key
+assets/public.key

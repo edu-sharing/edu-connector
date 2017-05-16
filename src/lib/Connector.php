@@ -2,21 +2,22 @@
 
 class Connector {
 
-    private $tool;
-    private $parameters;
-
     public function __construct() {
-        $this -> setParameters();
-        $this -> switchTool();
-        $this -> runTool();
+        try {
+            $this->setParameters();
+            $this->startTool();
+        } catch (Exception $e) {
+            echo 'ERROR - ' . $e -> getMessage();
+            error_log('ERROR IN CONNECTOR - ' . $e -> __toString());
+        }
     }
 
 
     private function setParameters() {
-        $encrypted = $_REQUEST['data'];
+        $encrypted = base64_decode($_REQUEST['data']);
         $decrypted = $this->decryptData($encrypted);
         $this->validate($decrypted);
-        $this->parameters = $decrypted;
+        $_SESSION['parameters'] = $decrypted;
     }
 
     private function decryptData($encrypted) {
@@ -30,9 +31,12 @@ class Connector {
     }
 
     private function checkPrivateKey() {
-        if(!file_exists(__DIR__ . '/../../assets/private.key'))
+        if(!file_exists(__DIR__ . '/../../assets/private.key')) {
             $this->generateSslKeys();
-        $privateKey = openssl_pkey_get_private (__DIR__ . '/../../assets/private.key');
+            throw new Exception('No key found. Please check keys and try it again!');
+        }
+
+        $privateKey = openssl_pkey_get_private ('file://' . __DIR__ . '/../../assets/private.key');
         if(false === $privateKey)
             throw new Exception('Cannot load private key');
         openssl_free_key($privateKey);
@@ -41,7 +45,7 @@ class Connector {
     }
 
     private function getPrivateKey() {
-        $privateKey = openssl_pkey_get_private (__DIR__ . '/../../assets/private.key');
+        $privateKey = openssl_pkey_get_private ('file://' . __DIR__ . '/../../assets/private.key');
         return $privateKey;
     }
 
@@ -61,18 +65,14 @@ class Connector {
         return true;
     }
 
-    private function switchTool() {
-        switch($this->para) {
+    private function startTool() {
+        switch($_SESSION['parameters']->tool) {
             case 'ONLY_OFFICE':
-                $this -> tool = new OnlyOffice();
+                $tool = new OnlyOffice();
             break;
             default:
                 echo 'Unknown tool';
             exit(0);
         }
-    }
-
-    private function runTool() {
-        $this -> tool -> run();
     }
 }

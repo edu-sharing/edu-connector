@@ -9,8 +9,8 @@ class OnlyOffice extends EduRestClient {
 
 		//todo check params
 
-        $this->nodeId = $_REQUEST['node'];
-        $this->fileType = $_REQUEST['filetype'];
+        $this->nodeId = $_SESSION['parameters']->node;
+        $this->fileType = $_SESSION['parameters']->filetype;
 
 		//if called from index / not from oo ajax script
 		if(!empty($this->nodeId)) {
@@ -77,13 +77,5 @@ class OnlyOffice extends EduRestClient {
                 throw new Exception();
         }
         return $mimetype;
-    }
-
-    public function run() {
-        $this -> showDialog();
-    }
-
-    public function showDialog() {
-        include('./view/onlyoffice.phtml');
     }
 }
