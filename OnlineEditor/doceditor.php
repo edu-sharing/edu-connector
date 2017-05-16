@@ -125,7 +125,7 @@ session_start();
                     type: "desktop", // embedded
                     documentType: "<?php echo getDocumentType($filename) ?>",
                     document: {
-                        title: "<?php echo $_SESSION['node']->node->title ?>",
+                        title: "<?php echo $_SESSION['node']->node->name ?>",
                         url: "<?php echo $fileuri ?>",
                         fileType: fileType,
                         key: "<?php echo getDocEditorKey() ?>",
