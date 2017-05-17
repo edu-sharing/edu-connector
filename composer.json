@@ -1,0 +1,21 @@
+{
+  "name": "metaventis/eduConnector",
+  "description": "Connect edu-sharing repository with editing tools",
+  "minimum-stability": "alpha",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "hippeli",
+      "email": "hippeli@metaventis.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {"connector\\": "src/"},
+    "files" : [
+      "config.php"
+    ]
+  },
+  "require": {
+    "monolog/monolog": "^1.22"
+  }
+}

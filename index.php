@@ -1,9 +1,5 @@
 <?php
 session_start();
-
-require_once 'config.php';
-require_once 'src/lib/Connector.php';
-require_once 'src/lib/EduRestClient.php';
-require_once 'src/tools/OnlyOffice/OnlyOffice.php';
-
-$connector = new Connector();
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/bootstrap.php';
+$connector = new \connector\lib\Connector($log);

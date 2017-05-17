@@ -8,3 +8,4 @@ OnlineEditor/storage
 !OnlineEditor/storage/templates
 assets/private.key
 assets/public.key
+composer.phar
