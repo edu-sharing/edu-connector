@@ -110,7 +110,7 @@ function getCallbackUrl($filename)
         };
 
         var onRequestEditRights = function () {
-            //location.href = location.href.replace(RegExp("action=view\&?", "i"), "");
+            return;
         };
 
         var onError = function (event) {
@@ -200,6 +200,21 @@ function getCallbackUrl($filename)
             }
             return xmlhttp;
         }
+
+        function getCORS(url, success) {
+            var xhr = new XMLHttpRequest();
+            if (!('withCredentials' in xhr)) xhr = new XDomainRequest(); // fix IE8/9
+            xhr.open('GET', url);
+            xhr.onload = success;
+            xhr.send();
+            return xhr;
+        }
+
+        setInterval(function(){ getCORS('<?php echo $_SESSION['ping'] ?>', function(request){
+            var response = request.currentTarget.response || request.target.responseText;
+            console.log(response);
+        }); }, 3000);
+
 
     </script>
 </head>

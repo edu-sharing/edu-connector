@@ -6,38 +6,38 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit1bb40128ec15df97a8ecfba076c20a4f
 {
-    public static $files = array(
+    public static $files = array (
         '23a0d77b5324496914e6da4a775b084c' => __DIR__ . '/../..' . '/config.php',
     );
 
-    public static $prefixLengthsPsr4 = array(
-        'c' =>
-            array(
-                'connector\\' => 10,
-            ),
-        'P' =>
-            array(
-                'Psr\\Log\\' => 8,
-            ),
-        'M' =>
-            array(
-                'Monolog\\' => 8,
-            ),
+    public static $prefixLengthsPsr4 = array (
+        'c' => 
+        array (
+            'connector\\' => 10,
+        ),
+        'P' => 
+        array (
+            'Psr\\Log\\' => 8,
+        ),
+        'M' => 
+        array (
+            'Monolog\\' => 8,
+        ),
     );
 
-    public static $prefixDirsPsr4 = array(
-        'connector\\' =>
-            array(
-                0 => __DIR__ . '/../..' . '/src',
-            ),
-        'Psr\\Log\\' =>
-            array(
-                0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
-            ),
-        'Monolog\\' =>
-            array(
-                0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
-            ),
+    public static $prefixDirsPsr4 = array (
+        'connector\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Monolog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
     );
 
     public static function getInitializer(ClassLoader $loader)

@@ -20,7 +20,7 @@ class Cryptographer
         return json_decode($decrypted);
     }
 
-    private function checkPrivateKey()
+    public function checkPrivateKey()
     {
         if (!file_exists(__DIR__ . '/../../assets/private.key')) {
             $this->generateSslKeys();
@@ -39,6 +39,12 @@ class Cryptographer
     {
         $privateKey = openssl_pkey_get_private('file://' . __DIR__ . '/../../assets/private.key');
         return $privateKey;
+    }
+
+    public function getPublicKey() {
+        $publicKey = openssl_pkey_get_public ('file://' . __DIR__ . '/../../assets/public.key');
+        $publicKeyData = openssl_pkey_get_details($publicKey);
+        return $publicKeyData['key'];
     }
 
     private function generateSslKeys()

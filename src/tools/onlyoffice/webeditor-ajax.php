@@ -1,7 +1,10 @@
 <?php
 session_id($_GET['sess']);
 session_start();
+
 require __DIR__ . '/../../../vendor/autoload.php';
+require __DIR__ . '/../../../bootstrap.php';
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2016
@@ -32,7 +35,7 @@ require __DIR__ . '/../../../vendor/autoload.php';
 /**
  * WebEditor AJAX Process Execution.
  */
-require_once(dirname(__FILE__) . '/../config.php');
+
 require_once(dirname(__FILE__) . '/config.php');
 require_once(dirname(__FILE__) . '/ajax.php');
 require_once(dirname(__FILE__) . '/common.php');
@@ -61,27 +64,30 @@ if (isset($_GET["type"]) && !empty($_GET["type"])) { //Checks if type value exis
 
     switch ($type) { //Switch case for value of type
         case "track":
-            $response_array = track();
+            $response_array = track($log);
             $response_array['status'] = 'success';
             die (json_encode($response_array));
         default:
             $response_array['status'] = 'error';
             $response_array['error'] = '404 Method not found';
+            $log->error('404 Method not found');
             die(json_encode($response_array));
     }
 }
 
-function track()
-{
+function track($log)
+{$log->
     sendlog("Track START", "logs/webeditor-ajax.log");
+    $log->info("Track START", "logs/webeditor-ajax.log");
     sendlog("_GET params: " . serialize($_GET), "logs/webeditor-ajax.log");
+    $log->info("_GET params: " . serialize($_GET), "logs/webeditor-ajax.log");
 
     global $_trackerStatus;
-    $data;
     $result["error"] = 0;
 
     if (($body_stream = file_get_contents('php://input')) === FALSE) {
         $result["error"] = "Bad Request";
+        $log -> error("Bad Request");
         return $result;
     }
 
@@ -89,10 +95,12 @@ function track()
 
     if ($data === NULL) {
         $result["error"] = "Bad Response";
+        $log -> error("Bad Response");
         return $result;
     }
 
     sendlog("InputStream data: " . serialize($data), "logs/webeditor-ajax.log");
+    $log->info("InputStream data: " . serialize($data), "logs/webeditor-ajax.log");
 
     $status = $_trackerStatus[$data["status"]];
 
@@ -111,13 +119,13 @@ function track()
             } else {
                 file_put_contents($tmpSavePath, $new_data, LOCK_EX);
                 try {
-                    require_once(dirname(__FILE__) . '/../OnlyOfficeConnector.php');
-                    $onlyOfficeConnector = new OnlyOfficeConnector();
-                    if ($onlyOfficeConnector->createContentNode($nodeId, $tmpSavePath, $onlyOfficeConnector->getMimetype($fileType)))
+                    $apiClient = new connector\lib\EduRestClient();
+                    if ($apiClient->createContentNode($nodeId, $tmpSavePath, \connector\tools\onlyoffice\OnlyOffice::getMimetype($fileType)))
                         unlink($tmpSavePath);
                 } catch (Exception $e) {
-                    error_log($e->getMessage());
                     sendlog('ERROR saving file - ' . serialize($e->getMessage()), "logs/webeditor-ajax.log");
+                    $log->error('ERROR saving file - ' . serialize($e->getMessage()), "logs/webeditor-ajax.log");
+                    $log->error($e->__toString());
                 }
             }
 
