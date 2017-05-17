@@ -10,7 +10,7 @@ class Cryptographer
     }
 
     public function decryptData($encrypted)
-    {
+    {   $this->checkSignature();
         $this->checkPrivateKey();
         $privateKey = $this->getPrivateKey();
         $decrypted = '';
@@ -18,6 +18,18 @@ class Cryptographer
             throw new \Exception('Cannot decrypt data. Data is ' . $encrypted);
         openssl_free_key($privateKey);
         return json_decode($decrypted);
+    }
+
+    private function checkSignature() {
+        $repoId = 'repo';
+        $pubkeyid = $this->getPublicKey($repoId);
+        //$signature = rawurldecode($_GET['sig']);
+       // $dataSsl = urldecode($req_data['rep_id']);
+       // $signature = base64_decode($signature);
+       // $ok = openssl_verify($dataSsl . $req_data['timestamp'], $signature, $pubkeyid);
+
+        if($ok != 1)
+            throw new \Exception('SSL signature check failed.');
     }
 
     public function checkPrivateKey()
@@ -41,10 +53,12 @@ class Cryptographer
         return $privateKey;
     }
 
-    public function getPublicKey() {
-        $publicKey = openssl_pkey_get_public ('file://' . __DIR__ . '/../../assets/public.key');
-        $publicKeyData = openssl_pkey_get_details($publicKey);
-        return $publicKeyData['key'];
+    public function getPublicKey($keyname = 'public') {
+        $publicKey = openssl_pkey_get_public ('file://' . __DIR__ . '/../../assets/'.$keyname.'.key');
+        if(false === $publicKey)
+            throw new \Exception('Cannot load private key from ');
+
+        return $publicKey;
     }
 
     private function generateSslKeys()
