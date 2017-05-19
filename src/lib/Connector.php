@@ -14,15 +14,19 @@ class Connector
         $this->log = $log;
         try {
             $this->setParameters();
+
+
+
             $this->apiClient = new EduRestClient();
-
-
             $this->apiClient->validateSession();
-            exit(0);
 
-
+//method is only office specific! change that
             $this->setNode();
             $this->setUser();
+
+var_dump($_SESSION['tool']);
+
+
             $this->startTool();
         } catch (\Exception $e) {
             $this->log->error($e->__toString());
@@ -34,19 +38,19 @@ class Connector
 
     private function setParameters()
     {
-        $encrypted = base64_decode($_REQUEST['data']);
+        $encrypted = base64_decode($_REQUEST['e']);
         $cryptographer = new Cryptographer($this->log);
         $decrypted = $cryptographer->decryptData($encrypted);
-        $decrypted = json_decode($decrypted, true);
         $this->validate($decrypted);
         foreach($decrypted as $key => $value) {
             $_SESSION[$key] = $value;
         }
+	$_SESSION['api_url'] = 'http://appserver7.metaventis.com:7151/edu-sharing/rest/';
     }
 
     private function validate($decrypted)
     {
-        $offset = time() - $decrypted['ts'];
+        $offset = time() - $decrypted->ts;
         if ($offset > 100000000000)
             throw new \Exception('Timestamp validation failed. Offset is ' . $offset . ' seconds.');
         return true;
@@ -59,7 +63,7 @@ class Connector
 
     private function setNode()
     {
-        $node = $this->apiClient->getNode($this->parameters->node);
+        $node = $this->apiClient->getNode($_SESSION['node']);
         if (in_array('Write', $node->node->access)) {
             $_SESSION['edit'] = true;
         } else {
@@ -67,21 +71,21 @@ class Connector
         }
 
         if ($node->node->size === NULL) {
-            $this->apiClient->createContentNode($this->parameters->node, STORAGEPATH . '/templates/init.' . $this->fileType, \connector\tools\onlyoffice\OnlyOffice::getMimetype($this->parameters->fileType));
-            $node = $this->apiClient($this->parameters->node);
+            $this->apiClient->createContentNode($_SESSION['node'], STORAGEPATH . '/templates/init.' . $_SESSION['filetype'], \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION['filetype']));
+            $node = $this->apiClient->getNode($_SESSION['node']);
         }
         $_SESSION['node'] = $node;
     }
 
     private function startTool()
     {
-        switch ($this->parameters->tool) {
+        switch ($_SESSION['tool']) {
             case 'ONLY_OFFICE':
                 $tool = new \connector\tools\onlyoffice\OnlyOffice();
                 $tool->run();
                 break;
             default:
-                throw new \Exception('Unknown tool: ' . $this->parameters->tool . '.');
+                throw new \Exception('Unknown tool: ' . $_SESSION['tool'] . '.');
         }
     }
 }
