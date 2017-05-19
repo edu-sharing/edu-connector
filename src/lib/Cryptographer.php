@@ -10,7 +10,7 @@ class Cryptographer
     }
 
     public function decryptData($encrypted)
-    {   $this->checkSignature();
+    {   //$this->checkSignature();
         $this->checkPrivateKey();
         $privateKey = $this->getPrivateKey();
         $decrypted = '';
@@ -56,8 +56,7 @@ class Cryptographer
     public function getPublicKey($keyname = 'public') {
         $publicKey = openssl_pkey_get_public ('file://' . __DIR__ . '/../../assets/'.$keyname.'.key');
         if(false === $publicKey)
-            throw new \Exception('Cannot load private key from ');
-
+            throw new \Exception('Cannot load public key from "file://' . __DIR__ . '/../../assets/'.$keyname.'.key"');
         return $publicKey;
     }
 

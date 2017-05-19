@@ -10,42 +10,33 @@ class EduRestClient
 
     }
 
-    private function getAccessToken()
-    {
-
-        if (($_SESSION['oauth_expires_in'] + $_SESSION['oauth_token_received'] - time()) < 300) {
-            $this->refreshToken();
-        }
-        return $_SESSION['oauth_access_token'];
-
+    private function getSessionId() {
+        return $_SESSION['sessionId'];
     }
 
-    private function refreshToken()
+    public function validateSession()
     {
-
-        $url = $_SESSION['api_url'] . './../oauth2/token';
-        $postFields = 'grant_type=refresh_token&client_id=eduApp&client_secret=secret&refresh_token=' . $_SESSION['oauth_refresh_token'];
-        $headers = array('Accept: application/json');
-        $ch = curl_init($url);
+        $ch = curl_init($_SESSION['api_url'] . 'authentication/v1/validateSession');
+        $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $return = curl_exec($ch);
+        $res = curl_exec($ch);
+
+        if ($res === false) {
+            throw new \Exception('Cannot reach API');
+        }
+
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-
         if ($httpcode >= 200 && $httpcode < 300) {
-            $_SESSION['oauth_access_token'] = $return->access_token;
-            $_SESSION['oauth_refresh_token'] = $return->refresh_token;
-            $_SESSION['oauth_expires_in'] = $return->expires_in;
-            $_SESSION['oauth_token_received'] = time();
-            return true;
+            $node = json_decode($res);
+            return $node;
         }
-        throw new \Exception('Error refreshing tokens - HTTP Status ' . $httpcode);
+        throw new \Exception('Error validating session - HTTP STATUS ' . $httpcode);
     }
+
 
     public function createContentNode($nodeId, $contentpath, $mimetype)
     {
@@ -55,7 +46,7 @@ class EduRestClient
 
         $fields = array('file' => $cfile);
         $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/content?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
-        $headers = array('Authorization: Bearer ' . $this->getAccessToken(), 'Accept: application/json', 'Content-Type: multipart/form-data');
+        $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json', 'Content-Type: multipart/form-data');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -82,7 +73,7 @@ class EduRestClient
 
         $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/metadata');
 
-        $headers = array('Authorization: Bearer ' . $this->getAccessToken(), 'Accept: application/json', 'Content-Type: application/json; charset=utf-8');
+        $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json', 'Content-Type: application/json; charset=utf-8');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -104,7 +95,7 @@ class EduRestClient
     public function getNode($nodeId)
     {
         $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/metadata?propertyFilter=-all-');
-        $headers = array('Authorization: Bearer ' . $this->getAccessToken(), 'Accept: application/json');
+        $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -128,7 +119,7 @@ class EduRestClient
     public function getUser()
     {
         $ch = curl_init($_SESSION['api_url'] . 'iam/v1/people/-home-/-me-');
-        $headers = array('Authorization: Bearer ' . $this->getAccessToken(), 'Accept: application/json');
+        $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);

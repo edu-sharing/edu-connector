@@ -15,6 +15,12 @@ class Connector
         try {
             $this->setParameters();
             $this->apiClient = new EduRestClient();
+
+
+            $this->apiClient->validateSession();
+            exit(0);
+
+
             $this->setNode();
             $this->setUser();
             $this->startTool();
@@ -31,15 +37,18 @@ class Connector
         $encrypted = base64_decode($_REQUEST['data']);
         $cryptographer = new Cryptographer($this->log);
         $decrypted = $cryptographer->decryptData($encrypted);
+        $decrypted = json_decode($decrypted, true);
         $this->validate($decrypted);
-        $this->parameters = $decrypted;
+        foreach($decrypted as $key => $value) {
+            $_SESSION[$key] = $value;
+        }
     }
 
     private function validate($decrypted)
     {
-        $offset = time() - $decrypted->ts;
-        if ($offset > 100000)
-            throw new \Exception('Timestamp validation failed. Offset is ' . $offset . 'seconds.');
+        $offset = time() - $decrypted['ts'];
+        if ($offset > 100000000000)
+            throw new \Exception('Timestamp validation failed. Offset is ' . $offset . ' seconds.');
         return true;
     }
 

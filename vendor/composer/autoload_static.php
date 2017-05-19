@@ -18,6 +18,7 @@ class ComposerStaticInit1bb40128ec15df97a8ecfba076c20a4f
         'P' => 
         array (
             'Psr\\Log\\' => 8,
+            'Predis\\' => 7,
         ),
         'M' => 
         array (
@@ -33,6 +34,10 @@ class ComposerStaticInit1bb40128ec15df97a8ecfba076c20a4f
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Predis\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/predis/predis/src',
         ),
         'Monolog\\' => 
         array (
