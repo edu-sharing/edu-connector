@@ -44,9 +44,7 @@ function getCallbackUrl($filename)
 {
     return rtrim(WEB_ROOT_URL, '/') . '/'
         . "webeditor-ajax.php?type=track"
-        . "&sess=" . session_id()
-        . "&fileType=" . $_SESSION['filetype']
-        . "&nodeId=" . $_SESSION['node']->node->ref->id;
+        . "&sess=" . session_id();
 }
 
 ?>
@@ -128,7 +126,7 @@ function getCallbackUrl($filename)
                     type: "desktop", // embedded
                     documentType: "<?php echo getDocumentType($filename) ?>",
                     document: {
-                        title: "<?php echo $_SESSION['node']->node->name ?>",
+                        title: "<?php echo empty($_SESSION['node']->node->title)?$_SESSION['node']->node->name:$_SESSION['node']->node->title ?>",
                         url: "<?php echo $fileuri ?>",
                         fileType: filetype,
                         key: "<?php echo getDocEditorKey() ?>",

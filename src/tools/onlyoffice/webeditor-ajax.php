@@ -76,11 +76,11 @@ if (isset($_GET["type"]) && !empty($_GET["type"])) { //Checks if type value exis
 }
 
 function track($log)
-{$log->
+{
     sendlog("Track START", "logs/webeditor-ajax.log");
-    $log->info("Track START", "logs/webeditor-ajax.log");
+    $log->info("Track START");
     sendlog("_GET params: " . serialize($_GET), "logs/webeditor-ajax.log");
-    $log->info("_GET params: " . serialize($_GET), "logs/webeditor-ajax.log");
+    $log->info("_GET params: " . serialize($_GET));
 
     global $_trackerStatus;
     $result["error"] = 0;
@@ -100,7 +100,7 @@ function track($log)
     }
 
     sendlog("InputStream data: " . serialize($data), "logs/webeditor-ajax.log");
-    $log->info("InputStream data: " . serialize($data), "logs/webeditor-ajax.log");
+    $log->info("InputStream data: " . serialize($data));
 
     $status = $_trackerStatus[$data["status"]];
 
@@ -109,10 +109,8 @@ function track($log)
         case "Corrupted":
 
             $downloadUri = $data["url"];
-            $nodeId = $_GET['nodeId'];
-            $fileType = $_GET['fileType'];
             $saved = 1;
-            $tmpSavePath = STORAGEPATH . '/' . $nodeId . '_' . uniqid() . '.' . $fileType;
+            $tmpSavePath = STORAGEPATH . '/' . $_SESSION['node']->node->ref->id . '_' . uniqid() . '.' . $_SESSION['filetype'];
 
             if (($new_data = file_get_contents($downloadUri)) === FALSE) {
                 $saved = 0;
@@ -120,11 +118,11 @@ function track($log)
                 file_put_contents($tmpSavePath, $new_data, LOCK_EX);
                 try {
                     $apiClient = new connector\lib\EduRestClient();
-                    if ($apiClient->createContentNode($nodeId, $tmpSavePath, \connector\tools\onlyoffice\OnlyOffice::getMimetype($fileType)))
+                    if ($apiClient->createContentNode($_SESSION['node']->node->ref->id, $tmpSavePath, \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION['filetype'])))
                         unlink($tmpSavePath);
                 } catch (Exception $e) {
                     sendlog('ERROR saving file - ' . serialize($e->getMessage()), "logs/webeditor-ajax.log");
-                    $log->error('ERROR saving file - ' . serialize($e->getMessage()), "logs/webeditor-ajax.log");
+                    $log->error('ERROR saving file - ' . serialize($e->getMessage()));
                     $log->error($e->__toString());
                 }
             }
@@ -135,5 +133,6 @@ function track($log)
     }
 
     sendlog("track result: " . serialize($result), "logs/webeditor-ajax.log");
+    $log -> info("track result: " . serialize($result));
     return $result;
 }
