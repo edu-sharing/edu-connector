@@ -31,8 +31,7 @@ class EduRestClient
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         if ($httpcode >= 200 && $httpcode < 300) {
-            $node = json_decode($res);
-            return $node;
+            return json_decode($res);
         }
         throw new \Exception('Error validating session - HTTP STATUS ' . $httpcode);
     }

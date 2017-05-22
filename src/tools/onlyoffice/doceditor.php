@@ -93,7 +93,7 @@ function getCallbackUrl($filename)
     <script type="text/javascript">
 
         var docEditor;
-        var fileType = "<?php echo $_SESSION['fileType'] ?>";
+        var filetype = "<?php echo $_SESSION['filetype'] ?>";
 
         var innerAlert = function (message) {
             if (console && console.log)
@@ -130,7 +130,7 @@ function getCallbackUrl($filename)
                     document: {
                         title: "<?php echo $_SESSION['node']->node->name ?>",
                         url: "<?php echo $fileuri ?>",
-                        fileType: fileType,
+                        fileType: filetype,
                         key: "<?php echo getDocEditorKey() ?>",
 
                         info: {
