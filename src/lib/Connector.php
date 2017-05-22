@@ -29,18 +29,19 @@ class Connector
 
     private function setParameters()
     {
-        $encrypted = base64_decode($_REQUEST['e']);
+        $encryptedData = base64_decode($_REQUEST['e']);
+        $encryptedKey = base64_decode($_REQUEST['k']);
         $cryptographer = new Cryptographer($this->log);
-        $decrypted = $cryptographer->decryptData($encrypted);
-        $this->validate($decrypted);
-        foreach($decrypted as $key => $value) {
+        $decryptedData = $cryptographer->decryptData($encryptedData, $encryptedKey);
+        $this->validate($decryptedData);
+        foreach($decryptedData as $key => $value) {
             $_SESSION[$key] = $value;
         }
     }
 
-    private function validate($decrypted)
+    private function validate($data)
     {
-        $offset = time() - $decrypted->ts;
+        $offset = time() - $data->ts;
         if ($offset > 100000000000)
             throw new \Exception('Timestamp validation failed. Offset is ' . $offset . ' seconds.');
         return true;

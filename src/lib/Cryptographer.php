@@ -2,6 +2,10 @@
 
 namespace connector\lib;
 
+/**
+ * Class Cryptographer
+ * @package connector\lib
+ */
 class Cryptographer
 {
 
@@ -9,27 +13,18 @@ class Cryptographer
     {
     }
 
-    public function decryptData($encrypted)
-    {   //$this->checkSignature();
+    public function decryptData($encryptedData, $encryptedKey)
+    {
         $this->checkPrivateKey();
         $privateKey = $this->getPrivateKey();
-        $decrypted = '';
-        if (false === openssl_private_decrypt($encrypted, $decrypted, $privateKey))
-            throw new \Exception('Cannot decrypt data. Data is ' . $encrypted);
+        $decryptedKey = '';
+        if (false === openssl_private_decrypt($encryptedKey, $decryptedKey, $privateKey))
+            throw new \Exception('Cannot decrypt AES Key.');
         openssl_free_key($privateKey);
-        return json_decode($decrypted);
-    }
-
-    private function checkSignature() {
-        $repoId = 'repo';
-        $pubkeyid = $this->getPublicKey($repoId);
-        //$signature = rawurldecode($_GET['sig']);
-       // $dataSsl = urldecode($req_data['rep_id']);
-       // $signature = base64_decode($signature);
-       // $ok = openssl_verify($dataSsl . $req_data['timestamp'], $signature, $pubkeyid);
-
-        if($ok != 1)
-            throw new \Exception('SSL signature check failed.');
+        $decryptedData = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $decryptedKey, $encryptedData, MCRYPT_MODE_ECB));
+        if (false === $decryptedData)
+            throw new \Exception('Cannot decrypt Data.');
+        return json_decode($decryptedData);
     }
 
     public function checkPrivateKey()

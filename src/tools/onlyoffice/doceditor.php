@@ -199,20 +199,38 @@ function getCallbackUrl($filename)
             return xmlhttp;
         }
 
-        function getCORS(url, success) {
-            var xhr = new XMLHttpRequest();
-            if (!('withCredentials' in xhr)) xhr = new XDomainRequest(); // fix IE8/9
-            xhr.open('GET', url);
-            xhr.onload = success;
-            xhr.send();
-            return xhr;
+        var lastPing = lastEdit = Date.now();
+
+        function destroySession() {
+            docEditor.destroy();
+            alert('Session abgelaufen. Bitte loggen Sie sich erneut ein um Ihre letzten Änderungen zu speichern.');
         }
 
-        setInterval(function(){ getCORS('<?php echo $_SESSION['ping'] ?>', function(request){
-            var response = request.currentTarget.response || request.target.responseText;
-            console.log(response);
-        }); }, 3000);
+        function pingApi() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '<?php echo $_SESSION['api_url']?>' + 'authentication/v1/validateSession');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    lastPing = Date.now();
+                }
+                else {
+                    destroySession();
+                }
+            };
+            xhr.send();
+        }
 
+        setInterval(function(){
+            if(Date.now() - lastPing > 500)
+                destroySession();
+        }, 10000);
+
+        document.getElementById('iframeEditor').addEventListener("keydown", function(e) {
+            if(Date.now() - lastEdit > 15  || Date.now() - lastPing > 15) {
+                pingApi();
+            }
+            lastEdit = now;
+        }, false);
 
     </script>
 </head>
