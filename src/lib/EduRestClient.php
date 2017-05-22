@@ -36,11 +36,6 @@ class EduRestClient
         throw new \Exception('Error validating session - HTTP STATUS ' . $httpcode);
     }
 
-    public function getAccessToken() {
-        
-    }
-
-
     public function createContentNode($nodeId, $contentpath, $mimetype)
     {
 

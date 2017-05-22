@@ -36,7 +36,6 @@ class Connector
         foreach($decrypted as $key => $value) {
             $_SESSION[$key] = $value;
         }
-	$_SESSION['api_url'] = 'http://appserver7.metaventis.com:7151/edu-sharing/rest/';
     }
 
     private function validate($decrypted)
