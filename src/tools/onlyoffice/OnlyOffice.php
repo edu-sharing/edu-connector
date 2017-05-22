@@ -14,7 +14,8 @@ class OnlyOffice {
 
     public function run()
     {
-        $_SESSION['fileUrl'] = $_SESSION['node']->node->downloadUrl . '&accessToken=' . $_REQUEST['accessToken'];
+        $accessToken = $this->apiClient->getAccessToken();
+        $_SESSION['fileUrl'] = $_SESSION['node']->node->downloadUrl . '&accessToken=' . $accessToken;
         $this->forwardToEditor();
     }
 
