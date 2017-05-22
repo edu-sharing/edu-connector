@@ -7,14 +7,29 @@ class OnlyOffice
 
     private $fileType = '';
 
-    public function __construct()
-    {
+    public function __construct() {
 
     }
 
     public function run()
     {
         $this->forwardToEditor();
+    }
+
+    public function setNode()
+    {
+        $node = $this->apiClient->getNode($_SESSION['node']);
+        if (in_array('Write', $node->node->access)) {
+            $_SESSION['edit'] = true;
+        } else {
+            $_SESSION['edit'] = false;
+        }
+
+        if ($node->node->size === NULL) {
+            $this->apiClient->createContentNode($_SESSION['node'], STORAGEPATH . '/templates/init.' . $_SESSION['filetype'], \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION['filetype']));
+            $node = $this->apiClient->getNode($_SESSION['node']);
+        }
+        $_SESSION['node'] = $node;
     }
 
     private function forwardToEditor()

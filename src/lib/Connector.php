@@ -5,7 +5,7 @@ namespace connector\lib;
 class Connector
 {
 
-    private $parameters;
+    private $tool;
     private $log;
     private $apiClient;
 
@@ -14,27 +14,18 @@ class Connector
         $this->log = $log;
         try {
             $this->setParameters();
-
-
-
             $this->apiClient = new EduRestClient();
             $this->apiClient->validateSession();
-
-//method is only office specific! change that
-            $this->setNode();
+            $this->switchTool();
+            $this->tool->setNode();
             $this->setUser();
-
-var_dump($_SESSION['tool']);
-
-
-            $this->startTool();
+            $this->tool->run();
         } catch (\Exception $e) {
             $this->log->error($e->__toString());
             echo 'ERROR - Please contact your system administrator.';
             exit(0);
         }
     }
-
 
     private function setParameters()
     {
@@ -61,28 +52,11 @@ var_dump($_SESSION['tool']);
         $_SESSION['user'] = $this->apiClient->getUser();
     }
 
-    private function setNode()
-    {
-        $node = $this->apiClient->getNode($_SESSION['node']);
-        if (in_array('Write', $node->node->access)) {
-            $_SESSION['edit'] = true;
-        } else {
-            $_SESSION['edit'] = false;
-        }
-
-        if ($node->node->size === NULL) {
-            $this->apiClient->createContentNode($_SESSION['node'], STORAGEPATH . '/templates/init.' . $_SESSION['filetype'], \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION['filetype']));
-            $node = $this->apiClient->getNode($_SESSION['node']);
-        }
-        $_SESSION['node'] = $node;
-    }
-
-    private function startTool()
+    private function switchTool()
     {
         switch ($_SESSION['tool']) {
             case 'ONLY_OFFICE':
-                $tool = new \connector\tools\onlyoffice\OnlyOffice();
-                $tool->run();
+                $this -> tool = new \connector\tools\onlyoffice\OnlyOffice();
                 break;
             default:
                 throw new \Exception('Unknown tool: ' . $_SESSION['tool'] . '.');
