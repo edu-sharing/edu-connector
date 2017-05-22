@@ -25,9 +25,9 @@ session_start();
  *
 */
 
-require_once(dirname(__FILE__) . '/config.php');
-require_once(dirname(__FILE__) . '/common.php');
-require_once(dirname(__FILE__) . '/functions.php');
+require_once(__DIR__ . '/config.php');
+require_once(__DIR__ . '/common.php');
+require_once(__DIR__ . '/functions.php');
 
 $filename = $_SESSION["fileUrl"];
 $fileuri = FileUri($filename);
@@ -45,7 +45,7 @@ function getCallbackUrl($filename)
     return rtrim(WEB_ROOT_URL, '/') . '/'
         . "webeditor-ajax.php?type=track"
         . "&sess=" . session_id()
-        . "&fileType=" . $_SESSION['fileType']
+        . "&fileType=" . $_SESSION['filetype']
         . "&nodeId=" . $_SESSION['node']->node->ref->id;
 }
 
