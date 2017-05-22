@@ -17,11 +17,12 @@ class Cryptographer
     {
         $this->checkPrivateKey();
         $privateKey = $this->getPrivateKey();
+
         $decryptedKey = '';
         if (false === openssl_private_decrypt($encryptedKey, $decryptedKey, $privateKey))
             throw new \Exception('Cannot decrypt AES Key.');
         openssl_free_key($privateKey);
-        $decryptedData = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $decryptedKey, $encryptedData, MCRYPT_MODE_ECB));
+        $decryptedData = openssl_decrypt($encryptedData, "aes-128-ecb", $decryptedKey, OPENSSL_RAW_DATA);
         if (false === $decryptedData)
             throw new \Exception('Cannot decrypt Data.');
         return json_decode($decryptedData);

@@ -22,6 +22,12 @@ class Connector
             $this->tool->run();
         } catch (\Exception $e) {
             $this->log->error($e->__toString());
+
+
+var_dump($_SESSION);
+echo $e->__toString();
+
+
             echo 'ERROR - Please contact your system administrator.';
             exit(0);
         }
