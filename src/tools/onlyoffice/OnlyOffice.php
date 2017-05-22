@@ -2,17 +2,19 @@
 
 namespace connector\tools\OnlyOffice;
 
-class OnlyOffice
-{
+use connector\lib\EduRestClient;
 
-    private $fileType = '';
+class OnlyOffice {
 
-    public function __construct() {
+    private $apiClient;
 
+    public function __construct(EduRestClient $apiClient) {
+        $this->apiClient = $apiClient;
     }
 
     public function run()
     {
+        $_SESSION['fileUrl'] = $_SESSION['node']->node->downloadUrl . '&accessToken=' . $_REQUEST['accessToken'];
         $this->forwardToEditor();
     }
 
@@ -34,8 +36,6 @@ class OnlyOffice
 
     private function forwardToEditor()
     {
-        $_SESSION['fileUrl'] = $_SESSION['node']->node->downloadUrl . '&accessToken=' . $_REQUEST['accessToken'];
-        $_SESSION['fileType'] = $this->fileType;
         header('Location: ' . WWWURL . EDITORPATH);
         exit();
     }

@@ -16,7 +16,7 @@ class Connector
             $this->setParameters();
             $this->apiClient = new EduRestClient();
             $this->apiClient->validateSession();
-            $this->switchTool();
+            $this->startTool();
             $this->tool->setNode();
             $this->setUser();
             $this->tool->run();
@@ -52,11 +52,11 @@ class Connector
         $_SESSION['user'] = $this->apiClient->getUser();
     }
 
-    private function switchTool()
+    private function startTool()
     {
         switch ($_SESSION['tool']) {
             case 'ONLY_OFFICE':
-                $this -> tool = new \connector\tools\onlyoffice\OnlyOffice();
+                $this -> tool = new \connector\tools\onlyoffice\OnlyOffice($this->apiClient);
                 break;
             default:
                 throw new \Exception('Unknown tool: ' . $_SESSION['tool'] . '.');
