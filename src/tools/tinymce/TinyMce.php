@@ -18,7 +18,7 @@ class TinyMce {
     }
 
     private function setContent() {
-        $_SESSION['content'] = file_get_contents($_SESSION['node']->node->contentUrl);
+        $_SESSION['content'] = file_get_contents($_SESSION['node']->node->contentUrl . '&ticket=' . $_SESSION['ticket']);
     }
 
     public function setNode()

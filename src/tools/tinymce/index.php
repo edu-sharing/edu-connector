@@ -9,10 +9,6 @@ session_start();
  <script src='js/tinymce/tinymce.min.js'></script>
   <script>
 
-	 save = function  () {
-		alert(tinymce.activeEditor.getContent());
-	 }
-
       tinymce.init({
         selector: '#theTextarea',
         plugins: [
@@ -29,8 +25,6 @@ session_start();
         save_onsavecallback: function () { save() }
       });
 
-     var lastPing = Date.now();
-
      function destroy() {
          alert('Session abgelaufen. Bitte neu anmelden.');
      }
@@ -38,9 +32,11 @@ session_start();
      function pingApi() {
          var xhr = new XMLHttpRequest();
          xhr.open('GET', '<?php echo $_SESSION['api_url']?>' + 'authentication/v1/validateSession');
+         xhr.withCredentials = true;
+         xhr.setRequestHeader('Accept','application/json');
          xhr.onload = function() {
              if (xhr.status === 200) {
-                 lastPing = Date.now();
+                     window.opener.postMessage('asdasdasd', '*');
              }
              else {
                  destroy();
@@ -49,15 +45,30 @@ session_start();
          xhr.send();
      }
 
+     save = function  () {
+		alert(tinymce.activeEditor.getContent());
+
+        //save contentn without versioning
+    
+	 }
+
+     unlockNode = function() {
+         //call api
+     }
+
      setInterval(function(){
          if (tinyMCE.activeEditor.isDirty()) {
              pingApi();
-         } else {
-             if(Date.now() - lastPing > 500)
-                 destroy();
+             save();
          }
-
      }, 10000);
+
+     window.addEventListener("onbeforeunload ", function (e) {
+        unlockNode();
+
+        (e || window.event).returnValue = null;
+        return null;
+        });
 
 
   
