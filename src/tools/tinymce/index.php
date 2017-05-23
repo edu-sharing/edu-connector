@@ -10,26 +10,24 @@ session_start();
   <script>
 
 	 save = function  () {
-	
 		alert(tinymce.activeEditor.getContent());
-	
 	 }
 
-  tinymce.init({
-    selector: '#theTextarea',
-    plugins: [
-              'advlist autolink lists link image charmap hr anchor pagebreak',
-              'searchreplace wordcount visualblocks visualchars code fullscreen',
-              'insertdatetime media nonbreaking save table contextmenu directionality',
-              'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help code'
-            ],
-            toolbar1: 'save | undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-            toolbar2: 'forecolor backcolor emoticons | help',
-            image_advtab: true,
-    branding: false,
-    height: 500,
-    save_onsavecallback: function () { save() }
-  });
+      tinymce.init({
+        selector: '#theTextarea',
+        plugins: [
+                  'advlist autolink lists link image charmap hr anchor pagebreak',
+                  'searchreplace wordcount visualblocks visualchars code fullscreen',
+                  'insertdatetime media nonbreaking save table contextmenu directionality',
+                  'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help code'
+                ],
+                toolbar1: 'save | undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                toolbar2: 'forecolor backcolor emoticons | help',
+                image_advtab: true,
+        branding: false,
+        height: 500,
+        save_onsavecallback: function () { save() }
+      });
 
      var lastPing = Date.now();
 

@@ -229,7 +229,7 @@ function getCallbackUrl($filename)
             if(Date.now() - lastEdit > 15  || Date.now() - lastPing > 15) {
                 pingApi();
             }
-            lastEdit = now;
+            lastEdit = Date.now();
         }, false);
 
     </script>
