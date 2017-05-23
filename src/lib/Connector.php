@@ -22,13 +22,8 @@ class Connector
             $this->tool->run();
         } catch (\Exception $e) {
             $this->log->error($e->__toString());
-
-
-var_dump($_SESSION);
-echo $e->__toString();
-
-
             echo 'ERROR - Please contact your system administrator.';
+            echo $e->__toString();
             exit(0);
         }
     }
@@ -43,6 +38,8 @@ echo $e->__toString();
         foreach($decryptedData as $key => $value) {
             $_SESSION[$key] = $value;
         }
+        if(substr($_SESSION['api_url'], -1) !== '/')
+            $_SESSION['api_url'] .= '/';
     }
 
     private function validate($data)
