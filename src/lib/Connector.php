@@ -38,8 +38,14 @@ class Connector
         foreach($decryptedData as $key => $value) {
             $_SESSION[$key] = $value;
         }
-        if(substr($_SESSION['api_url'], -1) !== '/')
+        if(substr($_SESSION['api_url'], -1) !== '/') {
             $_SESSION['api_url'] .= '/';
+
+            //dev
+            if(strpos($_SESSION['api_url'], 'localhost') !== false)
+              $_SESSION['api_url'] = 'http://appserver7.metaventis.com:7151/edu-sharing/rest/';
+
+        }
     }
 
     private function validate($data)
