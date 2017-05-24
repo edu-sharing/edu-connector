@@ -2,13 +2,9 @@
 
 namespace connector\tools\tinymce;
 
-class TinyMce {
+use connector\lib\Tool\Tool;
 
-    private $apiClient;
-
-    public function __construct($apiClient) {
-        $this->apiClient = $apiClient;
-    }
+class TinyMce extends Tool {
 
     public function run()
     {

@@ -67,10 +67,10 @@ class Connector
     {
         switch ($_SESSION['tool']) {
             case 'ONLY_OFFICE':
-                $this -> tool = new \connector\tools\onlyoffice\OnlyOffice($this->apiClient);
+                $this -> tool = new \connector\tools\onlyoffice\OnlyOffice($this->apiClient, $this->log);
                 break;
             case 'TINYMCE':
-                $this -> tool = new \connector\tools\tinymce\TinyMce($this->apiClient);
+                $this -> tool = new \connector\tools\tinymce\TinyMce($this->apiClient, $this->log);
                 break;
             default:
                 throw new \Exception('Unknown tool: ' . $_SESSION['tool'] . '.');
