@@ -2,7 +2,9 @@
 
 namespace connector\tools\tinymce;
 
-class TinyMce extends Connector {
+use connector\lib\Connector;
+
+class TinyMce extends  Connector {
 
     public function __construct() {
     }
