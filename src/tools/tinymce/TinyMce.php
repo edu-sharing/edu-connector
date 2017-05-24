@@ -2,11 +2,12 @@
 
 namespace connector\tools\tinymce;
 
-use connector\lib\Connector;
+class TinyMce {
 
-class TinyMce extends Connector {
+    private $apiClient;
 
-    public function __construct() {
+    public function __construct($apiClient) {
+        $this->apiClient = $apiClient;
     }
 
     public function run()
@@ -18,15 +19,10 @@ class TinyMce extends Connector {
     {
         $node = $this->apiClient->getNode($_SESSION['node']);
         $_SESSION['content'] = file_get_contents($node->node->contentUrl . '&ticket=' . $_SESSION['ticket']);
-        try {
-            $temp = tmpfile();
-            fwrite($temp, $_SESSION['content']);
-            $metaData = stream_get_meta_data($temp);
-            $tmpFilename = $metaData['uri'];
-        } catch (Exception $e) {
-            $this->log->error('Error creating temp file.');
-            throw $e;
-        }
+        $temp = tmpfile();
+        fwrite($temp, $_SESSION['content']);
+        $metaData = stream_get_meta_data($temp);
+        $tmpFilename = $metaData['uri'];
         $this->apiClient->createContentNode($_SESSION['node'], $tmpFilename, 'text/html', 'openedforediting');
         fclose($temp);
         unlink($tmpFilename);

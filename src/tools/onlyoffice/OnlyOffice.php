@@ -2,11 +2,12 @@
 
 namespace connector\tools\OnlyOffice;
 
-use connector\lib\Connector;
+class OnlyOffice {
 
-class OnlyOffice extends Connector {
+    private $apiClient;
 
-    public function __construct() {
+    public function __construct($apiClient) {
+        $this->apiClient = $apiClient;
     }
 
     public function run()
