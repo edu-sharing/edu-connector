@@ -36,16 +36,15 @@ class EduRestClient
         throw new \Exception('Error validating session - HTTP STATUS ' . $httpcode);
     }
 
-    public function createContentNode($nodeId, $contentpath, $mimetype)
+    public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '')
     {
-
-        $versionComment = '';
-        $cfile = curl_file_create($contentpath, $mimetype, 'file');
-
-        $fields = array('file' => $cfile);
         $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/content?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
         $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json', 'Content-Type: multipart/form-data');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $cfile = curl_file_create($contentpath, $mimetype, 'file');
+        $fields = array('file' => $cfile);
+
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_POST, 1);

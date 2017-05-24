@@ -13,16 +13,18 @@ class TinyMce {
     }
 
     public function run()
-    {   $this->setContent();
+    {
         $this->forwardToEditor();
-    }
-
-    private function setContent() {
-        $_SESSION['content'] = file_get_contents($_SESSION['node']->node->contentUrl . '&ticket=' . $_SESSION['ticket']);
     }
 
     public function setNode()
     {
+        $node = $this->apiClient->getNode($_SESSION['node']);
+        $_SESSION['content'] = file_get_contents($node->node->contentUrl . '&ticket=' . $_SESSION['ticket']);
+        $temp = tmpfile();
+        fwrite($temp, $_SESSION['content']);
+        $this->apiClient->createContentNode($_SESSION['node'], $temp, 'text/html', 'openedforediting');
+        fclose($temp);
         $node = $this->apiClient->getNode($_SESSION['node']);
         $_SESSION['node'] = $node;
     }

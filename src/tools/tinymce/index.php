@@ -36,7 +36,7 @@ session_start();
          xhr.setRequestHeader('Accept','application/json');
          xhr.onload = function() {
              if (xhr.status === 200) {
-                     window.opener.postMessage('asdasdasd', '*');
+                 window.opener.postMessage({event:'UPDATE_SESSION_TIMEOUT'},'*');
              }
              else {
                  destroy();
@@ -65,7 +65,6 @@ session_start();
 
      window.addEventListener("onbeforeunload ", function (e) {
         unlockNode();
-
         (e || window.event).returnValue = null;
         return null;
         });
