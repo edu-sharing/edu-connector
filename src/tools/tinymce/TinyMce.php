@@ -4,7 +4,7 @@ namespace connector\tools\tinymce;
 
 use connector\lib\Connector;
 
-class TinyMce extends  Connector {
+class TinyMce extends Connector {
 
     public function __construct() {
     }
@@ -21,8 +21,8 @@ class TinyMce extends  Connector {
         try {
             $temp = tmpfile();
             fwrite($temp, $_SESSION['content']);
-            $metaDatas = stream_get_meta_data($temp);
-            $tmpFilename = $metaDatas['uri'];
+            $metaData = stream_get_meta_data($temp);
+            $tmpFilename = $metaData['uri'];
         } catch (Exception $e) {
             $this->log->error('Error creating temp file.');
             throw $e;
