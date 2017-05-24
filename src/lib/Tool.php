@@ -1,6 +1,6 @@
 <?php
 
-namespace connector\lib\Tool;
+namespace connector\lib;
 
 class Tool {
 
