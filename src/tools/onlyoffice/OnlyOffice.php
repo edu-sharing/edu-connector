@@ -2,9 +2,8 @@
 
 namespace connector\tools\OnlyOffice;
 
-use connector\lib\Tool;
 
-class OnlyOffice extends Tool {
+class OnlyOffice extends \connector\lib\Tool {
 
     public function run()
     {
