@@ -53,13 +53,10 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $res = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        //curl_close($ch);
+        curl_close($ch);
         if ($httpcode >= 200 && $httpcode < 300) {
             return json_decode($res);
         }
-
-var_dump(curl_error($ch));die();
-
         throw new \Exception('Error creating content node - HTTP Status ' . $httpcode);
         return false;
     }

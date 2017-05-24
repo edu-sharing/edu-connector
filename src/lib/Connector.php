@@ -6,8 +6,8 @@ class Connector
 {
 
     private $tool;
-    private $log;
-    private $apiClient;
+    protected $log;
+    protected $apiClient;
 
     public function __construct($log)
     {
@@ -23,6 +23,8 @@ class Connector
         } catch (\Exception $e) {
             $this->log->error($e->__toString());
             echo 'ERROR - Please contact your system administrator.';
+
+            //dev
             echo $e->__toString();
             exit(0);
         }
@@ -41,9 +43,9 @@ class Connector
         if(substr($_SESSION['api_url'], -1) !== '/') {
             $_SESSION['api_url'] .= '/';
 
-            //dev
-            if(strpos($_SESSION['api_url'], 'localhost') !== false)
-              $_SESSION['api_url'] = 'http://appserver7.metaventis.com:7151/edu-sharing/rest/';
+        //dev
+        if(strpos($_SESSION['api_url'], 'localhost') !== false)
+          $_SESSION['api_url'] = 'http://appserver7.metaventis.com:7151/edu-sharing/rest/';
 
         }
     }
@@ -65,10 +67,10 @@ class Connector
     {
         switch ($_SESSION['tool']) {
             case 'ONLY_OFFICE':
-                $this -> tool = new \connector\tools\onlyoffice\OnlyOffice($this->apiClient);
+                $this -> tool = new \connector\tools\onlyoffice\OnlyOffice();
                 break;
             case 'TINYMCE':
-                $this -> tool = new \connector\tools\tinymce\TinyMce($this->apiClient);
+                $this -> tool = new \connector\tools\tinymce\TinyMce();
                 break;
             default:
                 throw new \Exception('Unknown tool: ' . $_SESSION['tool'] . '.');

@@ -2,14 +2,11 @@
 
 namespace connector\tools\OnlyOffice;
 
-use connector\lib\EduRestClient;
+use connector\lib\Connector;
 
-class OnlyOffice {
+class OnlyOffice extends Connector {
 
-    private $apiClient;
-
-    public function __construct(EduRestClient $apiClient) {
-        $this->apiClient = $apiClient;
+    public function __construct() {
     }
 
     public function run()
