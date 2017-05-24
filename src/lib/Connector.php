@@ -14,6 +14,8 @@ class Connector
         $this->log = $log;
         try {
             $this->setParameters();
+           // var_dump($_SESSION);die();
+        
             $this->apiClient = new EduRestClient();
             $this->apiClient->validateSession();
             $this->startTool();
@@ -45,7 +47,7 @@ class Connector
 
         //dev
         if(strpos($_SESSION['api_url'], 'localhost') !== false)
-          $_SESSION['api_url'] = 'http://appserver7.metaventis.com:7151/edu-sharing/rest/';
+          $_SESSION['api_url'] = 'http://appserver7.metaventis.com:7153/edu-sharing/rest/';
 
         }
     }

@@ -12,14 +12,19 @@ class TinyMce extends \connector\lib\Tool {
     public function setNode()
     {
         $node = $this->apiClient->getNode($_SESSION['node']);
-        $_SESSION['content'] = file_get_contents($node->node->contentUrl . '&ticket=' . $_SESSION['ticket']);
-        $temp = tmpfile();
-        fwrite($temp, $_SESSION['content']);
-        $metaData = stream_get_meta_data($temp);
-        $tmpFilename = $metaData['uri'];
-        $this->apiClient->createContentNode($_SESSION['node'], $tmpFilename, 'text/html', 'openedforediting');
-        fclose($temp);
-        unlink($tmpFilename);
+        if ($node->node->size === NULL) {
+            $_SESSION['content'] = '';
+        } else {
+            $_SESSION['content'] = file_get_contents($node->node->contentUrl . '&ticket=' . $_SESSION['ticket']);
+        }
+
+        if (in_array('Write', $node->node->access)) {
+            $_SESSION['edit'] = true;
+            $this->apiClient->createTextContent($_SESSION['node'], $_SESSION['content'], 'text/html', 'openedforediting');
+        } else {
+            $_SESSION['edit'] = false;
+        }
+
         $node = $this->apiClient->getNode($_SESSION['node']);
         $_SESSION['node'] = $node;
     }

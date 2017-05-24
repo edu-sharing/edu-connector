@@ -6,18 +6,20 @@ session_start();
 <!DOCTYPE html>
 <html>
 <head>
+
+<?php if($_SESSION['edit']) : ?>
+
  <script src='js/tinymce/tinymce.min.js'></script>
   <script>
-
       tinymce.init({
         selector: '#theTextarea',
         plugins: [
                   'advlist autolink lists link image charmap hr anchor pagebreak',
                   'searchreplace wordcount visualblocks visualchars code fullscreen',
-                  'insertdatetime media nonbreaking save table contextmenu directionality',
-                  'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help code'
+                  'insertdatetime nonbreaking save table contextmenu directionality',
+                  'emoticons paste textcolor colorpicker textpattern imagetools codesample toc help code'
                 ],
-                toolbar1: 'save | undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                toolbar1: 'save | undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link',
                 toolbar2: 'forecolor backcolor emoticons | help',
                 image_advtab: true,
         branding: false,
@@ -68,18 +70,25 @@ session_start();
         (e || window.event).returnValue = null;
         return null;
         });
-
-
-  
   </script>
+  <?php endif; ?>
 </head>
 
 <body>
 <h1>Logineo</h1>
+
+<?php if($_SESSION['edit']) : ?>
   <form method="post">
     <textarea id="theTextarea">
         <?php echo $_SESSION['content']?>
     </textarea>
   </form>
+
+  <?php else : ?>
+
+    <div><?php echo $_SESSION['content']?></div>
+
+<?php endif; ?>
+
 </body>
 </html>

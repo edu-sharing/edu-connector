@@ -36,6 +36,30 @@ class EduRestClient
         throw new \Exception('Error validating session - HTTP STATUS ' . $httpcode);
     }
 
+    
+
+    public function createTextContent($nodeId, $content, $mimetype, $versionComment = '')
+    {
+        $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/textContent?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
+        $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json', 'Content-Type: multipart/form-data');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_SAFE_UPLOAD, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $res = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpcode >= 200 && $httpcode < 300) {
+            return json_decode($res);
+        }
+        throw new \Exception('Error creating content node - HTTP Status ' . $httpcode);
+        return false;
+    }
+
     public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '')
     {
         $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/content?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
@@ -54,6 +78,7 @@ class EduRestClient
         $res = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
+
         if ($httpcode >= 200 && $httpcode < 300) {
             return json_decode($res);
         }
