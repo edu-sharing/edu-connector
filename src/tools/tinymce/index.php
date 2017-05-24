@@ -48,7 +48,7 @@ session_start();
      save = function  () {
 		alert(tinymce.activeEditor.getContent());
 
-        //save contentn without versioning
+        //save content without versioning
     
 	 }
 
