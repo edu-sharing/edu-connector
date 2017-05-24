@@ -23,8 +23,11 @@ class TinyMce {
         $_SESSION['content'] = file_get_contents($node->node->contentUrl . '&ticket=' . $_SESSION['ticket']);
         $temp = tmpfile();
         fwrite($temp, $_SESSION['content']);
-        $this->apiClient->createContentNode($_SESSION['node'], $temp, 'text/html', 'openedforediting');
+        $metaDatas = stream_get_meta_data($temp);
+        $tmpFilename = $metaDatas['uri'];
+        $this->apiClient->createContentNode($_SESSION['node'], $tmpFilename, 'text/html', 'openedforediting');
         fclose($temp);
+        unlink($tmpFilename);
         $node = $this->apiClient->getNode($_SESSION['node']);
         $_SESSION['node'] = $node;
     }
