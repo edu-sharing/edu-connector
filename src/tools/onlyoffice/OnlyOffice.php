@@ -2,7 +2,7 @@
 
 namespace connector\tools\OnlyOffice;
 
-use connector\lib\Tool\Tool;
+use connector\lib\Tool;
 
 class OnlyOffice extends Tool {
 
