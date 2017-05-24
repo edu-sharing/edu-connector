@@ -2,9 +2,7 @@
 
 namespace connector\tools\tinymce;
 
-use connector\lib\Tool;
-
-class TinyMce extends Tool {
+class TinyMce extends \connector\lib\Tool {
 
     public function run()
     {
