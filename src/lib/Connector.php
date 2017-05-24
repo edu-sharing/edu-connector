@@ -43,7 +43,7 @@ class Connector
         if(substr($_SESSION['api_url'], -1) !== '/') {
             $_SESSION['api_url'] .= '/';
 
-        $_SESSION['csrftoken'] = bin2hex(random_bytes(32));
+        $_SESSION['csrftoken'] = bin2hex(openssl_random_pseudo_bytes(32));
 
         //dev
         if(strpos($_SESSION['api_url'], 'localhost') !== false)
