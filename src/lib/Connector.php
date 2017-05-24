@@ -14,8 +14,6 @@ class Connector
         $this->log = $log;
         try {
             $this->setParameters();
-           // var_dump($_SESSION);die();
-        
             $this->apiClient = new EduRestClient();
             $this->apiClient->validateSession();
             $this->startTool();
@@ -44,6 +42,8 @@ class Connector
         }
         if(substr($_SESSION['api_url'], -1) !== '/') {
             $_SESSION['api_url'] .= '/';
+
+        $_SESSION['csrftoken'] = bin2hex(random_bytes(32));
 
         //dev
         if(strpos($_SESSION['api_url'], 'localhost') !== false)

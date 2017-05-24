@@ -6,7 +6,7 @@ session_start();
 <!DOCTYPE html>
 <html>
 <head>
-
+    <meta name="csrf-token" content="<?php echo $_SESSION['csrftoken'] ?>">
 <?php if($_SESSION['edit']) : ?>
 
  <script src='js/tinymce/tinymce.min.js'></script>
