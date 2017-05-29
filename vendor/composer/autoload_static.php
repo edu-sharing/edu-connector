@@ -7,6 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInit1bb40128ec15df97a8ecfba076c20a4f
 {
     public static $files = array (
+        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '23a0d77b5324496914e6da4a775b084c' => __DIR__ . '/../..' . '/config.php',
     );
 
@@ -15,14 +16,28 @@ class ComposerStaticInit1bb40128ec15df97a8ecfba076c20a4f
         array (
             'connector\\' => 10,
         ),
+        'S' => 
+        array (
+            'Slim\\' => 5,
+        ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
+            'Psr\\Http\\Message\\' => 17,
+            'Psr\\Container\\' => 14,
             'Predis\\' => 7,
         ),
         'M' => 
         array (
             'Monolog\\' => 8,
+        ),
+        'I' => 
+        array (
+            'Interop\\Container\\' => 18,
+        ),
+        'F' => 
+        array (
+            'FastRoute\\' => 10,
         ),
     );
 
@@ -31,9 +46,21 @@ class ComposerStaticInit1bb40128ec15df97a8ecfba076c20a4f
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
+        'Slim\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/slim/Slim',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Psr\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
         ),
         'Predis\\' => 
         array (
@@ -43,6 +70,24 @@ class ComposerStaticInit1bb40128ec15df97a8ecfba076c20a4f
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'Interop\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
+        ),
+        'FastRoute\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nikic/fast-route/src',
+        ),
+    );
+
+    public static $prefixesPsr0 = array (
+        'P' => 
+        array (
+            'Pimple' => 
+            array (
+                0 => __DIR__ . '/..' . '/pimple/pimple/src',
+            ),
+        ),
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -50,6 +95,7 @@ class ComposerStaticInit1bb40128ec15df97a8ecfba076c20a4f
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit1bb40128ec15df97a8ecfba076c20a4f::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit1bb40128ec15df97a8ecfba076c20a4f::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit1bb40128ec15df97a8ecfba076c20a4f::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }
