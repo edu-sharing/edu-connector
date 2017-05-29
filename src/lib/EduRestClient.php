@@ -36,6 +36,10 @@ class EduRestClient
         throw new \Exception('Error validating session - HTTP STATUS ' . $httpcode);
     }
 
+    public function unlockNode($nodeId) {
+
+    }
+
     
 
     public function createTextContent($nodeId, $content, $mimetype, $versionComment = '')
