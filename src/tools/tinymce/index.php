@@ -28,6 +28,7 @@ session_start();
       });
 
      function destroy() {
+         //destroy editor!
          alert('Session abgelaufen. Bitte neu anmelden.');
      }
 
