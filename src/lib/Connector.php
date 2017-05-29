@@ -42,6 +42,9 @@ class Connector
         }
         if(substr($_SESSION['api_url'], -1) !== '/') {
             $_SESSION['api_url'] .= '/';
+        }
+
+        $_SESSION['ajax_url'] = WWWURL . '/ajax/';
 
         $_SESSION['csrftoken'] = bin2hex(openssl_random_pseudo_bytes(32));
 
@@ -49,7 +52,6 @@ class Connector
         if(strpos($_SESSION['api_url'], 'localhost') !== false)
           $_SESSION['api_url'] = 'http://appserver7.metaventis.com:7153/edu-sharing/rest/';
 
-        }
     }
 
     private function validate($data)

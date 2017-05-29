@@ -27,31 +27,42 @@ session_start();
         save_onsavecallback: function () { save() }
       });
 
-     function destroy() {
+     function destroy(message) {
          //destroy editor!
-         alert('Session abgelaufen. Bitte neu anmelden.');
+         alert(message);
      }
 
      function pingApi() {
          var xhr = new XMLHttpRequest();
-         xhr.open('GET', '<?php echo $_SESSION['api_url']?>' + 'authentication/v1/validateSession');
-         xhr.withCredentials = true;
-         xhr.setRequestHeader('Accept','application/json');
+         xhr.open('GET', '<?php echo $_SESSION['ajax_url']?>' + 'pingApi');
+         //xhr.withCredentials = true;
          xhr.onload = function() {
              if (xhr.status === 200) {
                  window.opener.postMessage({event:'UPDATE_SESSION_TIMEOUT'},'*');
              }
              else {
-                 destroy();
+                 destroy('Session abgelaufen. Bitte neu anmelden.');
              }
          };
          xhr.send();
      }
 
      save = function  () {
-		alert(tinymce.activeEditor.getContent());
+		//alert(tinymce.activeEditor.getContent());
 
-        //save content without versioning
+        var xhr = new XMLHttpRequest();
+         xhr.open('POST', '<?php echo $_SESSION['ajax_url']?>' + 'setText');
+         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+         //xhr.withCredentials = true;
+         xhr.onload = function() {
+             if (xhr.status === 200) {
+                 
+             }
+             else {
+                 destroy('Fehler beim Speichern.');
+             }
+         };
+         xhr.send('text=' + encodeURIComponent(tinymce.activeEditor.getContent()));
     
 	 }
 
