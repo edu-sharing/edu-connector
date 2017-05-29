@@ -75,8 +75,6 @@ session_start();
 </head>
 
 <body>
-<h1>Logineo</h1>
-
 <?php if($_SESSION['edit']) : ?>
   <form method="post">
     <textarea id="theTextarea">
