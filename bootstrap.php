@@ -67,7 +67,7 @@ $app->post('/ajax/setText', function (Request $request, Response $response) {
     try {
         $apiClient = new \connector\lib\EduRestClient();
         $parsedBody = $request->getParsedBody();
-        $content = $parsedBody->content;
+        $content = $parsedBody['text'];
         $apiClient->createTextContent($_SESSION['node']->ref->id, $content, 'text/html', '');
     } catch (\Exception $e) {
         $response = $response->withStatus(500);
