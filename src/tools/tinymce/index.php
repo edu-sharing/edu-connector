@@ -28,8 +28,8 @@ session_start();
       });
 
      function destroy(message) {
-         //destroy editor!
-         alert(message);
+         tinymce.activeEditor.destroy();
+         document.body.innerHTML = message + '<br/><a href ="'+document.referrer+'">'+document.referrer+'</a>';
      }
 
      function pingApi() {
@@ -51,23 +51,20 @@ session_start();
          xhr.open('POST', '<?php echo $_SESSION['ajax_url']?>' + 'setText');
          xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
          xhr.onload = function() {
-             if (xhr.status !== 200) {
-                 destroy('Fehler beim Speichern.');
-             }
+             if (xhr.status === 200) {
+                 //alert('das dokument wurde automatisch gespeichert, christian');
+             } else {
+                destroy('Fehler beim Speichern.');
+             }  
          };
          xhr.send('text=' + encodeURIComponent(tinymce.activeEditor.getContent()));
 	 }
 
      unlockNode = function() {
          var xhr = new XMLHttpRequest();
-         xhr.open('POST', '<?php echo $_SESSION['ajax_url']?>' + 'unlockNode');
-         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-         xhr.onload = function() {
-             if (xhr.status !== 200) {
-                 destroy('Fehler beim Speichern.');
-             }
-         };
-         xhr.send('text=' + encodeURIComponent(tinymce.activeEditor.getContent()));
+         //synchronous
+         xhr.open('GET', '<?php echo $_SESSION['ajax_url']?>' + 'unlockNode', false);
+         xhr.send();
      }
 
      setInterval(function(){
@@ -77,11 +74,11 @@ session_start();
          }
      }, 10000);
 
-     window.addEventListener("onbeforeunload ", function (e) {
+
+    window.onunload = function(){
         unlockNode();
-        (e || window.event).returnValue = null;
-        return null;
-        });
+    }
+
   </script>
   <?php endif; ?>
 </head>

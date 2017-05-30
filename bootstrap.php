@@ -21,10 +21,12 @@ $container['log'] = function ($container) {
     /*
      * Log to redis/logstash
      */
-    $redisHandler = new RedisHandler(new Client('tcp://78.46.71.7:6379'), 'phplogs');
-    $formatter = new LogstashFormatter('eduConnector');
-    $redisHandler->setFormatter($formatter);
-    $log->pushHandler($redisHandler);
+    if(REDISSERVER && !empty(REDISSERVER)) {
+        $redisHandler = new RedisHandler(new Client(REDISSERVER), 'phplogs');
+        $formatter = new LogstashFormatter('eduConnector');
+        $redisHandler->setFormatter($formatter);
+        $log->pushHandler($redisHandler);
+    }
 
     $log->info('eduConnector bootstrapped');
 
@@ -44,7 +46,6 @@ $app->get('/ajax/pingApi', function (Request $request, Response $response) {
     try {
         $apiClient = new \connector\lib\EduRestClient();
         $apiClient->validateSession();
-        //$response->getBody()->write($sessionData);
     } catch (\Exception $e) {
         $response = $response->withStatus(500);
         $this->get('log')->error($e->getMessage());

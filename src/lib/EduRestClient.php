@@ -37,7 +37,24 @@ class EduRestClient
     }
 
     public function unlockNode($nodeId) {
+        $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/lock/unlock');
+        $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $res = curl_exec($ch);
 
+        if ($res === false) {
+            throw new \Exception('Cannot reach API');
+        }
+
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if ($httpcode >= 200 && $httpcode < 300) {
+            return json_decode($res);
+        }
+        throw new \Exception('Error unlocking node - HTTP STATUS ' . $httpcode);
     }
 
     public function createTextContent($nodeId, $content, $mimetype, $versionComment = '')

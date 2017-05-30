@@ -20,7 +20,7 @@ class TinyMce extends \connector\lib\Tool {
         }
         if (in_array('Write', $node->node->access)) {
             $_SESSION['edit'] = true;
-            $this->apiClient->createTextContent($_SESSION['node'], $_SESSION['content'], $node->node->mimetype, 'openedInTinyMCE');
+            $this->apiClient->createTextContent($_SESSION['node'], $_SESSION['content'], $node->node->mimetype);
         } else {
             $_SESSION['edit'] = false;
         }
