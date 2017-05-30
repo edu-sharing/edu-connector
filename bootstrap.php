@@ -16,7 +16,8 @@ $container['log'] = function ($container) {
     /*
      * Log to local file
      * */
-    $log->pushHandler(new Monolog\Handler\RotatingFileHandler(__DIR__ . '/log/connector.log', 0, \Monolog\Logger::DEBUG));
+    $log->pushHandler(new Monolog\Handler\RotatingFileHandler(__DIR__ . '/log/connector_error.log', 0, \Monolog\Logger::ERROR));
+    $log->pushHandler(new Monolog\Handler\RotatingFileHandler(__DIR__ . '/log/connector_info.log', 0, \Monolog\Logger::INFO));
 
     /*
      * Log to redis/logstash
@@ -27,8 +28,6 @@ $container['log'] = function ($container) {
         $redisHandler->setFormatter($formatter);
         $log->pushHandler($redisHandler);
     }
-
-    $log->info('eduConnector bootstrapped');
 
     return $log;
 };
@@ -76,3 +75,5 @@ $app->post('/ajax/setText', function (Request $request, Response $response) {
     }
     return $response;
 });
+
+$app->run();

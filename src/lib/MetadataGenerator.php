@@ -18,8 +18,6 @@ class MetadataGenerator {
         $entry->addAttribute('key', 'appid');
         $entry = $xml->addChild('entry', 'CONNECTOR');
         $entry->addAttribute('key', 'type');
-        $entry = $xml->addChild('entry', 'TINYMCE');
-        $entry->addAttribute('key', 'subtype');
         $entry = $xml->addChild('entry', $publicKeyData['key']);
         $entry->addAttribute('key', 'public_key');
         header('Content-type: text/xml');
