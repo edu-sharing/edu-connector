@@ -8,6 +8,10 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 $container = new \Slim\Container;
 $app = new \Slim\App($container);
+$app->add(function ($request, $response, $next) {
+    $this->get('log')->info('asdasdasd');
+    return $response;
+});
 $container = $app->getContainer();
 $container['log'] = function ($container) {
     $log = new \Monolog\Logger('eduConnector');
