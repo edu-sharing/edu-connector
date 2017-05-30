@@ -76,4 +76,6 @@ $app->post('/ajax/setText', function (Request $request, Response $response) {
     return $response;
 });
 
-$app->run();
+
+
+$app -> run();
