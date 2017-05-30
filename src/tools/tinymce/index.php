@@ -35,7 +35,6 @@ session_start();
      function pingApi() {
          var xhr = new XMLHttpRequest();
          xhr.open('GET', '<?php echo $_SESSION['ajax_url']?>' + 'pingApi');
-         //xhr.withCredentials = true;
          xhr.onload = function() {
              if (xhr.status === 200) {
                  window.opener.postMessage({event:'UPDATE_SESSION_TIMEOUT'},'*');
@@ -48,26 +47,27 @@ session_start();
      }
 
      save = function  () {
-		//alert(tinymce.activeEditor.getContent());
-
         var xhr = new XMLHttpRequest();
          xhr.open('POST', '<?php echo $_SESSION['ajax_url']?>' + 'setText');
          xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-         //xhr.withCredentials = true;
          xhr.onload = function() {
-             if (xhr.status === 200) {
-                 
-             }
-             else {
+             if (xhr.status !== 200) {
                  destroy('Fehler beim Speichern.');
              }
          };
          xhr.send('text=' + encodeURIComponent(tinymce.activeEditor.getContent()));
-    
 	 }
 
      unlockNode = function() {
-         //call api
+         var xhr = new XMLHttpRequest();
+         xhr.open('POST', '<?php echo $_SESSION['ajax_url']?>' + 'unlockNode');
+         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+         xhr.onload = function() {
+             if (xhr.status !== 200) {
+                 destroy('Fehler beim Speichern.');
+             }
+         };
+         xhr.send('text=' + encodeURIComponent(tinymce.activeEditor.getContent()));
      }
 
      setInterval(function(){

@@ -40,8 +40,6 @@ class EduRestClient
 
     }
 
-    
-
     public function createTextContent($nodeId, $content, $mimetype, $versionComment = '')
     {
         $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/textContent?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
@@ -50,7 +48,6 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_SAFE_UPLOAD, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $res = curl_exec($ch);
@@ -60,7 +57,7 @@ class EduRestClient
         if ($httpcode >= 200 && $httpcode < 300) {
             return json_decode($res);
         }
-        throw new \Exception('Error creating content node - HTTP Status ' . $httpcode);
+        throw new \Exception('Error creating text content - HTTP Status ' . $httpcode);
         return false;
     }
 

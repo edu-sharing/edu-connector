@@ -55,7 +55,7 @@ $app->get('/ajax/pingApi', function (Request $request, Response $response) {
 $app->get('/ajax/unlockNode', function (Request $request, Response $response) {
     try {
         $apiClient = new \connector\lib\EduRestClient();
-        $apiClient->unlockNode();
+        $apiClient->unlockNode($_SESSION['node']->node->ref->id);
     } catch (\Exception $e) {
         $response = $response->withStatus(500);
         $this->get('log')->error($e->getMessage());
@@ -68,7 +68,7 @@ $app->post('/ajax/setText', function (Request $request, Response $response) {
         $apiClient = new \connector\lib\EduRestClient();
         $parsedBody = $request->getParsedBody();
         $content = $parsedBody['text'];
-        $apiClient->createTextContent($_SESSION['node']->ref->id, $content, 'text/html', '');
+        $apiClient->createTextContent($_SESSION['node']->node->ref->id, $content, 'text/html', '');
     } catch (\Exception $e) {
         $response = $response->withStatus(500);
         $this->get('log')->error($e->getMessage());
