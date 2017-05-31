@@ -45,7 +45,7 @@ class Connector
         }
 
         $_SESSION['csrftoken'] = bin2hex(openssl_random_pseudo_bytes(32));
-        
+
         $_SESSION['WWWURL'] = WWWURL;
 
         //dev
@@ -70,9 +70,9 @@ class Connector
     private function startTool()
     {
         switch ($_SESSION['tool']) {
-            case 'ONLY_OFFICE':
+           /* case 'ONLY_OFFICE':
                 $this -> tool = new \connector\tools\onlyoffice\OnlyOffice($this->apiClient, $this->log);
-                break;
+                break;*/
             case 'TINYMCE':
                 $this -> tool = new \connector\tools\tinymce\TinyMce($this->apiClient, $this->log);
                 break;
