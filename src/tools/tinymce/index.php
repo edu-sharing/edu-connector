@@ -7,44 +7,19 @@ session_start();
 <html>
 <head>
     <meta name="csrf-token" content="<?php echo $_SESSION['csrftoken'] ?>">
-    <style type="text/css"> 
-      * {
-          font-family:verdana, sans-serif;
-        }
-      .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            padding-top: 100px;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.6);
-        }
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
 
-        .modal-content {
-            padding: 20px;
-            color: #333;
-            position: relative;
-            background-color: #fff;
-            margin: auto;
-            padding: 0;
-            border: 1px solid #888;
-            width: 60%;
-            box-shadow: 0 0 5px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-        }
-    </style> 
-    <link href="<?php echo $_SESSION['WWWURL']?>/css/toastr.min.css" rel="stylesheet"/>
-    <script src="<?php echo $_SESSION['WWWURL']?>/js/jquery-3.2.1.min.js"></script>
-    <script src="<?php echo $_SESSION['WWWURL']?>/js/toastr.min.js"></script>
 
+  <script src="<?php echo $_SESSION['WWWURL']?>/js/jquery-3.2.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+    
 <?php if($_SESSION['edit']) : ?>
 
  <script src='js/tinymce/tinymce.min.js'></script>
   <script>
+
+$(document).ready(function() {
+
       tinymce.init({
         selector: '#theTextarea',
         plugins: [
@@ -63,7 +38,8 @@ session_start();
 
      function destroy() {
          //tinymce.activeEditor.destroy();
-         document.getElementById('modal').style.display = "block";
+         $('#modal').modal();
+         $('#modal').modal('open'); 
      }
 
      save = function  () {
@@ -73,7 +49,8 @@ session_start();
          xhr.onload = function() {
              if (xhr.status === 200) {
                  window.opener.postMessage({event:'UPDATE_SESSION_TIMEOUT'},'*');
-                 toastr.success('Dateiinhalt wurde gespeichert.');
+                 // Materialize.toast(message, displayLength, className, completeCallback);
+                    Materialize.toast('Dateiinhalt wurde gespeichert.', 4000) // 4000 is the duration of the toast
              } else {
                 destroy();
              }  
@@ -100,30 +77,32 @@ session_start();
         unlockNode();
     }
 
-    toastr.options = {
-        "closeButton": true,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": false,
-        "positionClass": "toast-bottom-center",
-        "preventDuplicates": true,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "5000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-        }
+    window.addEventListener("message", receiveMessage, false);
+    function receiveMessage(event){
+        if(event.data.event=="SESSION_TIMEOUT"){
+            
+            if(event.data.data < 0) {
+                destroy();
+            }
 
+            var min = Math.floor(event.data.data/60);
+            if(min < 10)
+                min = '0' + min;
+            var sec = Math.floor(event.data.data%60);
+            if(sec < 10)
+                sec = '0' + sec;
+            $('#countdown').html(min + ':' + sec);
+        }
+    }
+
+});
   </script>
+  
   <?php endif; ?>
 </head>
 
 <body>
-<div id="contentwrapper">
+<h1>DEV - NICHT BENUTZEN - <span id="countdown"></span></h1>
 <?php if($_SESSION['edit']) : ?>
   <form method="post">
     <textarea id="theTextarea">
@@ -136,16 +115,19 @@ session_start();
     <div><?php echo $_SESSION['content']?></div>
 
 <?php endif; ?>
-</div>
+
+
 <div id="modal" class="modal">
-
-  <div class="modal-content">
-    <h1>Sie wurden abgemeldet oder ein Fehler ist aufgetreten</h1>
-    Ihre Sitzung.....
-    <hr/>
-   <a href="<?php echo $_SERVER["HTTP_REFERER"]?>">NEU ANMELDEN</a>
+    <div class="modal-content">
+      <h4>Sie wurden abgemeldet oder ein Fehler ist aufgetreten ...</h4>
+      <p>... mal sehen</p>
+      <div style="text-align: right">
+        <a class="waves-effect waves-light btn" href="<?php echo $_SERVER["HTTP_REFERER"]?>">NEU ANMELDEN</a>
+        </div>
+    </div>
   </div>
+          
 
-</div>
+
 </body>
 </html>
