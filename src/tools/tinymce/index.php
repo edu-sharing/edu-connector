@@ -8,6 +8,7 @@ session_start();
 <head>
     <meta name="csrf-token" content="<?php echo $_SESSION['csrftoken'] ?>">
     <link href="<?php echo WWWURL?>/css/toastr.min.css" rel="stylesheet"/>
+    <script src="<?php echo WWWURL?>/js/jquery-3.2.1.min.js"></script>
     <script src="<?php echo WWWURL?>/js/toastr.min.js"></script>
 
 <?php if($_SESSION['edit']) : ?>
