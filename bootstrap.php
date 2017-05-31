@@ -8,6 +8,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 $container = new \Slim\Container;
 $app = new \Slim\App($container);
+
 $container = $app->getContainer();
 $container['log'] = function ($container) {
     $log = new \Monolog\Logger('eduConnector');
@@ -33,15 +34,18 @@ $container['log'] = function ($container) {
 };
 
 $app->get('/', function (Request $request, Response $response) {
+    $this->get('log')->info($request->getUri());
     $connector = new \connector\lib\Connector($this->get('log'));
 });
 
 $app->get('/metadata', function (Request $request, Response $response) {
+    $this->get('log')->info($request->getUri());
     $metadataGenerator = new \connector\lib\MetadataGenerator();
     $metadataGenerator -> serve();
 });
-
+/*
 $app->get('/ajax/pingApi', function (Request $request, Response $response) {
+    $this->get('log')->info($request->getUri());
     try {
         $apiClient = new \connector\lib\EduRestClient();
         $apiClient->validateSession();
@@ -51,8 +55,9 @@ $app->get('/ajax/pingApi', function (Request $request, Response $response) {
     }
     return $response;
 });
-
+*/
 $app->get('/ajax/unlockNode', function (Request $request, Response $response) {
+    $this->get('log')->info($request->getUri());
     try {
         $apiClient = new \connector\lib\EduRestClient();
         $apiClient->unlockNode($_SESSION['node']->node->ref->id);
@@ -64,6 +69,7 @@ $app->get('/ajax/unlockNode', function (Request $request, Response $response) {
 });
 
 $app->post('/ajax/setText', function (Request $request, Response $response) {
+    $this->get('log')->info($request->getUri());
     try {
         $apiClient = new \connector\lib\EduRestClient();
         $parsedBody = $request->getParsedBody();
@@ -75,7 +81,5 @@ $app->post('/ajax/setText', function (Request $request, Response $response) {
     }
     return $response;
 });
-
-
 
 $app -> run();

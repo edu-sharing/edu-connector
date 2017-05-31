@@ -22,8 +22,8 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $res = curl_exec($ch);
-
         if ($res === false) {
             throw new \Exception('Cannot reach API');
         }
@@ -33,6 +33,7 @@ class EduRestClient
         if ($httpcode >= 200 && $httpcode < 300) {
             return json_decode($res);
         }
+        //var_dump($res);
         throw new \Exception('Error validating session - HTTP STATUS ' . $httpcode);
     }
 
@@ -43,6 +44,7 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $res = curl_exec($ch);
 
         if ($res === false) {
@@ -67,6 +69,7 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $res = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
@@ -93,6 +96,7 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_SAFE_UPLOAD, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $res = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
@@ -120,6 +124,7 @@ class EduRestClient
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $res = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
@@ -139,6 +144,7 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $res = curl_exec($ch);
 
         if ($res === false) {
@@ -146,6 +152,7 @@ class EduRestClient
         }
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
         curl_close($ch);
         if ($httpcode >= 200 && $httpcode < 300) {
             $node = json_decode($res);
@@ -163,6 +170,7 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $res = curl_exec($ch);
 
         if ($res === false) {

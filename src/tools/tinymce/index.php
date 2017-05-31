@@ -32,7 +32,7 @@ session_start();
          document.body.innerHTML = message + '<br/><a href ="'+document.referrer+'">'+document.referrer+'</a>';
      }
 
-     function pingApi() {
+    /* function pingApi() {
          var xhr = new XMLHttpRequest();
          xhr.open('GET', '<?php echo $_SESSION['ajax_url']?>' + 'pingApi');
          xhr.onload = function() {
@@ -44,7 +44,7 @@ session_start();
              }
          };
          xhr.send();
-     }
+     }*/
 
      save = function  () {
         var xhr = new XMLHttpRequest();
@@ -69,7 +69,7 @@ session_start();
 
      setInterval(function(){
          if (tinyMCE.activeEditor.isDirty()) {
-             pingApi();
+             //pingApi();
              save();
          }
      }, 10000);
