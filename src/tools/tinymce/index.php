@@ -2,16 +2,17 @@
 session_start();
 ?>
  
-
 <!DOCTYPE html>
 <html>
 <head>
   <meta name="csrf-token" content="<?php echo $_SESSION['csrftoken'] ?>">
+  <link href="//fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
   <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+  <link rel="stylesheet" href="<?php echo $_SESSION['WWWURL']?>/css/main.css" rel="stylesheet">
   <script src="<?php echo $_SESSION['WWWURL']?>/js/jquery-3.2.1.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
-    
+  
 <?php if($_SESSION['edit']) : ?>
     <script src='js/tinymce/tinymce.min.js'></script>
     <script>var wwwurl = '<?php echo $_SESSION['WWWURL']?>';</script>
@@ -37,8 +38,8 @@ session_start();
 
 <div id="modal" class="modal">
     <div class="modal-content">
-      <h4>Sie wurden abgemeldet oder ein Fehler ist aufgetreten ...</h4>
-      <p>... mal sehen</p>
+      <h4>Sie wurden abgemeldet</h4>
+      <p>Ihre Sitzung wurde aufgrund von Inaktivität zu Ihrer Sicherheit automatisch beendet, da Sie mindestens 10 Minuten nicht aktiv waren.<br/>Bitte melden Sie sich erneut an.</p>
       <div style="text-align: right">
         <a class="waves-effect waves-light btn" href="<?php echo $_SERVER["HTTP_REFERER"]?>">NEU ANMELDEN</a>
         </div>

@@ -50,8 +50,8 @@ $app->get('/ajax/unlockNode', function (Request $request, Response $response) {
         $apiClient = new \connector\lib\EduRestClient();
         $apiClient->unlockNode($_SESSION['node']->node->ref->id);
     } catch (\Exception $e) {
-        $response = $response->withStatus(500);
-        $this->get('log')->error($e->getMessage());
+        $response = $response->withStatus($e -> getCode());
+        $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
     }
     return $response;
 });
@@ -64,8 +64,8 @@ $app->post('/ajax/setText', function (Request $request, Response $response) {
         $content = $parsedBody['text'];
         $apiClient->createTextContent($_SESSION['node']->node->ref->id, $content, 'text/html', '');
     } catch (\Exception $e) {
-        $response = $response->withStatus(500);
-        $this->get('log')->error($e->getMessage());
+        $response = $response->withStatus($e -> getCode());
+        $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
     }
     $_SESSION['content'] = $content;
     return $response;

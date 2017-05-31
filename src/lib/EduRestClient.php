@@ -34,7 +34,7 @@ class EduRestClient
             return json_decode($res);
         }
         //var_dump($res);
-        throw new \Exception('Error validating session - HTTP STATUS ' . $httpcode);
+        throw new \Exception('Error validating session', $httpcode);
     }
 
     public function unlockNode($nodeId) {
@@ -56,7 +56,7 @@ class EduRestClient
         if ($httpcode >= 200 && $httpcode < 300) {
             return json_decode($res);
         }
-        throw new \Exception('Error unlocking node - HTTP STATUS ' . $httpcode);
+        throw new \Exception('Error unlocking node', $httpcode);
     }
 
     public function createTextContent($nodeId, $content, $mimetype, $versionComment = '')
@@ -77,7 +77,7 @@ class EduRestClient
         if ($httpcode >= 200 && $httpcode < 300) {
             return json_decode($res);
         }
-        throw new \Exception('Error creating text content - HTTP Status ' . $httpcode);
+        throw new \Exception('Error creating text content', $httpcode);
         return false;
     }
 /*
@@ -158,7 +158,7 @@ class EduRestClient
             $node = json_decode($res);
             return $node;
         }
-        throw new \Exception('Error fetching node - HTTP STATUS ' . $httpcode);
+        throw new \Exception('Error fetching node', $httpcode);
     }
 
 
@@ -183,7 +183,7 @@ class EduRestClient
             $person = json_decode($res);
             return $person;
         }
-        throw new \Exception('Error fetching person');
+        throw new \Exception('Error fetching person', $httpcode);
     }
 
 

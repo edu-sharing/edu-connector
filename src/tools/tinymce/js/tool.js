@@ -30,9 +30,11 @@ $(document).ready(function() {
             if (xhr.status === 200) {
                 window.opener.postMessage({event:'UPDATE_SESSION_TIMEOUT'},'*');
                 // Materialize.toast(message, displayLength, className, completeCallback);
-                Materialize.toast('Dateiinhalt wurde gespeichert.', 4000) // 4000 is the duration of the toast
-            } else {
+                Materialize.toast('Dateiinhalt wurde gespeichert', 4000, 'success') // 4000 is the duration of the toast
+            } else if(xhr.status === 401) {
                 destroy();
+            } else {
+                Materialize.toast('Dateiinhalt konnte nicht gespeichert werden (HTTP Status ' + xhr.status + ')', 4000, 'error') // 4000 is the duration of the toast
             }
         };
         xhr.send('text=' + encodeURIComponent(tinymce.activeEditor.getContent()));
