@@ -7,8 +7,8 @@ session_start();
 <html>
 <head>
     <meta name="csrf-token" content="<?php echo $_SESSION['csrftoken'] ?>">
-    <link href="<?php echo WWWURL?>/css/toastr.min.css" rel="stylesheet"/>
-    <script src="<?php echo WWWURL?>/js/toastr.min.js"></script>
+    <link href="<?php echo $_SESSION['WWWURL'] ?>/css/toastr.min.css" rel="stylesheet"/>
+    <script src="<?php echo $_SESSION['WWWURL'] ?>/js/toastr.min.js"></script>
 
 <?php if($_SESSION['edit']) : ?>
 
@@ -37,7 +37,7 @@ session_start();
 
     /* function pingApi() {
          var xhr = new XMLHttpRequest();
-         xhr.open('GET', '<?php echo $_SESSION['ajax_url']?>' + 'pingApi');
+         xhr.open('GET', '<?php echo $_SESSION['WWWURL']?>/ajax/' + 'pingApi');
          xhr.onload = function() {
              if (xhr.status === 200) {
                  window.opener.postMessage({event:'UPDATE_SESSION_TIMEOUT'},'*');
@@ -51,11 +51,12 @@ session_start();
 
      save = function  () {
         var xhr = new XMLHttpRequest();
-         xhr.open('POST', '<?php echo $_SESSION['ajax_url']?>' + 'setText');
+         xhr.open('POST', '<?php echo $_SESSION['WWWURL']?>/ajax/' + 'setText');
          xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
          xhr.onload = function() {
              if (xhr.status === 200) {
-                 //alert('das dokument wurde automatisch gespeichert, christian');
+                 window.opener.postMessage({event:'UPDATE_SESSION_TIMEOUT'},'*');
+                 toastr.success('Dateiinhalt wurde gespeichert.');
              } else {
                 destroy('Fehler beim Speichern.');
              }  
@@ -66,7 +67,7 @@ session_start();
      unlockNode = function() {
          var xhr = new XMLHttpRequest();
          //synchronous
-         xhr.open('GET', '<?php echo $_SESSION['ajax_url']?>' + 'unlockNode', false);
+         xhr.open('GET', '<?php echo $_SESSION['WWWURL']?>/ajax/' + 'unlockNode', false);
          xhr.send();
      }
 

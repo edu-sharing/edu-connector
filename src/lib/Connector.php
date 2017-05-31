@@ -44,9 +44,9 @@ class Connector
             $_SESSION['api_url'] .= '/';
         }
 
-        $_SESSION['ajax_url'] = WWWURL . '/ajax/';
-
         $_SESSION['csrftoken'] = bin2hex(openssl_random_pseudo_bytes(32));
+        
+        $_SESSION['WWWURL'] = WWWURL;
 
         //dev
         if(strpos($_SESSION['api_url'], 'localhost') !== false)
