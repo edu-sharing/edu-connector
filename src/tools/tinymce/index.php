@@ -14,7 +14,7 @@ session_start();
     
 <?php if($_SESSION['edit']) : ?>
     <script src='js/tinymce/tinymce.min.js'></script>
-    <script>var wwwurl = '<?php echo $_SESSION['WWWURL']?>';
+    <script>var wwwurl = '<?php echo $_SESSION['WWWURL']?>';</script>
     <script src="<?php echo $_SESSION['WWWURL']?>/src/tools/tinymce/js/tool.js"></script>
 <?php endif; ?>
 </head>

@@ -50,7 +50,7 @@ $(document).ready(function() {
             tinyMCE.activeEditor.save(); // to reset isDirty
             save();
         }
-    }, 10000);
+    }, 15000);
 
 
     window.onunload = function(){
@@ -60,18 +60,18 @@ $(document).ready(function() {
     window.addEventListener("message", receiveMessage, false);
     function receiveMessage(event){
         if(event.data.event=="SESSION_TIMEOUT"){
-
-            if(event.data.data < 0) {
+            if(event.data.data > 0) {
+                var min = Math.floor(event.data.data/60);
+                if(min < 10)
+                    min = '0' + min;
+                var sec = Math.floor(event.data.data%60);
+                if(sec < 10)
+                    sec = '0' + sec;
+                $('#countdown').html(min + ':' + sec);
+            } else {
+                $('#countdown').html('00:00');
                 destroy();
             }
-
-            var min = Math.floor(event.data.data/60);
-            if(min < 10)
-                min = '0' + min;
-            var sec = Math.floor(event.data.data%60);
-            if(sec < 10)
-                sec = '0' + sec;
-            $('#countdown').html(min + ':' + sec);
         }
     }
 

@@ -67,6 +67,7 @@ $app->post('/ajax/setText', function (Request $request, Response $response) {
         $response = $response->withStatus(500);
         $this->get('log')->error($e->getMessage());
     }
+    $_SESSION['content'] = $content;
     return $response;
 });
 
