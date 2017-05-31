@@ -7,6 +7,7 @@ session_start();
 <html>
 <head>
     <meta name="csrf-token" content="<?php echo $_SESSION['csrftoken'] ?>">
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
 
 
@@ -102,7 +103,7 @@ $(document).ready(function() {
 </head>
 
 <body>
-<h1>DEV - NICHT BENUTZEN - <span id="countdown"></span></h1>
+<h1>DEV - NICHT BENUTZEN - <i class="material-icons">av_timer</i> <span id="countdown"></span></h1>
 <?php if($_SESSION['edit']) : ?>
   <form method="post">
     <textarea id="theTextarea">

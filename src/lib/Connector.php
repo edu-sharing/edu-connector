@@ -64,7 +64,7 @@ class Connector
 
     private function setUser()
     {
-        $_SESSION['user'] = $this->apiClient->getUser();
+        $_SESSION['user'] = $this->apiClient->getUser()->person;
     }
 
     private function startTool()

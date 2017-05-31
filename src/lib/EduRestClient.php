@@ -80,7 +80,7 @@ class EduRestClient
         throw new \Exception('Error creating text content - HTTP Status ' . $httpcode);
         return false;
     }
-
+/*
     public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '')
     {
         $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/content?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
@@ -134,7 +134,7 @@ class EduRestClient
         }
         echo 'Error updating node';
         return false;
-    }
+    }*/
 
     public function getNode($nodeId)
     {
@@ -181,7 +181,7 @@ class EduRestClient
         curl_close($ch);
         if ($httpcode >= 200 && $httpcode < 300) {
             $person = json_decode($res);
-            return $person->person;
+            return $person;
         }
         throw new \Exception('Error fetching person');
     }

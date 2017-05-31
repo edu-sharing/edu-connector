@@ -43,19 +43,7 @@ $app->get('/metadata', function (Request $request, Response $response) {
     $metadataGenerator = new \connector\lib\MetadataGenerator();
     $metadataGenerator -> serve();
 });
-/*
-$app->get('/ajax/pingApi', function (Request $request, Response $response) {
-    $this->get('log')->info($request->getUri());
-    try {
-        $apiClient = new \connector\lib\EduRestClient();
-        $apiClient->validateSession();
-    } catch (\Exception $e) {
-        $response = $response->withStatus(500);
-        $this->get('log')->error($e->getMessage());
-    }
-    return $response;
-});
-*/
+
 $app->get('/ajax/unlockNode', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     try {
