@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
     tinymce.init({
         selector: '#theTextarea',
         plugins: [
@@ -13,6 +12,7 @@ $(document).ready(function() {
         image_advtab: true,
         branding: false,
         height: 500,
+        readonly: readonly,
         save_onsavecallback: function () { save() }
     });
 
@@ -29,12 +29,11 @@ $(document).ready(function() {
         xhr.onload = function() {
             if (xhr.status === 200) {
                 window.opener.postMessage({event:'UPDATE_SESSION_TIMEOUT'},'*');
-                // Materialize.toast(message, displayLength, className, completeCallback);
-                Materialize.toast('Dateiinhalt wurde gespeichert', 4000, 'success') // 4000 is the duration of the toast
+                Materialize.toast('Dateiinhalt wurde gespeichert', 4000, 'success');
             } else if(xhr.status === 401) {
                 destroy();
             } else {
-                Materialize.toast('Dateiinhalt konnte nicht gespeichert werden (HTTP Status ' + xhr.status + ')', 4000, 'error') // 4000 is the duration of the toast
+                Materialize.toast('Dateiinhalt konnte nicht gespeichert werden (HTTP Status ' + xhr.status + ')', 4000, 'error');
             }
         };
         xhr.send('text=' + encodeURIComponent(tinymce.activeEditor.getContent()));
@@ -52,8 +51,13 @@ $(document).ready(function() {
             tinyMCE.activeEditor.save(); // to reset isDirty
             save();
         }
-    }, 15000);
+    }, 20000);
 
+    window.onbeforeunload = function() {
+        if (tinyMCE.activeEditor.isDirty()) {
+            return 'Die von Ihnen vorgenommenen Änderungen werden möglicherweise nicht gespeichert.'; // default chrome text
+        }
+    }
 
     window.onunload = function(){
         unlockNode();

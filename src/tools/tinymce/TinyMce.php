@@ -19,10 +19,10 @@ class TinyMce extends \connector\lib\Tool {
             $_SESSION['content'] = file_get_contents($node->node->contentUrl . '&ticket=' . $_SESSION['ticket']);
         }
         if (in_array('Write', $node->node->access)) {
-            $_SESSION['edit'] = true;
+            $_SESSION['readonly'] = 0;
             $this->apiClient->createTextContent($_SESSION['node'], $_SESSION['content'], $node->node->mimetype);
         } else {
-            $_SESSION['edit'] = false;
+            $_SESSION['readonly'] = 1;
         }
 
         $node = $this->apiClient->getNode($_SESSION['node']);
