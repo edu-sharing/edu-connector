@@ -63,7 +63,7 @@ class Connector
 
     private function startTool()
     {
-        switch ($_SESSION['tool']) {
+        switch ($_SESSION[$this->id]['tool']) {
            /* case 'ONLY_OFFICE':
                 $this -> tool = new \connector\tools\onlyoffice\OnlyOffice($this->apiClient, $this->log);
                 break;*/

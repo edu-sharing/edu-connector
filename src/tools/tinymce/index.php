@@ -34,13 +34,17 @@ $_SESSION[$id]['first_run'] = false;
   <script src="<?php echo $_SESSION[$id]['WWWURL']?>/src/tools/tinymce/js/tool.js"></script>
 </head>
 <body>
-<?php echo $_SESSION[$id]['node']->node->ref->id ?> <i class="material-icons">av_timer</i> <span id="countdown"></span>
+<header>
+  <div id="countdown"><i class="material-icons">av_timer</i> <span id="countdownvalue"></span></div>
+  <h4><?php echo $_SESSION[$id]['node']->node->name ?></h4>
+</header>
+<section>
 <form method="post">
   <textarea id="theTextarea">
       <?php echo $_SESSION[$id]['content'];?>
   </textarea>
 </form>
-
+</section>
 <div id="modal" class="modal">
     <div class="modal-content">
       <h4>Sie wurden abgemeldet / RELOAD NICHT ERLAUBT (todo error msg)</h4>

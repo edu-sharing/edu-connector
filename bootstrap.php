@@ -61,7 +61,7 @@ $app->post('/ajax/setText', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     $id = $request->getHeaderLine('X-CSRF-Token');
     try {
-        $apiClient = new \connector\lib\EduRestClient();
+        $apiClient = new \connector\lib\EduRestClient($id);
         $parsedBody = $request->getParsedBody();
         $content = $parsedBody['text'];
         $apiClient->createTextContent($_SESSION[$id]['node']->node->ref->id, $content, 'text/html', '');

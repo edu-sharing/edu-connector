@@ -20,7 +20,10 @@ $(document).ready(function() {
 
     function destroy() {
         //tinymce.activeEditor.destroy();
-        $('#modal').modal();
+        $('#modal').modal({
+            dismissible: false,
+            opacity: .8,
+        });
         $('#modal').modal('open');
     }
 
@@ -82,9 +85,9 @@ $(document).ready(function() {
                 var sec = Math.floor(event.data.data%60);
                 if(sec < 10)
                     sec = '0' + sec;
-                $('#countdown').html(min + ':' + sec);
+                $('#countdownvalue').html(min + ':' + sec);
             } else {
-                $('#countdown').html('00:00');
+                $('#countdownvalue').html('00:00');
                 destroy();
             }
         }

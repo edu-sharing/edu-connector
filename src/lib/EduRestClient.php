@@ -44,7 +44,7 @@ class EduRestClient
     }
 
     public function unlockNode($nodeId) {
-        $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/lock/unlock');
+        $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/lock/unlock');
         $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -67,7 +67,7 @@ class EduRestClient
 
     public function createTextContent($nodeId, $content, $mimetype, $versionComment = '')
     {
-        $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/textContent?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
+        $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/textContent?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
         $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json', 'Content-Type: multipart/form-data');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -144,7 +144,7 @@ class EduRestClient
 
     public function getNode($nodeId)
     {
-        $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/metadata?propertyFilter=-all-');
+        $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/metadata?propertyFilter=-all-');
         $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -170,7 +170,7 @@ class EduRestClient
 
     public function getUser()
     {
-        $ch = curl_init($_SESSION['api_url'] . 'iam/v1/people/-home-/-me-');
+        $ch = curl_init($this->getApiUrl() . 'iam/v1/people/-home-/-me-');
         $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
