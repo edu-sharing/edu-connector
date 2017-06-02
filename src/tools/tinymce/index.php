@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+if(empty($_SESSION))
+ die();
+ 
 $access = 1;
 if($_SESSION['first_run'] !== true) {
   $access = 0;
