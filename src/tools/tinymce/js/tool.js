@@ -7,19 +7,21 @@ $(document).ready(function() {
             'insertdatetime nonbreaking save table contextmenu directionality',
             'emoticons paste textcolor colorpicker help print'
         ],
-        toolbar1: 'save | print | undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link',
-        //toolbar2: 'forecolor backcolor emoticons | help',
+        toolbar: 'save | print | undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link',
         image_advtab: true,
         branding: false,
         height: 500,
         readonly: readonly,
-        language : 'de',
-        language_url: 'js/tinymce/langs/de.js',
+        language : lang,
+        language_url: 'js/tinymce/langs/' + lang + '.js',
         save_onsavecallback: function () { save() }
     });
 
-    function destroy() {
-        //tinymce.activeEditor.destroy();
+    function destroy(text) {
+        tinymce.activeEditor.setMode('readonly');
+        $('#modalHeading').html(text[0]);
+        $('#modalText').html(text[1]);
+        $('#modalButton').html(text[2]);
         $('#modal').modal({
             dismissible: false,
             opacity: .8,
@@ -35,11 +37,11 @@ $(document).ready(function() {
         xhr.onload = function() {
             if (xhr.status === 200) {
                 window.opener.postMessage({event:'UPDATE_SESSION_TIMEOUT'},'*');
-                Materialize.toast('Dateiinhalt wurde gespeichert', 4000, 'success');
+                Materialize.toast(language.datasaved, 4000, 'success');
             } else if(xhr.status === 401) {
-                destroy();
+                destroy([language.notauthorizedheading, language.notauthorizedtext, language.notauthorizedbutton]);
             } else {
-                Materialize.toast('Dateiinhalt konnte nicht gespeichert werden (HTTP Status ' + xhr.status + ')', 4000, 'error');
+                Materialize.toast(language.datasavederror + ' (HTTP status code ' + xhr.status + ')', 4000, 'error');
             }
         };
         xhr.send('text=' + encodeURIComponent(tinymce.activeEditor.getContent()));
@@ -61,7 +63,7 @@ $(document).ready(function() {
     }, 20000);
 
     if(access < 1) {
-        destroy();
+        destroy([language.functiondeactivatedheading, language.functiondeactivatedtext, language.functiondeactivatedbutton]);
     }
 
     window.onbeforeunload = function() {
