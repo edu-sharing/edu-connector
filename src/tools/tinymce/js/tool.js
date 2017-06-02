@@ -55,7 +55,6 @@ $(document).ready(function() {
     }, 20000);
 
     if(access < 1) {
-        unlockNode();
         destroy();
     }
 
