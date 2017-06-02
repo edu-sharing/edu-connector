@@ -1,5 +1,10 @@
 <?php
 session_start();
+$access = 1;
+if($_SESSION['first_run'] !== true) {
+  $access = 0;
+}
+$_SESSION['first_run'] = false;
 ?>
  
 <!DOCTYPE html>
@@ -17,6 +22,7 @@ session_start();
   <script>
     var wwwurl = '<?php echo $_SESSION['WWWURL']?>';
     var readonly = <?php echo $_SESSION['readonly'] ?>;
+    var access = <?php echo $access ?>;
   </script>
   <script src="<?php echo $_SESSION['WWWURL']?>/src/tools/tinymce/js/tool.js"></script>
 </head>

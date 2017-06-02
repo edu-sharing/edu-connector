@@ -5,7 +5,8 @@ namespace connector\tools\tinymce;
 class TinyMce extends \connector\lib\Tool {
 
     public function run()
-    {
+    {   
+        $_SESSION['first_run'] = true;
         $this->forwardToEditor();
     }
 

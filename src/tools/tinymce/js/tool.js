@@ -13,6 +13,7 @@ $(document).ready(function() {
         branding: false,
         height: 500,
         readonly: readonly,
+        language : 'en',
         save_onsavecallback: function () { save() }
     });
 
@@ -53,15 +54,21 @@ $(document).ready(function() {
         }
     }, 20000);
 
+    if(access < 1) {
+        unlockNode();
+        destroy();
+    }
+
     window.onbeforeunload = function() {
         if (tinyMCE.activeEditor.isDirty()) {
             return 'Die von Ihnen vorgenommenen Änderungen werden möglicherweise nicht gespeichert.'; // default chrome text
         }
-    }
-
-    window.onunload = function(){
         unlockNode();
     }
+
+    /*window.onunload = function(){
+        unlockNode();
+    }*/
 
     window.addEventListener("message", receiveMessage, false);
     function receiveMessage(event){
