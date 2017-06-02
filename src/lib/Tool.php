@@ -6,10 +6,12 @@ class Tool {
 
     protected $apiClient;
     protected $log;
+    protected $connectorId;
 
-    public function __construct($apiClient, $log) {
+    public function __construct($apiClient, $log, $connectorId) {
         $this->apiClient = $apiClient;
         $this->log = $log;
+        $this->connectorId = $connectorId;
     }
 
     public function setNode() {

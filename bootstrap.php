@@ -46,9 +46,10 @@ $app->get('/metadata', function (Request $request, Response $response) {
 
 $app->get('/ajax/unlockNode', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
+    $id = $request->getHeaderLine('X-CSRF-Token');
     try {
-        $apiClient = new \connector\lib\EduRestClient();
-        $apiClient->unlockNode($_SESSION['node']->node->ref->id);
+        $apiClient = new \connector\lib\EduRestClient($id);
+        $apiClient->unlockNode($_SESSION[$id]['node']->node->ref->id);
     } catch (\Exception $e) {
         $response = $response->withStatus($e -> getCode());
         $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
@@ -58,16 +59,17 @@ $app->get('/ajax/unlockNode', function (Request $request, Response $response) {
 
 $app->post('/ajax/setText', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
+    $id = $request->getHeaderLine('X-CSRF-Token');
     try {
         $apiClient = new \connector\lib\EduRestClient();
         $parsedBody = $request->getParsedBody();
         $content = $parsedBody['text'];
-        $apiClient->createTextContent($_SESSION['node']->node->ref->id, $content, 'text/html', '');
+        $apiClient->createTextContent($_SESSION[$id]['node']->node->ref->id, $content, 'text/html', '');
     } catch (\Exception $e) {
         $response = $response->withStatus($e -> getCode());
         $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
     }
-    $_SESSION['content'] = $content;
+    $_SESSION[$id]['content'] = $content;
     return $response;
 });
 

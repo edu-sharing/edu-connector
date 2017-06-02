@@ -6,33 +6,33 @@ class TinyMce extends \connector\lib\Tool {
 
     public function run()
     {   
-        $_SESSION['first_run'] = true;
+        $_SESSION[$this->connectorId]['first_run'] = true;
         $this->forwardToEditor();
     }
 
     public function setNode()
     {
-        $node = $this->apiClient->getNode($_SESSION['node']);
+        $node = $this->apiClient->getNode($_SESSION[$this->connectorId]['node']);
 
         if ($node->node->size === NULL) {
-            $_SESSION['content'] = '';
+            $_SESSION[$this->connectorId]['content'] = '';
         } else {
-            $_SESSION['content'] = file_get_contents($node->node->contentUrl . '&ticket=' . $_SESSION['ticket']);
+            $_SESSION[$this->connectorId]['content'] = file_get_contents($node->node->contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket']);
         }
         if (in_array('Write', $node->node->access)) {
-            $_SESSION['readonly'] = 0;
-            $this->apiClient->createTextContent($_SESSION['node'], $_SESSION['content'], $node->node->mimetype);
+            $_SESSION[$this->connectorId]['readonly'] = 0;
+            $this->apiClient->createTextContent($_SESSION[$this->connectorId]['node'], $_SESSION[$this->connectorId]['content'], $node->node->mimetype);
         } else {
-            $_SESSION['readonly'] = 1;
+            $_SESSION[$this->connectorId]['readonly'] = 1;
         }
 
-        $node = $this->apiClient->getNode($_SESSION['node']);
-        $_SESSION['node'] = $node;
+        $node = $this->apiClient->getNode($_SESSION[$this->connectorId]['node']);
+        $_SESSION[$this->connectorId]['node'] = $node;
     }
 
     private function forwardToEditor()
     {
-        header('Location: ' . WWWURL . '/src/tools/tinymce/');
+        header('Location: ' . WWWURL . '/src/tools/tinymce/?id=' . $this->connectorId);
         exit();
     }
 

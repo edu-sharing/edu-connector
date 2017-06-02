@@ -27,6 +27,7 @@ $(document).ready(function() {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', wwwurl + '/ajax/setText');
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader('X-CSRF-Token', id);
         xhr.onload = function() {
             if (xhr.status === 200) {
                 window.opener.postMessage({event:'UPDATE_SESSION_TIMEOUT'},'*');
@@ -44,6 +45,7 @@ $(document).ready(function() {
         var xhr = new XMLHttpRequest();
         //synchronous!
         xhr.open('GET', wwwurl + '/ajax/unlockNode', false);
+        xhr.setRequestHeader('X-CSRF-Token', id);
         xhr.send();
     }
 

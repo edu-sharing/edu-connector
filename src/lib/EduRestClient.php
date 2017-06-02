@@ -4,19 +4,25 @@ namespace connector\lib;
 
 class EduRestClient
 {
+    private $connectorId = '';
 
-    public function __construct()
+    public function __construct($connectorId)
     {
-
+        $this->connectorId = $connectorId;
     }
 
     private function getSessionId() {
-        return $_SESSION['sessionId'];
+        return $_SESSION[$this->connectorId]['sessionId'];
     }
+
+    private function getApiUrl() {
+        return $_SESSION[$this->connectorId]['api_url'];
+    }
+
 
     public function validateSession()
     {
-        $ch = curl_init($_SESSION['api_url'] . 'authentication/v1/validateSession');
+        $ch = curl_init($this->getApiUrl() . 'authentication/v1/validateSession');
         $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);

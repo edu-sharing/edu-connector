@@ -4,7 +4,7 @@ namespace connector\lib;
 
 class Connector
 {
-
+    private $id;
     private $tool;
     protected $log;
     protected $apiClient;
@@ -12,9 +12,10 @@ class Connector
     public function __construct($log)
     {
         $this->log = $log;
+        $this->id = bin2hex(openssl_random_pseudo_bytes(32));
         try {
             $this->setParameters();
-            $this->apiClient = new EduRestClient();
+            $this->apiClient = new EduRestClient($this->id);
             $this->apiClient->validateSession();
             $this->startTool();
             $this->tool->setNode();
@@ -38,20 +39,13 @@ class Connector
         $decryptedData = $cryptographer->decryptData($encryptedData, $encryptedKey);
         $this->validate($decryptedData);
         foreach($decryptedData as $key => $value) {
-            $_SESSION[$key] = $value;
+            $_SESSION[$this->id][$key] = $value;
         }
-        if(substr($_SESSION['api_url'], -1) !== '/') {
-            $_SESSION['api_url'] .= '/';
+        if(substr($_SESSION[$this->id]['api_url'], -1) !== '/') {
+            $_SESSION[$this->id]['api_url'] .= '/';
         }
 
-        $_SESSION['csrftoken'] = bin2hex(openssl_random_pseudo_bytes(32));
-
-        $_SESSION['WWWURL'] = WWWURL;
-
-        //dev
-        if(strpos($_SESSION['api_url'], 'localhost') !== false)
-          $_SESSION['api_url'] = 'http://appserver7.metaventis.com:7153/edu-sharing/rest/';
-
+        $_SESSION[$this->id]['WWWURL'] = WWWURL;
     }
 
     private function validate($data)
@@ -74,7 +68,7 @@ class Connector
                 $this -> tool = new \connector\tools\onlyoffice\OnlyOffice($this->apiClient, $this->log);
                 break;*/
             case 'TINYMCE':
-                $this -> tool = new \connector\tools\tinymce\TinyMce($this->apiClient, $this->log);
+                $this -> tool = new \connector\tools\tinymce\TinyMce($this->apiClient, $this->log, $this->id);
                 break;
             default:
                 throw new \Exception('Unknown tool: ' . $_SESSION['tool'] . '.');
