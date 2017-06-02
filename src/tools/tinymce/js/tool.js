@@ -2,18 +2,19 @@ $(document).ready(function() {
     tinymce.init({
         selector: '#theTextarea',
         plugins: [
-            'advlist autolink lists link image charmap hr anchor pagebreak',
-            'searchreplace wordcount visualblocks visualchars code fullscreen',
+            'advlist autolink lists link charmap hr anchor pagebreak',
+            'searchreplace wordcount visualblocks visualchars fullscreen',
             'insertdatetime nonbreaking save table contextmenu directionality',
-            'emoticons paste textcolor colorpicker textpattern imagetools codesample toc help code'
+            'emoticons paste textcolor colorpicker help print'
         ],
-        toolbar1: 'save | undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link',
-        toolbar2: 'forecolor backcolor emoticons | help',
+        toolbar1: 'save | print | undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link',
+        //toolbar2: 'forecolor backcolor emoticons | help',
         image_advtab: true,
         branding: false,
         height: 500,
         readonly: readonly,
-        language : 'en',
+        language : 'de',
+        language_url: 'js/tinymce/langs/de.js',
         save_onsavecallback: function () { save() }
     });
 
