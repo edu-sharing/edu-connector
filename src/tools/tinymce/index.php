@@ -17,7 +17,6 @@ $_SESSION[$id]['first_run'] = false;
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="csrf-token" content="<?php echo $id ?>">
   <link href="//fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
   <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
