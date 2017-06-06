@@ -5,8 +5,8 @@ $id = $_GET['id'];
 $lang = 'de';
 
 if(empty($_SESSION[$id]) || empty($_GET['id']))
- die();
- 
+  die();
+
 $access = 1;
 if($_SESSION[$id]['first_run'] !== true) {
   $access = 0;

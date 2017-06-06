@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
     tinymce.init({
         selector: '#theTextarea',
         plugins: [
@@ -18,7 +19,7 @@ $(document).ready(function() {
     });
 
     function destroy(text) {
-        tinymce.activeEditor.setMode('readonly');
+        $('#theTextarea').html('');
         $('#modalHeading').html(text[0]);
         $('#modalText').html(text[1]);
         $('#modalButton').html(text[2]);
@@ -39,7 +40,7 @@ $(document).ready(function() {
                 window.opener.postMessage({event:'UPDATE_SESSION_TIMEOUT'},'*');
                 Materialize.toast(language.datasaved, 4000, 'success');
             } else if(xhr.status === 401) {
-                destroy([language.notauthorizedheading, language.notauthorizedtext, language.notauthorizedbutton]);
+                destroy([language.invalidsessionheading, language.invalidsessiontext, language.closeeditor]);
             } else {
                 Materialize.toast(language.datasavederror + ' (HTTP status code ' + xhr.status + ')', 4000, 'error');
             }
@@ -63,21 +64,18 @@ $(document).ready(function() {
     }, 20000);
 
     if(access < 1) {
-        destroy([language.functiondeactivatedheading, language.functiondeactivatedtext, language.functiondeactivatedbutton]);
+        destroy([language.functiondeactivatedheading, language.functiondeactivatedtext, language.closeeditor]);
     }
 
     window.onbeforeunload = function() {
         if (tinyMCE.activeEditor.isDirty()) {
-            return 'Die von Ihnen vorgenommenen Änderungen werden möglicherweise nicht gespeichert.'; // default chrome text
+            return language.leavesiteunsaved;
         }
         unlockNode();
     }
 
-    /*window.onunload = function(){
-        unlockNode();
-    }*/
-
     window.addEventListener("message", receiveMessage, false);
+    
     function receiveMessage(event){
         if(event.data.event=="SESSION_TIMEOUT"){
             if(event.data.data > 0) {
@@ -90,8 +88,12 @@ $(document).ready(function() {
                 $('#countdownvalue').html(min + ':' + sec);
             } else {
                 $('#countdownvalue').html('00:00');
-                destroy();
+                destroy([language.timeoutheading, language.timeouttext, language.closeeditor]);
             }
+        }
+        if(event.data.event=='USER_LOGGED_OUT') {
+            $('#countdownvalue').html('00:00');
+            destroy([language.invalidsessionheading, language.invalidsessiontext, language.closeeditor]);
         }
     }
 
