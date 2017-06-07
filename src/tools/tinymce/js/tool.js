@@ -85,9 +85,7 @@ $(document).ready(function() {
         unlockNode();
     }
 
-    window.addEventListener("message", receiveMessage, false);
-    
-    receiveMessage = function(event){
+    window.addEventListener("message", function() {
         if(event.data.event=="SESSION_TIMEOUT"){
             if(event.data.data > 0) {
                 var min = Math.floor(event.data.data/60);
@@ -106,6 +104,6 @@ $(document).ready(function() {
             $('#countdownvalue').html('00:00');
             destroy([language.invalidsessionheading, language.invalidsessiontext, language.closeeditor]);
         }
-    }
+    }, false);
 
 });
