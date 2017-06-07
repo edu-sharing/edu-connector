@@ -15,7 +15,7 @@ $(document).ready(function() {
         readonly: readonly,
         language : lang,
         language_url: 'js/tinymce/langs/' + lang + '.js',
-        save_onsavecallback: function () { save() }
+        save_onsavecallback: function () { save() } //save button
     });
 
     function destroy(text) {
@@ -31,29 +31,40 @@ $(document).ready(function() {
     }
 
     save = function  () {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', wwwurl + '/ajax/setText');
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.setRequestHeader('X-CSRF-Token', id);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                window.opener.postMessage({event:'UPDATE_SESSION_TIMEOUT'},'*');
-                Materialize.toast(language.datasaved, 4000, 'success');
-            } else if(xhr.status === 401) {
-                destroy([language.invalidsessionheading, language.invalidsessiontext, language.closeeditor]);
-            } else {
-                Materialize.toast(language.datasavederror + ' (HTTP status code ' + xhr.status + ')', 4000, 'error');
+        $.ajax({
+            type: 'POST',
+            url: wwwurl + '/ajax/setText',
+            contentType: 'application/x-www-form-urlencoded',
+            beforeSend: function(request) {
+                request.setRequestHeader("X-CSRF-Token", id);
+            },
+            crossDomain: true,
+            data: 'text=' + encodeURIComponent(tinymce.activeEditor.getContent())
+        }).done(function() {
+            window.opener.postMessage({event:'UPDATE_SESSION_TIMEOUT'},'*');
+            Materialize.toast(language.datasaved, 4000, 'success');
+        })
+        .fail(function(jqXHR) {
+            switch(jqXHR.status) {
+                case 401:
+                    destroy([language.invalidsessionheading, language.invalidsessiontext, language.closeeditor]);
+                break;
+                default:
+                    Materialize.toast(language.datasavederror + ' (HTTP status code ' + jqXHR.status + ')', 4000, 'error');
             }
-        };
-        xhr.send('text=' + encodeURIComponent(tinymce.activeEditor.getContent()));
+        });
     }
 
     unlockNode = function() {
-        var xhr = new XMLHttpRequest();
-        //synchronous!
-        xhr.open('GET', wwwurl + '/ajax/unlockNode', false);
-        xhr.setRequestHeader('X-CSRF-Token', id);
-        xhr.send();
+        $.ajax({
+            type: 'GET',
+            async: false, // will not work if changed
+            url: wwwurl + '/ajax/unlockNode',
+            beforeSend: function(request) {
+                request.setRequestHeader("X-CSRF-Token", id);
+            },
+            crossDomain: true
+        });
     }
 
     setInterval(function(){
@@ -76,7 +87,7 @@ $(document).ready(function() {
 
     window.addEventListener("message", receiveMessage, false);
     
-    function receiveMessage(event){
+    receiveMessage = function(event){
         if(event.data.event=="SESSION_TIMEOUT"){
             if(event.data.data > 0) {
                 var min = Math.floor(event.data.data/60);
