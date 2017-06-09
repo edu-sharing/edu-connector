@@ -5,6 +5,16 @@ session_start();
 require __DIR__ . '/../../../vendor/autoload.php';
 require __DIR__ . '/../../../bootstrap.php';
 
+$lang = 'de';
+
+if(empty($_SESSION[$id]) || empty($_GET['id'])) {
+    $log -> error('Empty value for id.');
+    $log -> error(var_export($_GET, true));
+    exit();
+}
+
+$id = $_GET['id'];
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2016
@@ -50,7 +60,7 @@ $_trackerStatus = array(
 );
 
 
-if (isset($_GET["type"]) && !empty($_GET["type"])) { //Checks if type value exists
+if (isset($_GET[$id]["type"]) && !empty($_GET[$id]["type"])) { //Checks if type value exists
     $response_array;
     @header('Content-Type: application/json; charset==utf-8');
     @header('X-Robots-Tag: noindex');
@@ -64,7 +74,7 @@ if (isset($_GET["type"]) && !empty($_GET["type"])) { //Checks if type value exis
 
     switch ($type) { //Switch case for value of type
         case "track":
-            $response_array = track($log);
+            $response_array = track();
             $response_array['status'] = 'success';
             die (json_encode($response_array));
         default:
@@ -110,7 +120,7 @@ function track($log)
 
             $downloadUri = $data["url"];
             $saved = 1;
-            $tmpSavePath = STORAGEPATH . '/' . $_SESSION['node']->node->ref->id . '_' . uniqid() . '.' . $_SESSION['filetype'];
+            $tmpSavePath = STORAGEPATH . '/' . $_SESSION[$id]['node']->node->ref->id . '_' . uniqid() . '.' . $_SESSION[$id]['filetype'];
 
             if (($new_data = file_get_contents($downloadUri)) === FALSE) {
                 $saved = 0;
@@ -118,7 +128,7 @@ function track($log)
                 file_put_contents($tmpSavePath, $new_data, LOCK_EX);
                 try {
                     $apiClient = new connector\lib\EduRestClient();
-                    if ($apiClient->createContentNode($_SESSION['node']->node->ref->id, $tmpSavePath, \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION['filetype'])))
+                    if ($apiClient->createContentNode($_SESSION[$id]['node']->node->ref->id, $tmpSavePath, \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$id]['filetype'])))
                         unlink($tmpSavePath);
                 } catch (Exception $e) {
                     sendlog('ERROR saving file - ' . serialize($e->getMessage()), "logs/webeditor-ajax.log");

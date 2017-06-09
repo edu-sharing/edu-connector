@@ -2,34 +2,35 @@
 
 namespace connector\tools\OnlyOffice;
 
-
 class OnlyOffice extends \connector\lib\Tool {
 
     public function run()
     {
-        $_SESSION['fileUrl'] = $_SESSION['node']->node->downloadUrl . $_SESSION['ticket'];
+        $_SESSION[$this->connectorId]['fileUrl'] = $_SESSION[$this->connectorId]['node']->node->downloadUrl . $_SESSION[$this->connectorId]['ticket'];
         $this->forwardToEditor();
     }
 
     public function setNode()
     {
-        $node = $this->apiClient->getNode($_SESSION['node']);
+
+        $node = $this->getNode();
+
         if (in_array('Write', $node->node->access)) {
-            $_SESSION['edit'] = true;
+            $_SESSION[$this->connectorId]['edit'] = true;
         } else {
-            $_SESSION['edit'] = false;
+            $_SESSION[$this->connectorId]['edit'] = false;
         }
 
         if ($node->node->size === NULL) {
-            $this->apiClient->createContentNode($_SESSION['node'], STORAGEPATH . '/templates/init.' . $_SESSION['filetype'], \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION['filetype']));
-            $node = $this->apiClient->getNode($_SESSION['node']);
+            $this->apiClient->createContentNode($_SESSION[$this->connectorId]['node'], STORAGEPATH . '/templates/init.' . $_SESSION[$this->connectorId]['filetype'], \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$this->connectorId]['filetype']));
+            $node = $this->apiClient->getNode($_SESSION[$this->connectorId]['node']);
         }
-        $_SESSION['node'] = $node;
+        $_SESSION[$this->connectorId]['node'] = $node;
     }
 
     private function forwardToEditor()
     {
-        header('Location: ' . WWWURL . EDITORPATH);
+        header('Location: ' . WWWURL . EDITORPATH . '?id=' . $this->connectorId);
         exit();
     }
 

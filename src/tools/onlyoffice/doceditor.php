@@ -1,5 +1,12 @@
 <?php
 session_start();
+
+$lang = 'de';
+
+if(empty($_SESSION[$id]) || empty($_GET['id']))
+    die();
+
+$id = $_GET['id'];
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2016
@@ -29,14 +36,14 @@ require_once(__DIR__ . '/config.php');
 require_once(__DIR__ . '/common.php');
 require_once(__DIR__ . '/functions.php');
 
-$filename = $_SESSION["fileUrl"];
+$filename = $_SESSION[$id]["fileUrl"];
 $fileuri = FileUri($filename);
 
 //setcookie('EDUCONNECTOR', getDocEditorKey(), 0, '/', '.metaventis.com');
 
 function getDocEditorKey()
 {
-    return GenerateRevisionId(md5($_SESSION['node']->node->ref->id . $_SESSION['node']->node->contentVersion));
+    return GenerateRevisionId($_SESSION[$id]['node']->node->ref->id . $_SESSION[$id]['node']->node->contentVersion);
 }
 
 
@@ -44,6 +51,7 @@ function getCallbackUrl($filename)
 {
     return rtrim(WEB_ROOT_URL, '/') . '/'
         . "webeditor-ajax.php?type=track"
+        . "&id=" . $id
         . "&sess=" . session_id();
 }
 
@@ -91,7 +99,7 @@ function getCallbackUrl($filename)
     <script type="text/javascript">
 
         var docEditor;
-        var filetype = "<?php echo $_SESSION['filetype'] ?>";
+        var filetype = "<?php echo $_SESSION[$id]['filetype'] ?>";
 
         var innerAlert = function (message) {
             if (console && console.log)
@@ -126,18 +134,18 @@ function getCallbackUrl($filename)
                     type: "desktop", // embedded
                     documentType: "<?php echo getDocumentType($filename) ?>",
                     document: {
-                        title: "<?php echo empty($_SESSION['node']->node->title)?$_SESSION['node']->node->name:$_SESSION['node']->node->title ?>",
+                        title: "<?php echo empty($_SESSION[$id]['node']->node->title)?$_SESSION[$id]['node']->node->name:$_SESSION[$id]['node']->node->title ?>",
                         url: "<?php echo $fileuri ?>",
                         fileType: filetype,
                         key: "<?php echo getDocEditorKey() ?>",
 
                         info: {
-                            author: "<?php echo $_SESSION['node']->node->createdBy->firstName . ' ' . $_SESSION['node']->node->createdBy->lastName ?>",
-                            created: "<?php echo date_format(date_create($_SESSION['node']->node->createdAt), 'd.m.Y'); ?>",
+                            author: "<?php echo $_SESSION[$id]['node']->node->createdBy->firstName . ' ' . $_SESSION[$id]['node']->node->createdBy->lastName ?>",
+                            created: "<?php echo date_format(date_create($_SESSION[$id]['node']->node->createdAt), 'd.m.Y'); ?>",
                         },
 
                         permissions: {
-                            edit: <?php echo $_SESSION['edit'] ? 'true' : 'false'; ?>,
+                            edit: <?php echo $_SESSION[$id]['edit'] ? 'true' : 'false'; ?>,
                             download: false,
                         }
                     },
@@ -148,8 +156,8 @@ function getCallbackUrl($filename)
 
                         user: {
                             id: "",
-                            firstname: "<?php echo $_SESSION['user']->profile->firstName ?>",
-                            lastname: "<?php echo $_SESSION['user']->profile->lastName ?>",
+                            firstname: "<?php echo $_SESSION[$id]['user']->profile->firstName ?>",
+                            lastname: "<?php echo $_SESSION[$id]['user']->profile->lastName ?>",
                         },
 
                         embedded: {
@@ -208,7 +216,7 @@ function getCallbackUrl($filename)
 
         function pingApi() {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', '<?php echo $_SESSION['api_url']?>' + 'authentication/v1/validateSession');
+            xhr.open('GET', '<?php echo $_SESSION[$id]['api_url']?>' + 'authentication/v1/validateSession');
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     lastPing = Date.now();

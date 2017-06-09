@@ -12,7 +12,7 @@ class TinyMce extends \connector\lib\Tool {
 
     public function setNode()
     {
-        $node = $this->apiClient->getNode($_SESSION[$this->connectorId]['node']);
+        $node = $this->getNode();
 
         if ($node->node->size === NULL) {
             $_SESSION[$this->connectorId]['content'] = '';
@@ -26,7 +26,8 @@ class TinyMce extends \connector\lib\Tool {
             $_SESSION[$this->connectorId]['readonly'] = 1;
         }
 
-        $node = $this->apiClient->getNode($_SESSION[$this->connectorId]['node']);
+        $node = $this->getNode();
+
         $_SESSION[$this->connectorId]['node'] = $node;
     }
 
