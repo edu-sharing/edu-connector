@@ -6,7 +6,7 @@ class OnlyOffice extends \connector\lib\Tool {
 
     public function run()
     {
-        $_SESSION[$this->connectorId]['fileUrl'] = $_SESSION[$this->connectorId]['node']->node->downloadUrl . $_SESSION[$this->connectorId]['ticket'];
+        $_SESSION[$this->connectorId]['fileUrl'] = $_SESSION[$this->connectorId]['node']->node->downloadUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'];
         $this->forwardToEditor();
     }
 
