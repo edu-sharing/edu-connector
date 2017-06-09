@@ -3,10 +3,9 @@ session_start();
 
 $lang = 'de';
 
+$id = $_GET['id'];
 if(empty($_SESSION[$id]) || empty($_GET['id']))
   die();
-
-$id = $_GET['id'];
 
 $access = 1;
 if($_SESSION[$id]['first_run'] !== true) {

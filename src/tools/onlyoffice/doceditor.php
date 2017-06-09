@@ -3,10 +3,9 @@ session_start();
 
 $lang = 'de';
 
-if(empty($_SESSION[$id]) || empty($_GET['id']))
-    die();
-
 $id = $_GET['id'];
+if(empty($_SESSION[$id]) || empty($_GET['id']))
+  die();
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2016

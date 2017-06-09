@@ -7,13 +7,13 @@ require __DIR__ . '/../../../bootstrap.php';
 
 $lang = 'de';
 
+
+$id = $_GET['id'];
 if(empty($_SESSION[$id]) || empty($_GET['id'])) {
     $log -> error('Empty value for id.');
     $log -> error(var_export($_GET, true));
     exit();
 }
-
-$id = $_GET['id'];
 
 /*
  *
