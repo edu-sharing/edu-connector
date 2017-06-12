@@ -3,9 +3,11 @@ session_id($_GET['sess']);
 session_start();
 
 require __DIR__ . '/../../../vendor/autoload.php';
-require __DIR__ . '/../../../bootstrap.php';
+//require __DIR__ . '/../../../bootstrap.php';
 
 $lang = 'de';
+$logger = connector\lib\Logger();
+$log = $logger->getLog();
 
 
 $id = $_GET['id'];

@@ -22,11 +22,11 @@ class Connector
             $this->setUser();
             $this->tool->run();
         } catch (\Exception $e) {
-            $this->log->error($e->__toString());
+            $this->log->error($e->getCode() . ' ' . $e->__toString());
             echo 'ERROR - Please contact your system administrator.';
 
             //dev
-            echo $e->__toString();
+            echo $e->getCode() . ' ' . $e->__toString();
             exit(0);
         }
     }
@@ -42,9 +42,7 @@ class Connector
             $_SESSION[$this->id][$key] = $value;
         }
 
-        if(substr($_SESSION[$this->id]['api_url'], -1) !== '/') {
-            $_SESSION[$this->id]['api_url'] .= '/';
-        }
+        $_SESSION[$this->id]['api_url'] =  rtrim($_SESSION[$this->id]['api_url'], '/') . '/';
 
         if(!empty(FORCED_APIURL)) {
             $_SESSION[$this->id]['api_url'] = FORCED_APIURL;
@@ -69,9 +67,9 @@ class Connector
     private function startTool()
     {
         switch ($_SESSION[$this->id]['tool']) {
-           /* case 'ONLY_OFFICE':
-                $this -> tool = new \connector\tools\onlyoffice\OnlyOffice($this->apiClient, $this->log);
-                break;*/
+            case 'ONLY_OFFICE':
+                $this -> tool = new \connector\tools\onlyoffice\OnlyOffice($this->apiClient, $this->log, $this->id);
+                break;
             case 'TINYMCE':
                 $this -> tool = new \connector\tools\tinymce\TinyMce($this->apiClient, $this->log, $this->id);
                 break;

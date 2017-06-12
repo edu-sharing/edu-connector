@@ -9,7 +9,7 @@
 
 require_once __DIR__ . '/../../../config.php';
 
-define('WEB_ROOT_URL', WWWURL . '/onlyoffice');
+define('WEB_ROOT_URL', WWWURL . '/src/tools/onlyoffice');
 
 $GLOBALS['FILE_SIZE_MAX'] = 5242880;
 $GLOBALS['STORAGE_PATH'] = STORAGEFOLDER;

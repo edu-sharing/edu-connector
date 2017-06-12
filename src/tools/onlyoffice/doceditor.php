@@ -45,7 +45,6 @@ function getDocEditorKey()
     return GenerateRevisionId($_SESSION[$id]['node']->node->ref->id . $_SESSION[$id]['node']->node->contentVersion);
 }
 
-
 function getCallbackUrl($filename)
 {
     return rtrim(WEB_ROOT_URL, '/') . '/'

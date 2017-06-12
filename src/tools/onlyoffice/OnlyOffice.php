@@ -12,7 +12,6 @@ class OnlyOffice extends \connector\lib\Tool {
 
     public function setNode()
     {
-
         $node = $this->getNode();
 
         if (in_array('Write', $node->node->access)) {
@@ -22,15 +21,15 @@ class OnlyOffice extends \connector\lib\Tool {
         }
 
         if ($node->node->size === NULL) {
-            $this->apiClient->createContentNode($_SESSION[$this->connectorId]['node'], STORAGEPATH . '/templates/init.' . $_SESSION[$this->connectorId]['filetype'], \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$this->connectorId]['filetype']));
-            $node = $this->apiClient->getNode($_SESSION[$this->connectorId]['node']);
+            $this->apiClient->createContentNode($node->node->ref->id, STORAGEPATH . '/templates/init.' . $_SESSION[$this->connectorId]['filetype'], \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$this->connectorId]['filetype']));
+            $node = $this->apiClient->getNode($node->node->ref->id);
         }
         $_SESSION[$this->connectorId]['node'] = $node;
     }
 
     private function forwardToEditor()
     {
-        header('Location: ' . WWWURL . EDITORPATH . '?id=' . $this->connectorId);
+        header('Location: ' . EDITORURL . '?id=' . $this->connectorId);
         exit();
     }
 

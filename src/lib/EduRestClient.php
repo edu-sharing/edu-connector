@@ -86,10 +86,10 @@ class EduRestClient
         throw new \Exception('Error creating text content', $httpcode);
         return false;
     }
-/*
+
     public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '')
     {
-        $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/content?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
+        $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/content?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
         $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json', 'Content-Type: multipart/form-data');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
@@ -110,11 +110,11 @@ class EduRestClient
         if ($httpcode >= 200 && $httpcode < 300) {
             return json_decode($res);
         }
-        throw new \Exception('Error creating content node - HTTP Status ' . $httpcode);
+        throw new \Exception('Error creating content node' . $httpcode);
         return false;
     }
 
-
+/*
     public function updateReferenceUrl($nodeId, $url)
     {
 

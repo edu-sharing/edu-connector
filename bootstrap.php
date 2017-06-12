@@ -11,26 +11,8 @@ $app = new \Slim\App($container);
 
 $container = $app->getContainer();
 $container['log'] = function ($container) {
-    $log = new \Monolog\Logger('eduConnector');
-    $log->pushProcessor(new Monolog\Processor\IntrospectionProcessor());
-
-    /*
-     * Log to local file
-     * */
-    $log->pushHandler(new Monolog\Handler\RotatingFileHandler(__DIR__ . '/log/connector_error.log', 0, \Monolog\Logger::ERROR));
-    $log->pushHandler(new Monolog\Handler\RotatingFileHandler(__DIR__ . '/log/connector_info.log', 0, \Monolog\Logger::INFO));
-
-    /*
-     * Log to redis/logstash
-     */
-    if(REDISSERVER && !empty(REDISSERVER)) {
-        $redisHandler = new RedisHandler(new Client(REDISSERVER), 'phplogs');
-        $formatter = new LogstashFormatter('eduConnector');
-        $redisHandler->setFormatter($formatter);
-        $log->pushHandler($redisHandler);
-    }
-
-    return $log;
+    $log = new connector\lib\Logger();
+    return $log->getLog();
 };
 
 $app->get('/', function (Request $request, Response $response) {
