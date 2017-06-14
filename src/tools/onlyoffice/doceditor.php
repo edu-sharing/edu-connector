@@ -151,7 +151,7 @@ function getCallbackUrl($id)
                     editorConfig: {
                         mode: 'edit',
                         lang: "en",
-                        callbackUrl: "<?php echo getCallbackUrl($id) . '&kjh=' . time() ?>",
+                        callbackUrl: "<?php echo getCallbackUrl($id) ?>",
 
                         user: {
                             id: "",
