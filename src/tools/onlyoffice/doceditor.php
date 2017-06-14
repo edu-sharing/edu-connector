@@ -124,14 +124,13 @@ function getCallbackUrl($id)
         };
 
         var сonnectEditor = function () {
-
             docEditor = new DocsAPI.DocEditor("iframeEditor",
                 {
                     width: "100%",
                     height: "100%",
 
                     type: "desktop", // embedded
-                    documentType: "<?php echo getDocumentType($_SESSION[$id]['node']->node->name) ?>",
+                    documentType: "<?php echo getDocumentType('dummy.' . $_SESSION[$id]['filetype']) ?>",
                     document: {
                         title: "<?php echo empty($_SESSION[$id]['node']->node->title)?$_SESSION[$id]['node']->node->name:$_SESSION[$id]['node']->node->title ?>",
                         url: "<?php echo $fileuri ?>",
