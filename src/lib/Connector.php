@@ -54,7 +54,7 @@ class Connector
     private function validate($data)
     {
         $offset = time() - $data->ts;
-        if ($offset > 100000000000)
+        if ($offset > 10)
             throw new \Exception('Timestamp validation failed. Offset is ' . $offset . ' seconds.');
         return true;
     }

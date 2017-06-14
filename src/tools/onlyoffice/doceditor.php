@@ -51,9 +51,11 @@ function getCallbackUrl($id)
 {
     return rtrim(WEB_ROOT_URL, '/') . '/'
         . "webeditor-ajax.php?type=track"
-        . "&id=" . $id
-        . "&sess=" . session_id();
+        . "&key=" . getDocEditorKey($id);
 }
+
+//additional entry for callback
+$_SESSION['id_'.getDocEditorKey($id)] = $id;
 
 ?>
 
@@ -153,7 +155,7 @@ function getCallbackUrl($id)
                         callbackUrl: "<?php echo getCallbackUrl($id) ?>",
 
                         user: {
-                            id: "",
+                            id: "<?php echo session_id()?>",
                             firstname: "<?php echo $_SESSION[$id]['user']->profile->firstName ?>",
                             lastname: "<?php echo $_SESSION[$id]['user']->profile->lastName ?>",
                         },

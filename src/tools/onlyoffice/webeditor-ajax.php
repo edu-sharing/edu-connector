@@ -1,18 +1,18 @@
 <?php
-session_id($_GET['sess']);
-session_start();
+//session_id($_GET['sess']);
+//session_start();
 
 require __DIR__ . '/../../../vendor/autoload.php';
 $lang = 'de';
 $logger = new connector\lib\Logger();
 $log = $logger->getLog();
-$id = $_GET['id'];
+/*$id = $_GET['id'];
 
 if(empty($_SESSION[$id]) || empty($_GET['id'])) {
     $log -> error('Empty value for id.');
     $log -> error(json_encode($_GET, true));
     exit();
-}
+}*/
 
 /*
  *
@@ -66,7 +66,7 @@ if (isset($_GET["type"]) && !empty($_GET["type"])) { //Checks if type value exis
     $type = $_GET["type"];
     switch($type) { //Switch case for value of type
         case "track":
-            $response_array = track($id, $log);
+            $response_array = track($log);
             $response_array['status'] = 'success';
             die (json_encode($response_array));
         default:
@@ -76,10 +76,9 @@ if (isset($_GET["type"]) && !empty($_GET["type"])) { //Checks if type value exis
     }
 }
 
-function track($id, $log) {
+function track($log) {
 
     global $_trackerStatus;
-    global $_SESSION;
 
     $log->info('Track START');
     $data;
@@ -92,6 +91,11 @@ function track($id, $log) {
     }
 
     $data = json_decode($body_stream, TRUE); //json_decode - PHP 5 >= 5.2.0
+
+    session_id($data['users'][0]);
+    session_start();
+
+    $id = $_SESSION['id_' . $data['key']];
 
     if ($data === NULL){
         $log->error('Bad Response');
@@ -117,8 +121,10 @@ function track($id, $log) {
                 file_put_contents($tmpSavePath, $new_data, LOCK_EX);
                 try {
                     $apiClient = new connector\lib\EduRestClient($id);
-                    if ($apiClient->createContentNode($_SESSION[$id]['node']->node->ref->id, $tmpSavePath, \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$id]['filetype']), 'savedviaoo')) 
+                    if ($apiClient->createContentNode($_SESSION[$id]['node']->node->ref->id, $tmpSavePath, \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$id]['filetype']), 'savedviaoo')) {
                         unlink($tmpSavePath);
+                        $log->info('SAVED - ' . json_encode(array($_SESSION[$id]['node']->node->ref->id, $tmpSavePath)));
+                    }
                 } catch (Exception $e) {
                     $log->error('ERROR saving file - ' . json_encode($e->__toString()));
                     $log->error('ERROR unsaved file: ' . $tmpSavePath);
@@ -127,7 +133,6 @@ function track($id, $log) {
 
             $result["c"] = "saved";
             $result["status"] = $saved;
-            $log->info('FILE ' . $_SESSION[$id]['node']->node->ref->id . ' SAVED');
             break;
     }
 
