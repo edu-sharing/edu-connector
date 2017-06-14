@@ -110,7 +110,7 @@ class EduRestClient
         if ($httpcode >= 200 && $httpcode < 300) {
             return json_decode($res);
         }
-        throw new \Exception('Error creating content node' . $httpcode);
+        throw new \Exception('Error creating content node HTTP STATUS ' . $httpcode);
         return false;
     }
 

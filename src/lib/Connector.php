@@ -61,7 +61,7 @@ class Connector
 
     private function setUser()
     {
-        $_SESSION['user'] = $this->apiClient->getUser()->person;
+        $_SESSION[$this->id]['user'] = $this->apiClient->getUser()->person;
     }
 
     private function startTool()
@@ -74,7 +74,7 @@ class Connector
                 $this -> tool = new \connector\tools\tinymce\TinyMce($this->apiClient, $this->log, $this->id);
                 break;
             default:
-                throw new \Exception('Unknown tool: ' . $_SESSION['tool'] . '.');
+                throw new \Exception('Unknown tool: ' . $_SESSION[$this->id]['tool'] . '.');
         }
     }
 }

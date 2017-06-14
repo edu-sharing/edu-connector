@@ -1,11 +1,13 @@
 <?php
 session_start();
 
-$lang = 'de';
+error_reporting(0);
+ini_set('display_errors',0);
 
 $id = $_GET['id'];
 if(empty($_SESSION[$id]) || empty($_GET['id']))
   die();
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2016
@@ -40,12 +42,12 @@ $fileuri = FileUri($filename);
 
 //setcookie('EDUCONNECTOR', getDocEditorKey(), 0, '/', '.metaventis.com');
 
-function getDocEditorKey()
-{
-    return GenerateRevisionId($_SESSION[$id]['node']->node->ref->id . $_SESSION[$id]['node']->node->contentVersion);
+function getDocEditorKey($id)
+{   
+    return GenerateRevisionId(md5($_SESSION[$id]['node']->node->ref->id . $_SESSION[$id]['node']->node->contentVersion));
 }
 
-function getCallbackUrl($filename)
+function getCallbackUrl($id)
 {
     return rtrim(WEB_ROOT_URL, '/') . '/'
         . "webeditor-ajax.php?type=track"
@@ -97,7 +99,6 @@ function getCallbackUrl($filename)
     <script type="text/javascript">
 
         var docEditor;
-        var filetype = "<?php echo $_SESSION[$id]['filetype'] ?>";
 
         var innerAlert = function (message) {
             if (console && console.log)
@@ -130,12 +131,12 @@ function getCallbackUrl($filename)
                     height: "100%",
 
                     type: "desktop", // embedded
-                    documentType: "<?php echo getDocumentType($filename) ?>",
+                    documentType: "<?php echo getDocumentType($_SESSION[$id]['node']->node->name) ?>",
                     document: {
                         title: "<?php echo empty($_SESSION[$id]['node']->node->title)?$_SESSION[$id]['node']->node->name:$_SESSION[$id]['node']->node->title ?>",
                         url: "<?php echo $fileuri ?>",
-                        fileType: filetype,
-                        key: "<?php echo getDocEditorKey() ?>",
+                        fileType: "<?php echo $_SESSION[$id]['filetype'] ?>",
+                        key: "<?php echo getDocEditorKey($id) ?>",
 
                         info: {
                             author: "<?php echo $_SESSION[$id]['node']->node->createdBy->firstName . ' ' . $_SESSION[$id]['node']->node->createdBy->lastName ?>",
@@ -149,8 +150,8 @@ function getCallbackUrl($filename)
                     },
                     editorConfig: {
                         mode: 'edit',
-                        lang: "de",
-                        callbackUrl: "<?php echo getCallbackUrl($filename) ?>",
+                        lang: "en",
+                        callbackUrl: "<?php echo getCallbackUrl($id) . '&kjh=' . time() ?>",
 
                         user: {
                             id: "",
@@ -205,7 +206,7 @@ function getCallbackUrl($filename)
             return xmlhttp;
         }
 
-        var lastPing = lastEdit = Date.now();
+     /*   var lastPing = lastEdit = Date.now();
 
         function destroySession() {
             docEditor.destroy();
@@ -237,7 +238,7 @@ function getCallbackUrl($filename)
             }
             lastEdit = Date.now();
         }, false);
-
+*/
     </script>
 </head>
 <body>

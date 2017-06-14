@@ -1,8 +1,5 @@
 <?php
 
-use Monolog\Handler\RedisHandler;
-use Monolog\Formatter\LogstashFormatter;
-use Predis\Client;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
@@ -11,7 +8,7 @@ $app = new \Slim\App($container);
 
 $container = $app->getContainer();
 $container['log'] = function ($container) {
-    $log = new connector\lib\Logger();
+    $log = new \connector\lib\Logger();
     return $log->getLog();
 };
 
