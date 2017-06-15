@@ -5,6 +5,7 @@ error_reporting(0);
 ini_set('display_errors',0);
 
 $id = $_GET['id'];
+$lang = 'de';
 
 if(false === filter_var($$id, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))))
     die('Invalid ID');
@@ -69,6 +70,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
     <title>edu-sharing ONLYOFFICE</title>
 
     <style>
@@ -101,7 +103,9 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
     </style>
 
     <script type="text/javascript" src="<?php echo $GLOBALS["DOC_SERV_API_URL"] ?>"></script>
-
+    <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/lang/<?php echo $lang ?>.js"></script>
+    <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/jquery-3.2.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
     <script type="text/javascript">
 
         var docEditor;
@@ -155,7 +159,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                     },
                     editorConfig: {
                         mode: 'edit',
-                        lang: "en",
+                        lang: "<?php echo $lang?>",
                         callbackUrl: "<?php echo getCallbackUrl($id) ?>",
 
                         user: {
@@ -214,6 +218,24 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
             return xmlhttp;
         }
 
+        function destroy(text) {
+            $('#theTextarea').html('');
+            $('#modalHeading').html(text[0]);
+            $('#modalText').html(text[1]);
+            $('#modalButton').html(text[2]);
+            $('#modal').modal({
+                dismissible: false,
+                opacity: .8,
+            });
+            $('#modal').modal('open');
+        }
+
+        window.addEventListener("message", function() {
+            if(event.data.event=='USER_LOGGED_OUT') {
+                destroy([language.invalidsessionheading, language.invalidsessiontext, language.closeeditor]);
+            }
+        }, false);
+
 
     </script>
 </head>
@@ -222,5 +244,14 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
     <div id="iframeEditor">
     </div>
 </form>
+<div id="modal" class="modal">
+    <div class="modal-content">
+      <h4 id="modalHeading"></h4>
+      <p id="modalText"></p>
+      <div style="text-align: right">
+        <a id="modalButton" class="waves-effect waves-light btn" onclick="javascript:window.close()"></a>
+        </div>
+    </div>
+  </div>
 </body>
 </html>
