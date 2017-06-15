@@ -5,8 +5,12 @@ error_reporting(0);
 ini_set('display_errors',0);
 
 $id = $_GET['id'];
+
+if(false === filter_var($$id, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))))
+    die('Invalid ID');
+
 if(empty($_SESSION[$id]) || empty($_GET['id']))
-  die();
+    die('Invalid ID');
 
 /*
  *

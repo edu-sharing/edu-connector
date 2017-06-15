@@ -24,9 +24,6 @@ class Connector
         } catch (\Exception $e) {
             $this->log->error($e->getCode() . ' ' . $e->__toString());
             echo 'ERROR - Please contact your system administrator.';
-
-            //dev
-            echo $e->getCode() . ' ' . $e->__toString();
             exit(0);
         }
     }
@@ -56,7 +53,21 @@ class Connector
         $offset = time() - $data->ts;
         if ($offset > 10)
             throw new \Exception('Timestamp validation failed. Offset is ' . $offset . ' seconds.');
-        return true;
+
+        if(false === filter_var($data->node, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9-]*$/"))))
+            throw new \Exception('Invalid node ID');
+
+        if(false === filter_var($data->ticket, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z0-9_]*$/"))))
+            throw new \Exception('Invalid ticket');
+
+        if(false === filter_var($data->sessionId, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[A-Z0-9]*$/"))))
+            throw new \Exception('Invalid session ID\'');
+
+        if(false === filter_var($data->tool, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[A-Z_]*$/"))))
+            throw new \Exception('Invalid tool');
+
+        if(false === filter_var($data->api_url, FILTER_VALIDATE_URL))
+            throw new \Exception('Invalid API URL');
     }
 
     private function setUser()

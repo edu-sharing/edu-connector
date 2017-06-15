@@ -4,8 +4,12 @@ session_start();
 $lang = 'de';
 
 $id = $_GET['id'];
+
+if(false === filter_var($$id, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))))
+    die('Invalid ID');
+
 if(empty($_SESSION[$id]) || empty($_GET['id']))
-  die();
+  die('Invalid ID');
 
 $access = 1;
 if($_SESSION[$id]['first_run'] !== true) {
