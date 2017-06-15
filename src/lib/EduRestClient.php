@@ -90,11 +90,11 @@ class EduRestClient
                 array('key'  => 'firstname', 'value'  => $_SESSION[$this->connectorId]->profile->firstName),
                 array('key'  => 'email', 'value'  => $_SESSION[$this->connectorId]->profile->email)));
         try {
-            $client = new mod_edusharing_sig_soap_client($this->authenticationservicewsdl);
+            $client = new \connector\lib\SigSoapClient($_SESSION[$this->id]['api_url'] . '../services/authbyapp?wsdl');
             $return = $client->authenticateByTrustedApp($paramstrusted);
             $ticket = $return->authenticateByTrustedAppReturn->ticket;
 
-            return 'TICKET:' . $ticket;
+            return 'Authorization: EDU-TICKET ' . $ticket;
 
         } catch (\Exception $e) {
             throw new \Exception('ticketfehler');
