@@ -116,25 +116,28 @@ function track($log) {
             $downloadUri = $data["url"];
             $saved = 1;
             $tmpSavePath = STORAGEPATH . '/' . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
-            if($status == 'ForcedSave')
-                $comment = 'Manually_saved';
-            else
+            //if($status == 'ForcedSave')
+            //    $comment = 'Manually_saved';
+            //else
                 $comment = 'Saved_on_editor_close';
 
             if (($new_data = file_get_contents($downloadUri)) === FALSE) {
                 $saved = 0;
             } else {
                 file_put_contents($tmpSavePath, $new_data, LOCK_EX);
-                try {
-                    $apiClient = new connector\lib\EduRestClient($id);
-                    if ($apiClient->createContentNode($_SESSION[$id]['node']->node->ref->id, $tmpSavePath, \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$id]['filetype']), $comment)) {
-                        unlink($tmpSavePath);
-                        $log->info('SAVED - ' . json_encode(array($_SESSION[$id]['node']->node->ref->id, $tmpSavePath)));
+                    try {
+                        $apiClient = new connector\lib\EduRestClient($id);
+                        if ($apiClient->createContentNode($_SESSION[$id]['node']->node->ref->id, $tmpSavePath, \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$id]['filetype']), $comment)) {
+                            unlink($tmpSavePath);
+                            $log->info('SAVED - ' . json_encode(array($_SESSION[$id]['node']->node->ref->id, $tmpSavePath)));
+                        }
+                    } catch (Exception $e) {
+                        $log->error('ERROR saving file - ' . json_encode($e->__toString()));
+                        $log->error('ERROR unsaved file: ' . $tmpSavePath);
+                        $result["c"] = "not saved";
+                        $result["error"] = "error: " . json_encode($e->__toString());
+                        break;
                     }
-                } catch (Exception $e) {
-                    $log->error('ERROR saving file - ' . json_encode($e->__toString()));
-                    $log->error('ERROR unsaved file: ' . $tmpSavePath);
-                }
             }
 
             $result["c"] = "saved";

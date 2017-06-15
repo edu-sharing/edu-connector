@@ -6,8 +6,7 @@ class EduRestClient
 {
     private $connectorId = '';
 
-    public function __construct($connectorId)
-    {
+    public function __construct($connectorId) {
         $this->connectorId = $connectorId;
     }
 
@@ -18,7 +17,6 @@ class EduRestClient
     private function getApiUrl() {
         return $_SESSION[$this->connectorId]['api_url'];
     }
-
 
     public function validateSession()
     {
@@ -84,7 +82,6 @@ class EduRestClient
             return json_decode($res);
         }
         throw new \Exception('Error creating text content', $httpcode);
-        return false;
     }
 
     public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '')
@@ -110,8 +107,7 @@ class EduRestClient
         if ($httpcode >= 200 && $httpcode < 300) {
             return json_decode($res);
         }
-        throw new \Exception('Error creating content node HTTP STATUS ' . $httpcode);
-        return false;
+        throw new \Exception('Error creating content node HTTP STATUS ' . $httpcode, $httpcode);
     }
 
 /*
