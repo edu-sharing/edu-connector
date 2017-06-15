@@ -5,7 +5,7 @@ $lang = 'de';
 
 $id = $_GET['id'];
 
-if(false === filter_var($$id, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))))
+if(false === filter_var($id, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))))
     die('Invalid ID');
 
 if(empty($_SESSION[$id]) || empty($_GET['id']))

@@ -174,6 +174,9 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                         customization: {
                             about: false,
                             feedback: false,
+                            comments: true,
+                           // forcesave: true, //check concept, some integrity issues with versions
+                            chat: true
                             //  goback: {
                             //   url: "<?php echo serverPath() ?>/index.php",
                             // },

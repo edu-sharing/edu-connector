@@ -49,7 +49,8 @@ $_trackerStatus = array(
     1 => 'Editing',
     2 => 'MustSave',
     3 => 'Corrupted',
-    4 => 'Closed'
+    4 => 'Closed',
+    6 => 'ForcedSave'
 );
 
 
@@ -110,10 +111,15 @@ function track($log) {
     switch ($status){
         case "MustSave":
         case "Corrupted":
+        case "ForcedSave":
 
             $downloadUri = $data["url"];
             $saved = 1;
             $tmpSavePath = STORAGEPATH . '/' . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
+            if($status == 'ForcedSave')
+                $comment = 'Manually_saved';
+            else
+                $comment = 'Saved_on_editor_close';
 
             if (($new_data = file_get_contents($downloadUri)) === FALSE) {
                 $saved = 0;
@@ -121,7 +127,7 @@ function track($log) {
                 file_put_contents($tmpSavePath, $new_data, LOCK_EX);
                 try {
                     $apiClient = new connector\lib\EduRestClient($id);
-                    if ($apiClient->createContentNode($_SESSION[$id]['node']->node->ref->id, $tmpSavePath, \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$id]['filetype']), 'savedviaoo')) {
+                    if ($apiClient->createContentNode($_SESSION[$id]['node']->node->ref->id, $tmpSavePath, \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$id]['filetype']), $comment)) {
                         unlink($tmpSavePath);
                         $log->info('SAVED - ' . json_encode(array($_SESSION[$id]['node']->node->ref->id, $tmpSavePath)));
                     }
