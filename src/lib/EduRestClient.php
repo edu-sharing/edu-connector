@@ -71,9 +71,11 @@ class EduRestClient
 
     public function createContentNodeEnhanced($nodeId, $content, $mimetype, $versionComment = '') {
         try {
+            //throw \Exception(test);
             return self::createTextContent($nodeId, $content, $mimetype, $versionComment = '');
         } catch(\Exception $e) {
             if($e->getCode() === 401) {
+                $log->error('Could not saved with session, trying ticket now');
                 $this->setAuthHeader($this->getTicketHeader());
                 return self::createTextContent($nodeId, $content, $mimetype, $versionComment = '');
             }
