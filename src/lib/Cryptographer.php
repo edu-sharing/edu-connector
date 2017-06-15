@@ -43,7 +43,7 @@ class Cryptographer
 
     }
 
-    private function getPrivateKey()
+    public function getPrivateKey()
     {
         $privateKey = openssl_pkey_get_private('file://' . __DIR__ . '/../../assets/private.key');
         return $privateKey;

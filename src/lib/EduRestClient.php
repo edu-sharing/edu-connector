@@ -74,9 +74,30 @@ class EduRestClient
             return self::createTextContent($nodeId, $content, $mimetype, $versionComment = '');
         } catch(\Exception $e) {
             if($e->getCode() === 401) {
+                $this->setAuthHeader($this->getTicketHeader());
                 return self::createTextContent($nodeId, $content, $mimetype, $versionComment = '');
             }
         }
+    }
+
+    private function getTicketHeader() {
+        $paramstrusted = array("applicationId"  => 'educonnector',
+            "ticket"  => session_id(), "ssoData"  => array(
+                array('key'  => 'username', 'value'  => $_SESSION[$this->id]['user']->userName),
+                array('key'  => 'lastname', 'value'  => $_SESSION[$this->connectorId]->profile->lastName),
+                array('key'  => 'firstname', 'value'  => $_SESSION[$this->connectorId]->profile->firstName),
+                array('key'  => 'email', 'value'  => $_SESSION[$this->connectorId]->profile->email)));
+        try {
+            $client = new mod_edusharing_sig_soap_client($this->authenticationservicewsdl);
+            $return = $client->authenticateByTrustedApp($paramstrusted);
+            $ticket = $return->authenticateByTrustedAppReturn->ticket;
+
+            return 'TICKET:' . $ticket;
+
+        } catch (\Exception $e) {
+            throw new \Exception('ticketfehler');
+        }
+
     }
 
     public function createTextContent($nodeId, $content, $mimetype, $versionComment = '')
