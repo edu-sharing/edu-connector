@@ -23,6 +23,12 @@ $app->get('/metadata', function (Request $request, Response $response) {
     $metadataGenerator -> serve();
 });
 
+$app->get('/validateSession', function (Request $request, Response $response) {
+    $this->get('log')->info($request->getUri());
+    $metadataGenerator = new \connector\lib\MetadataGenerator();
+    $metadataGenerator -> serve();
+});
+
 $app->get('/ajax/unlockNode', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     $id = $request->getHeaderLine('X-CSRF-Token');

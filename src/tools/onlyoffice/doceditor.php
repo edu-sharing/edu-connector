@@ -214,39 +214,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
             return xmlhttp;
         }
 
-     /*   var lastPing = lastEdit = Date.now();
 
-        function destroySession() {
-            docEditor.destroy();
-            alert('Session abgelaufen. Bitte loggen Sie sich erneut ein um Ihre letzten Änderungen zu speichern.');
-        }
-
-        function pingApi() {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '<?php echo $_SESSION[$id]['api_url']?>' + 'authentication/v1/validateSession');
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    lastPing = Date.now();
-                }
-                else {
-                    destroySession();
-                }
-            };
-            xhr.send();
-        }
-
-        setInterval(function(){
-            if(Date.now() - lastPing > 500)
-                destroySession();
-        }, 10000);
-
-        document.getElementById('iframeEditor').addEventListener("keydown", function(e) {
-            if(Date.now() - lastEdit > 15  || Date.now() - lastPing > 15) {
-                pingApi();
-            }
-            lastEdit = Date.now();
-        }, false);
-*/
     </script>
 </head>
 <body>
