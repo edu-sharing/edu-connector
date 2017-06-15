@@ -5,13 +5,19 @@ namespace connector\lib;
 class EduRestClient
 {
     private $connectorId = '';
+    private $authHeader = '';
 
     public function __construct($connectorId) {
         $this->connectorId = $connectorId;
+        $this->authHeader = 'Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId'];
     }
 
-    private function getSessionId() {
-        return $_SESSION[$this->connectorId]['sessionId'];
+    private function getAuthHeader() {
+        return $this->authHeader;
+    }
+
+    public function setAuthHeader($authHeader) {
+        $this->authHeader = $authHeader;
     }
 
     private function getApiUrl() {
@@ -21,7 +27,7 @@ class EduRestClient
     public function validateSession()
     {
         $ch = curl_init($this->getApiUrl() . 'authentication/v1/validateSession');
-        $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json');
+        $headers = array($this->getAuthHeader(), 'Accept: application/json');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -43,7 +49,7 @@ class EduRestClient
 
     public function unlockNode($nodeId) {
         $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/lock/unlock');
-        $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json');
+        $headers = array($this->getAuthHeader(), 'Accept: application/json');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -63,10 +69,20 @@ class EduRestClient
         throw new \Exception('Error unlocking node', $httpcode);
     }
 
+    public function createContentNodeEnhanced($nodeId, $content, $mimetype, $versionComment = '') {
+        try {
+            return self::createTextContent($nodeId, $content, $mimetype, $versionComment = '');
+        } catch(\Exception $e) {
+            if($e->getCode() === 401) {
+                return self::createTextContent($nodeId, $content, $mimetype, $versionComment = '');
+            }
+        }
+    }
+
     public function createTextContent($nodeId, $content, $mimetype, $versionComment = '')
     {
         $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/textContent?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
-        $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json', 'Content-Type: multipart/form-data');
+        $headers = array($this->getAuthHeader(), 'Accept: application/json', 'Content-Type: multipart/form-data');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -87,7 +103,7 @@ class EduRestClient
     public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '')
     {
         $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/content?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
-        $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json', 'Content-Type: multipart/form-data');
+        $headers = array($this->getAuthHeader(), 'Accept: application/json', 'Content-Type: multipart/form-data');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         $cfile = curl_file_create($contentpath, $mimetype, 'file');
@@ -141,7 +157,7 @@ class EduRestClient
     public function getNode($nodeId)
     {
         $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/metadata?propertyFilter=-all-');
-        $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json');
+        $headers = array($this->getAuthHeader(), 'Accept: application/json');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -167,7 +183,7 @@ class EduRestClient
     public function getUser()
     {
         $ch = curl_init($this->getApiUrl() . 'iam/v1/people/-home-/-me-');
-        $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json');
+        $headers = array($this->getAuthHeader(), 'Accept: application/json');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);

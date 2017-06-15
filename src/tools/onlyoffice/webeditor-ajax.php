@@ -127,7 +127,7 @@ function track($log) {
                 file_put_contents($tmpSavePath, $new_data, LOCK_EX);
                     try {
                         $apiClient = new connector\lib\EduRestClient($id);
-                        if ($apiClient->createContentNode($_SESSION[$id]['node']->node->ref->id, $tmpSavePath, \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$id]['filetype']), $comment)) {
+                        if ($apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $tmpSavePath, \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$id]['filetype']), $comment)) {
                             unlink($tmpSavePath);
                             $log->info('SAVED - ' . json_encode(array($_SESSION[$id]['node']->node->ref->id, $tmpSavePath)));
                         }
