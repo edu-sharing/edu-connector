@@ -45,7 +45,7 @@ class FluentdFormatter implements FormatterInterface
             throw new \RuntimeException('PHP\'s json extension is required to use Monolog\'s FluentdUnixFormatter');
         }
 
-        $this->levelTag = (bool)$levelTag;
+        $this->levelTag = (bool) $levelTag;
     }
 
     public function isUsingLevelsInTag()

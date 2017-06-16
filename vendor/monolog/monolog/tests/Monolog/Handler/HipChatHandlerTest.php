@@ -157,7 +157,7 @@ class HipChatHandlerTest extends TestCase
         fseek($this->res, 0);
         $content = fread($this->res, 12000);
 
-        $this->assertRegexp('/message=' . str_repeat('abcde', 1900) . '\+%5Btruncated%5D/', $content);
+        $this->assertRegexp('/message='.str_repeat('abcde', 1900).'\+%5Btruncated%5D/', $content);
     }
 
     /**
@@ -170,20 +170,20 @@ class HipChatHandlerTest extends TestCase
         fseek($this->res, 0);
         $content = fread($this->res, 1024);
 
-        $this->assertRegexp('/color=' . $expectedColor . '/', $content);
+        $this->assertRegexp('/color='.$expectedColor.'/', $content);
     }
 
     public function provideLevelColors()
     {
         return array(
-            array(Logger::DEBUG, 'gray'),
-            array(Logger::INFO, 'green'),
-            array(Logger::WARNING, 'yellow'),
-            array(Logger::ERROR, 'red'),
+            array(Logger::DEBUG,    'gray'),
+            array(Logger::INFO,     'green'),
+            array(Logger::WARNING,  'yellow'),
+            array(Logger::ERROR,    'red'),
             array(Logger::CRITICAL, 'red'),
-            array(Logger::ALERT, 'red'),
-            array(Logger::EMERGENCY, 'red'),
-            array(Logger::NOTICE, 'green'),
+            array(Logger::ALERT,    'red'),
+            array(Logger::EMERGENCY,'red'),
+            array(Logger::NOTICE,   'green'),
         );
     }
 
@@ -199,7 +199,7 @@ class HipChatHandlerTest extends TestCase
         fseek($this->res, 0);
         $content = fread($this->res, 1024);
 
-        $this->assertRegexp('/color=' . $expectedColor . '/', $content);
+        $this->assertRegexp('/color='.$expectedColor.'/', $content);
     }
 
     public function provideBatchRecords()

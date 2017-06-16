@@ -99,7 +99,7 @@ class SlackHandlerTest extends TestCase
         fseek($this->res, 0);
         $content = fread($this->res, 1024);
 
-        $this->assertRegexp('/%22color%22%3A%22' . $expectedColor . '/', $content);
+        $this->assertRegexp('/%22color%22%3A%22'.$expectedColor.'/', $content);
     }
 
     public function testWriteContentWithPlainTextMessage()
@@ -115,14 +115,14 @@ class SlackHandlerTest extends TestCase
     public function provideLevelColors()
     {
         return array(
-            array(Logger::DEBUG, urlencode(SlackRecord::COLOR_DEFAULT)),
-            array(Logger::INFO, SlackRecord::COLOR_GOOD),
-            array(Logger::NOTICE, SlackRecord::COLOR_GOOD),
-            array(Logger::WARNING, SlackRecord::COLOR_WARNING),
-            array(Logger::ERROR, SlackRecord::COLOR_DANGER),
+            array(Logger::DEBUG,    urlencode(SlackRecord::COLOR_DEFAULT)),
+            array(Logger::INFO,     SlackRecord::COLOR_GOOD),
+            array(Logger::NOTICE,   SlackRecord::COLOR_GOOD),
+            array(Logger::WARNING,  SlackRecord::COLOR_WARNING),
+            array(Logger::ERROR,    SlackRecord::COLOR_DANGER),
             array(Logger::CRITICAL, SlackRecord::COLOR_DANGER),
-            array(Logger::ALERT, SlackRecord::COLOR_DANGER),
-            array(Logger::EMERGENCY, SlackRecord::COLOR_DANGER),
+            array(Logger::ALERT,    SlackRecord::COLOR_DANGER),
+            array(Logger::EMERGENCY,SlackRecord::COLOR_DANGER),
         );
     }
 

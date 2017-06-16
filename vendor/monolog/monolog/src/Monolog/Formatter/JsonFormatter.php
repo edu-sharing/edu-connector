@@ -100,7 +100,7 @@ class JsonFormatter extends NormalizerFormatter
     /**
      * Return a JSON-encoded array of records.
      *
-     * @param  array $records
+     * @param  array  $records
      * @return string
      */
     protected function formatBatchJson(array $records)
@@ -112,7 +112,7 @@ class JsonFormatter extends NormalizerFormatter
      * Use new lines to separate records instead of a
      * JSON-encoded array.
      *
-     * @param  array $records
+     * @param  array  $records
      * @return string
      */
     protected function formatBatchNewlines(array $records)
@@ -172,21 +172,21 @@ class JsonFormatter extends NormalizerFormatter
     {
         // TODO 2.0 only check for Throwable
         if (!$e instanceof Exception && !$e instanceof Throwable) {
-            throw new \InvalidArgumentException('Exception/Throwable expected, got ' . gettype($e) . ' / ' . get_class($e));
+            throw new \InvalidArgumentException('Exception/Throwable expected, got '.gettype($e).' / '.get_class($e));
         }
 
         $data = array(
             'class' => get_class($e),
             'message' => $e->getMessage(),
             'code' => $e->getCode(),
-            'file' => $e->getFile() . ':' . $e->getLine(),
+            'file' => $e->getFile().':'.$e->getLine(),
         );
 
         if ($this->includeStacktraces) {
             $trace = $e->getTrace();
             foreach ($trace as $frame) {
                 if (isset($frame['file'])) {
-                    $data['trace'][] = $frame['file'] . ':' . $frame['line'];
+                    $data['trace'][] = $frame['file'].':'.$frame['line'];
                 } elseif (isset($frame['function']) && $frame['function'] === '{closure}') {
                     // We should again normalize the frames, because it might contain invalid items
                     $data['trace'][] = $frame['function'];

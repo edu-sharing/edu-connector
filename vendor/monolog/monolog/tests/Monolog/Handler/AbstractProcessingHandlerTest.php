@@ -72,7 +72,8 @@ class AbstractProcessingHandlerTest extends TestCase
             ->method('write')
             ->will($this->returnCallback(function ($record) use (&$handledRecord) {
                 $handledRecord = $record;
-            }));
+            }))
+        ;
         $handler->handle($this->getRecord());
         $this->assertEquals(6, count($handledRecord['extra']));
     }

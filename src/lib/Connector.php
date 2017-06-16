@@ -38,13 +38,7 @@ class Connector
         foreach($decryptedData as $key => $value) {
             $_SESSION[$this->id][$key] = $value;
         }
-
         $_SESSION[$this->id]['api_url'] =  rtrim($_SESSION[$this->id]['api_url'], '/') . '/';
-
-        if(!empty(FORCED_APIURL)) {
-            $_SESSION[$this->id]['api_url'] = FORCED_APIURL;
-        }
-
         $_SESSION[$this->id]['WWWURL'] = WWWURL;
     }
 

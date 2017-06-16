@@ -45,19 +45,19 @@ class FilterHandler extends AbstractHandler
     protected $bubble;
 
     /**
-     * @param callable|HandlerInterface $handler Handler or factory callable($record, $this).
-     * @param int|array $minLevelOrList A list of levels to accept or a minimum level if maxLevel is provided
-     * @param int $maxLevel Maximum level to accept, only used if $minLevelOrList is not an array
-     * @param Boolean $bubble Whether the messages that are handled can bubble up the stack or not
+     * @param callable|HandlerInterface $handler        Handler or factory callable($record, $this).
+     * @param int|array                 $minLevelOrList A list of levels to accept or a minimum level if maxLevel is provided
+     * @param int                       $maxLevel       Maximum level to accept, only used if $minLevelOrList is not an array
+     * @param Boolean                   $bubble         Whether the messages that are handled can bubble up the stack or not
      */
     public function __construct($handler, $minLevelOrList = Logger::DEBUG, $maxLevel = Logger::EMERGENCY, $bubble = true)
     {
-        $this->handler = $handler;
-        $this->bubble = $bubble;
+        $this->handler  = $handler;
+        $this->bubble   = $bubble;
         $this->setAcceptedLevels($minLevelOrList, $maxLevel);
 
         if (!$this->handler instanceof HandlerInterface && !is_callable($this->handler)) {
-            throw new \RuntimeException("The given handler (" . json_encode($this->handler) . ") is not a callable nor a Monolog\Handler\HandlerInterface object");
+            throw new \RuntimeException("The given handler (".json_encode($this->handler).") is not a callable nor a Monolog\Handler\HandlerInterface object");
         }
     }
 
@@ -71,7 +71,7 @@ class FilterHandler extends AbstractHandler
 
     /**
      * @param int|string|array $minLevelOrList A list of levels to accept or a minimum level or level name if maxLevel is provided
-     * @param int|string $maxLevel Maximum level or level name to accept, only used if $minLevelOrList is not an array
+     * @param int|string       $maxLevel       Maximum level or level name to accept, only used if $minLevelOrList is not an array
      */
     public function setAcceptedLevels($minLevelOrList = Logger::DEBUG, $maxLevel = Logger::EMERGENCY)
     {

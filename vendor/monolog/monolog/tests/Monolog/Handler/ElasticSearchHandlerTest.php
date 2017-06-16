@@ -31,7 +31,7 @@ class ElasticSearchHandlerTest extends TestCase
      */
     protected $options = array(
         'index' => 'my_index',
-        'type' => 'doc_type',
+        'type'  => 'doc_type',
     );
 
     public function setUp()
@@ -207,7 +207,7 @@ class ElasticSearchHandlerTest extends TestCase
 
     /**
      * Return last created document id from ES response
-     * @param  Response $response Elastica Response object
+     * @param  Response    $response Elastica Response object
      * @return string|null
      */
     protected function getCreatedDocId(Response $response)
@@ -220,7 +220,7 @@ class ElasticSearchHandlerTest extends TestCase
 
     /**
      * Retrieve document by id from Elasticsearch
-     * @param  Client $client Elastica client
+     * @param  Client $client     Elastica client
      * @param  string $index
      * @param  string $type
      * @param  string $documentId

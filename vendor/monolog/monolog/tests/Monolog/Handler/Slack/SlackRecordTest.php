@@ -176,17 +176,13 @@ class SlackRecordTest extends TestCase
         $formatter
             ->expects($this->any())
             ->method('format')
-            ->will($this->returnCallback(function ($record) {
-                return $record['message'] . 'test';
-            }));
+            ->will($this->returnCallback(function ($record) { return $record['message'] . 'test'; }));
 
         $formatter2 = $this->getMock('Monolog\\Formatter\\FormatterInterface');
         $formatter2
             ->expects($this->any())
             ->method('format')
-            ->will($this->returnCallback(function ($record) {
-                return $record['message'] . 'test1';
-            }));
+            ->will($this->returnCallback(function ($record) { return $record['message'] . 'test1'; }));
 
         $message = 'Test message';
         $record = new SlackRecord(null, null, false, null, false, false, array(), $formatter);

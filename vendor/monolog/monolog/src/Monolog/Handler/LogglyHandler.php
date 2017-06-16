@@ -81,7 +81,7 @@ class LogglyHandler extends AbstractProcessingHandler
         $headers = array('Content-Type: application/json');
 
         if (!empty($this->tag)) {
-            $headers[] = 'X-LOGGLY-TAG: ' . implode(',', $this->tag);
+            $headers[] = 'X-LOGGLY-TAG: '.implode(',', $this->tag);
         }
 
         $ch = curl_init();

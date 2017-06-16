@@ -65,12 +65,12 @@ class NativeMailerHandler extends MailHandler
     protected $encoding = 'utf-8';
 
     /**
-     * @param string|array $to The receiver of the mail
-     * @param string $subject The subject of the mail
-     * @param string $from The sender of the mail
-     * @param int $level The minimum logging level at which this handler will be triggered
-     * @param bool $bubble Whether the messages that are handled can bubble up the stack or not
-     * @param int $maxColumnWidth The maximum column width that the message lines will have
+     * @param string|array $to             The receiver of the mail
+     * @param string       $subject        The subject of the mail
+     * @param string       $from           The sender of the mail
+     * @param int          $level          The minimum logging level at which this handler will be triggered
+     * @param bool         $bubble         Whether the messages that are handled can bubble up the stack or not
+     * @param int          $maxColumnWidth The maximum column width that the message lines will have
      */
     public function __construct($to, $subject, $from, $level = Logger::ERROR, $bubble = true, $maxColumnWidth = 70)
     {
@@ -89,7 +89,7 @@ class NativeMailerHandler extends MailHandler
      */
     public function addHeader($headers)
     {
-        foreach ((array)$headers as $header) {
+        foreach ((array) $headers as $header) {
             if (strpos($header, "\n") !== false || strpos($header, "\r") !== false) {
                 throw new \InvalidArgumentException('Headers can not contain newline characters for security reasons');
             }
@@ -107,7 +107,7 @@ class NativeMailerHandler extends MailHandler
      */
     public function addParameter($parameters)
     {
-        $this->parameters = array_merge($this->parameters, (array)$parameters);
+        $this->parameters = array_merge($this->parameters, (array) $parameters);
 
         return $this;
     }

@@ -26,21 +26,21 @@ class ZendMonitorHandler extends AbstractProcessingHandler
      * @var array
      */
     protected $levelMap = array(
-        Logger::DEBUG => 1,
-        Logger::INFO => 2,
-        Logger::NOTICE => 3,
-        Logger::WARNING => 4,
-        Logger::ERROR => 5,
-        Logger::CRITICAL => 6,
-        Logger::ALERT => 7,
+        Logger::DEBUG     => 1,
+        Logger::INFO      => 2,
+        Logger::NOTICE    => 3,
+        Logger::WARNING   => 4,
+        Logger::ERROR     => 5,
+        Logger::CRITICAL  => 6,
+        Logger::ALERT     => 7,
         Logger::EMERGENCY => 0,
     );
 
     /**
      * Construct
      *
-     * @param  int $level
-     * @param  bool $bubble
+     * @param  int                       $level
+     * @param  bool                      $bubble
      * @throws MissingExtensionException
      */
     public function __construct($level = Logger::DEBUG, $bubble = true)
@@ -66,9 +66,9 @@ class ZendMonitorHandler extends AbstractProcessingHandler
     /**
      * Write a record to Zend Monitor
      *
-     * @param int $level
+     * @param int    $level
      * @param string $message
-     * @param array $formatted
+     * @param array  $formatted
      */
     protected function writeZendMonitorCustomEvent($level, $message, $formatted)
     {

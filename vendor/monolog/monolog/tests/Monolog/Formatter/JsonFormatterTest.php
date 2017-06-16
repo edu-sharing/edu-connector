@@ -38,7 +38,7 @@ class JsonFormatterTest extends TestCase
     {
         $formatter = new JsonFormatter();
         $record = $this->getRecord();
-        $this->assertEquals(json_encode($record) . "\n", $formatter->format($record));
+        $this->assertEquals(json_encode($record)."\n", $formatter->format($record));
 
         $formatter = new JsonFormatter(JsonFormatter::BATCH_MODE_JSON, false);
         $record = $this->getRecord();
@@ -123,7 +123,7 @@ class JsonFormatterTest extends TestCase
     private function assertContextContainsFormattedException($expected, $actual)
     {
         $this->assertEquals(
-            '{"level_name":"CRITICAL","channel":"core","context":{"exception":' . $expected . '},"datetime":null,"extra":[],"message":"foobar"}' . "\n",
+            '{"level_name":"CRITICAL","channel":"core","context":{"exception":'.$expected.'},"datetime":null,"extra":[],"message":"foobar"}'."\n",
             $actual
         );
     }

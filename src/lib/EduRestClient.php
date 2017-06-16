@@ -35,7 +35,7 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $res = curl_exec($ch);
         if ($res === false) {
-            throw new \Exception('Cannot reach API');
+            throw new \Exception('Cannot reach API ' . $this->getApiUrl());
         }
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
