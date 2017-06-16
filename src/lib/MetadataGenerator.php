@@ -16,6 +16,8 @@ class MetadataGenerator {
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"><properties></properties>');
         $entry = $xml->addChild('entry', 'educonnector');
         $entry->addAttribute('key', 'appid');
+        $entry = $xml->addChild('entry', 'true');
+        $entry->addAttribute('key', 'trustedclient');
         $entry = $xml->addChild('entry', 'CONNECTOR');
         $entry->addAttribute('key', 'type');
         $entry = $xml->addChild('entry', $publicKeyData['key']);

@@ -32,7 +32,7 @@
 
 namespace connector\lib;
 
-class SigSoapClient extends SoapClient {
+class SigSoapClient extends \SoapClient {
 
     /**
      * Set app properties and soap headers
@@ -61,10 +61,10 @@ class SigSoapClient extends SoapClient {
             $signature = base64_encode($signature);
             openssl_free_key($pkeyid);
             $headers = array();
-            $headers[] = new SOAPHeader('http://webservices.edu_sharing.org', 'appId', 'educonnector');
-            $headers[] = new SOAPHeader('http://webservices.edu_sharing.org', 'timestamp', $timestamp);
-            $headers[] = new SOAPHeader('http://webservices.edu_sharing.org', 'signature', $signature);
-            $headers[] = new SOAPHeader('http://webservices.edu_sharing.org', 'signed', $signdata);
+            $headers[] = new \SOAPHeader('http://webservices.edu_sharing.org', 'appId', 'educonnector');
+            $headers[] = new \SOAPHeader('http://webservices.edu_sharing.org', 'timestamp', $timestamp);
+            $headers[] = new \SOAPHeader('http://webservices.edu_sharing.org', 'signature', $signature);
+            $headers[] = new \SOAPHeader('http://webservices.edu_sharing.org', 'signed', $signdata);
             parent::__setSoapHeaders($headers);
         } catch (Exception $e) {
             throw new \Exception('error_set_soap_headers' . $e->getMessage());

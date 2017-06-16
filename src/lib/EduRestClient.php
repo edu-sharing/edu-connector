@@ -69,35 +69,22 @@ class EduRestClient
         throw new \Exception('Error unlocking node', $httpcode);
     }
 
-    public function createContentNodeEnhanced($nodeId, $content, $mimetype, $versionComment = '') {
-        try {
-            //throw \Exception(test);
-            return self::createTextContent($nodeId, $content, $mimetype, $versionComment = '');
-        } catch(\Exception $e) {
-            if($e->getCode() === 401) {
-                $log->error('Could not saved with session, trying ticket now');
-                $this->setAuthHeader($this->getTicketHeader());
-                return self::createTextContent($nodeId, $content, $mimetype, $versionComment = '');
-            }
-        }
-    }
-
     private function getTicketHeader() {
         $paramstrusted = array("applicationId"  => 'educonnector',
             "ticket"  => session_id(), "ssoData"  => array(
-                array('key'  => 'username', 'value'  => $_SESSION[$this->id]['user']->userName),
-                array('key'  => 'lastname', 'value'  => $_SESSION[$this->connectorId]->profile->lastName),
-                array('key'  => 'firstname', 'value'  => $_SESSION[$this->connectorId]->profile->firstName),
-                array('key'  => 'email', 'value'  => $_SESSION[$this->connectorId]->profile->email)));
+                array('key'  => 'userid', 'value' => $_SESSION[$this->connectorId]['user']->userName),
+                array('key'  => 'lastname', 'value' => $_SESSION[$this->connectorId]['user']->lastName),
+                array('key'  => 'firstname', 'value' => $_SESSION[$this->connectorId]['user']->firstName),
+                array('key'  => 'email', 'value' => $_SESSION[$this->connectorId]['user']->email)));
         try {
-            $client = new \connector\lib\SigSoapClient($_SESSION[$this->id]['api_url'] . '../services/authbyapp?wsdl');
+            $client = new \connector\lib\SigSoapClient($_SESSION[$this->connectorId]['api_url'] . '../services/authbyapp?wsdl');
             $return = $client->authenticateByTrustedApp($paramstrusted);
             $ticket = $return->authenticateByTrustedAppReturn->ticket;
-
             return 'Authorization: EDU-TICKET ' . $ticket;
-
         } catch (\Exception $e) {
-            throw new \Exception('ticketfehler');
+            throw new \Exception($e->getMessage(), $e->getCode());
+        } catch (\SoapFault $s) {
+            throw new \Exception($s->getMessage(), $s->faultcode);
         }
 
     }
@@ -123,12 +110,25 @@ class EduRestClient
         throw new \Exception('Error creating text content', $httpcode);
     }
 
+
+    
+    public function createContentNodeEnhanced($nodeId, $contentpath, $mimetype, $versionComment = '') {
+        try {
+           return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
+        } catch(\Exception $e) {
+            if($e->getCode() === 401) {
+                throw new \Exception('Could not saved with session, trying ticket now');
+                $this->setAuthHeader($this->getTicketHeader());
+                return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
+            }
+        }
+    }
+
     public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '')
     {
         $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/content?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
         $headers = array($this->getAuthHeader(), 'Accept: application/json', 'Content-Type: multipart/form-data');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
         $cfile = curl_file_create($contentpath, $mimetype, 'file');
         $fields = array('file' => $cfile);
 
@@ -140,10 +140,12 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $res = curl_exec($ch);
+        error_log('#############'.curl_error($ch));
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        //curl_close($ch);
 
         if ($httpcode >= 200 && $httpcode < 300) {
+            error_log('#############'.curl_error($ch));
             return json_decode($res);
         }
         throw new \Exception('Error creating content node HTTP STATUS ' . $httpcode, $httpcode);

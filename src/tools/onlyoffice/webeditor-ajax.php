@@ -1,18 +1,8 @@
 <?php
-//session_id($_GET['sess']);
-//session_start();
-
 require __DIR__ . '/../../../vendor/autoload.php';
 $lang = 'de';
 $logger = new connector\lib\Logger();
 $log = $logger->getLog();
-/*$id = $_GET['id'];
-
-if(empty($_SESSION[$id]) || empty($_GET['id'])) {
-    $log -> error('Empty value for id.');
-    $log -> error(json_encode($_GET, true));
-    exit();
-}*/
 
 /*
  *
@@ -93,6 +83,7 @@ function track($log) {
 
     $data = json_decode($body_stream, TRUE); //json_decode - PHP 5 >= 5.2.0
 
+    //user holds the session id
     session_id($data['users'][0]);
     session_start();
 
