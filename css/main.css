@@ -1,0 +1,42 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    padding: 20px;
+}
+
+#toast-container {
+  top: auto !important;
+  right: auto !important;
+  bottom: 10%;
+  left: calc(50% - 200px);  
+}
+
+#toast-container > div {
+    width: 400px;
+    min-height: 60px;
+    background: #5C5C5C;
+}
+
+#toast-container > div.success {
+    border-left: 5px solid #40BF8E;
+}
+
+#toast-container > div.error {
+    border-left: 5px solid #c15d5d;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+#countdown {
+    float: right;
+}
+
+#countdown i, #countdown span {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.btn, .btn:hover {
+    background-color: #139442;
+}
