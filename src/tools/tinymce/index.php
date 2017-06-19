@@ -40,7 +40,7 @@ $_SESSION[$id]['first_run'] = false;
 </head>
 <body>
 <header>
-  <div id="countdown"><i class="material-icons">av_timer</i> <span id="countdownvalue"></span></div>
+  <div id="countdown"><img src="<?php echo $_SESSION[$id]['WWWURL']?>/img/ic_av_timer_black_24px.svg"> <span id="countdownvalue"></span></div>
   <h4><?php echo $_SESSION[$id]['node']->node->name ?></h4>
 </header>
 <section>
