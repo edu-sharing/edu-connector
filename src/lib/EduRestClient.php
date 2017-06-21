@@ -78,7 +78,7 @@ class EduRestClient
                 array('key'  => 'firstname', 'value' => $_SESSION[$this->connectorId]['user']->firstName),
                 array('key'  => 'email', 'value' => $_SESSION[$this->connectorId]['user']->email)));
         try {
-            $client = new \connector\lib\SigSoapClient($_SESSION[$this->connectorId]['api_url'] . '../services/authbyapp?wsdl');
+            $client = new \connector\lib\SigSoapClient($this->getApiUrl() . '../services/authbyapp?wsdl');
             $return = $client->authenticateByTrustedApp($paramstrusted);
             $ticket = $return->authenticateByTrustedAppReturn->ticket;
             return 'Authorization: EDU-TICKET ' . $ticket;
@@ -114,15 +114,15 @@ class EduRestClient
 
     
     public function createContentNodeEnhanced($nodeId, $contentpath, $mimetype, $versionComment = '') {
-        try {
+       /* try {
            return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
         } catch(\Exception $e) {
             if($e->getCode() === 401) {
-                throw new \Exception('Could not saved with session, trying ticket now');
+                throw new \Exception('Could not saved with session, trying ticket now');*/
                 $this->setAuthHeader($this->getTicketHeader());
                 return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
-            }
-        }
+         //   }
+      //  }
     }
 
     public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '')
