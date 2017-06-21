@@ -21,9 +21,7 @@ $_SESSION[$id]['first_run'] = false;
 <!DOCTYPE html>
 <html>
 <head>
-  <link href="//fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-  <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+  <link rel="stylesheet" href="<?php echo $_SESSION[$id]['WWWURL']?>/css/materialize.min.css">
   <link rel="stylesheet" href="<?php echo $_SESSION[$id]['WWWURL']?>/css/main.css" rel="stylesheet">
 
   <script>
@@ -36,13 +34,13 @@ $_SESSION[$id]['first_run'] = false;
 
   <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/lang/<?php echo $lang ?>.js"></script>
   <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/jquery-3.2.1.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+  <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/materialize.min.js"></script>
   <script src='js/tinymce/tinymce.min.js'></script>
   <script src="<?php echo $_SESSION[$id]['WWWURL']?>/src/tools/tinymce/js/tool.js"></script>
 </head>
 <body>
 <header>
-  <div id="countdown"><i class="material-icons">av_timer</i> <span id="countdownvalue"></span></div>
+  <div id="countdown"><img src="<?php echo $_SESSION[$id]['WWWURL']?>/img/ic_av_timer_black_24px.svg"> <span id="countdownvalue"></span></div>
   <h4><?php echo $_SESSION[$id]['node']->node->name ?></h4>
 </header>
 <section>
