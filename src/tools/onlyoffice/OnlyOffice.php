@@ -21,7 +21,7 @@ class OnlyOffice extends \connector\lib\Tool {
         }
 
         if ($node->node->size === NULL) {
-            $this->apiClient->createContentNode($node->node->ref->id, STORAGEPATH . '/templates/init.' . $_SESSION[$this->connectorId]['filetype'], \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$this->connectorId]['filetype']), 'Init');
+            $this->apiClient->createContentNode($node->node->ref->id, STORAGEPATH . '/templates/init.' . $_SESSION[$this->connectorId]['filetype'], \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$this->connectorId]['filetype']), 'VERSION_MAIN_UPLOAD');
             $node = $this->apiClient->getNode($node->node->ref->id);
         }
         $_SESSION[$this->connectorId]['node'] = $node;

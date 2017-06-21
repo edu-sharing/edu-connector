@@ -78,6 +78,7 @@ class EduRestClient
                 array('key'  => 'firstname', 'value' => $_SESSION[$this->connectorId]['user']->firstName),
                 array('key'  => 'email', 'value' => $_SESSION[$this->connectorId]['user']->email)));
         try {
+            error_log(print_r($paramstrusted, true));
             $client = new \connector\lib\SigSoapClient($this->getApiUrl() . '../services/authbyapp?wsdl');
             $return = $client->authenticateByTrustedApp($paramstrusted);
             $ticket = $return->authenticateByTrustedAppReturn->ticket;
@@ -114,15 +115,19 @@ class EduRestClient
 
     
     public function createContentNodeEnhanced($nodeId, $contentpath, $mimetype, $versionComment = '') {
-       /* try {
+        try {
            return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
         } catch(\Exception $e) {
             if($e->getCode() === 401) {
-                throw new \Exception('Could not saved with session, trying ticket now');*/
                 $this->setAuthHeader($this->getTicketHeader());
                 return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
-         //   }
-      //  }
+            }
+        }
+    }
+
+    public function test() {
+        $this->setAuthHeader($this->getTicketHeader());
+        $this->getUser();
     }
 
     public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '')
@@ -132,7 +137,6 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $cfile = curl_file_create($contentpath, $mimetype, 'file');
         $fields = array('file' => $cfile);
-
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -142,12 +146,15 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $res = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
 
         if ($httpcode >= 200 && $httpcode < 300) {
+            curl_close($ch);
             return json_decode($res);
         }
-        throw new \Exception('Error creating content node HTTP STATUS ' . $httpcode, $httpcode);
+        $error = curl_error($ch);
+        error_log($error);
+        curl_close($ch);
+        throw new \Exception('Error creating content node HTTP STATUS ' . $httpcode . '. Curl error ' . $error, $httpcode);
     }
 
 /*
@@ -220,6 +227,7 @@ class EduRestClient
         }
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        error_log(curl_error($ch));
         curl_close($ch);
         if ($httpcode >= 200 && $httpcode < 300) {
             $person = json_decode($res);
