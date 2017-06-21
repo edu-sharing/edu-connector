@@ -110,7 +110,7 @@ function track($log) {
             //if($status == 'ForcedSave')
             //    $comment = 'Manually_saved';
             //else
-                $comment = 'EDITOR_UPLOAD';
+                $comment = 'EDITOR_UPLOAD,ONLY_OFFICE';
 
             if (($new_data = file_get_contents($downloadUri)) === FALSE) {
                 $saved = 0;
