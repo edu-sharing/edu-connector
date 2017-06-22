@@ -75,6 +75,9 @@ class Connector
             case 'ONLY_OFFICE':
                 $this -> tool = new \connector\tools\onlyoffice\OnlyOffice($this->apiClient, $this->log, $this->id);
                 break;
+            case 'ONYX':
+                $this -> tool = new \connector\tools\onyx\Onyx($this->apiClient, $this->log, $this->id);
+                break;
             case 'TINYMCE':
                 $this -> tool = new \connector\tools\tinymce\TinyMce($this->apiClient, $this->log, $this->id);
                 break;
