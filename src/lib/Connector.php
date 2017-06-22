@@ -20,9 +20,6 @@ class Connector
             $this->startTool();
             $this->tool->setNode();
             $this->setUser();
-
-//$this->apiClient->test();die();
-
             $this->tool->run();
         } catch (\Exception $e) {
             $this->log->error($e->getCode() . ' ' . $e->__toString());

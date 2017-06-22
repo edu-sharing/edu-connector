@@ -74,11 +74,10 @@ class EduRestClient
         $paramstrusted = array("applicationId"  => 'educonnector',
             "ticket"  => session_id(), "ssoData"  => array(
                 array('key'  => 'userid', 'value' => $_SESSION[$this->connectorId]['user']->userName),
-                array('key'  => 'lastname', 'value' => $_SESSION[$this->connectorId]['user']->lastName),
-                array('key'  => 'firstname', 'value' => $_SESSION[$this->connectorId]['user']->firstName),
-                array('key'  => 'email', 'value' => $_SESSION[$this->connectorId]['user']->email)));
+                array('key'  => 'lastname', 'value' => $_SESSION[$this->connectorId]['user']->profile->lastName),
+                array('key'  => 'firstname', 'value' => $_SESSION[$this->connectorId]['user']->profile->firstName),
+                array('key'  => 'email', 'value' => $_SESSION[$this->connectorId]['user']->profile->email)));
         try {
-            error_log(print_r($paramstrusted, true));
             $client = new \connector\lib\SigSoapClient($this->getApiUrl() . '../services/authbyapp?wsdl');
             $return = $client->authenticateByTrustedApp($paramstrusted);
             $ticket = $return->authenticateByTrustedAppReturn->ticket;
@@ -111,8 +110,6 @@ class EduRestClient
         }
         throw new \Exception('Error creating text content', $httpcode);
     }
-
-
     
     public function createContentNodeEnhanced($nodeId, $contentpath, $mimetype, $versionComment = '') {
         try {
@@ -123,11 +120,6 @@ class EduRestClient
                 return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
             }
         }
-    }
-
-    public function test() {
-        $this->setAuthHeader($this->getTicketHeader());
-        $this->getUser();
     }
 
     public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '')
@@ -152,7 +144,6 @@ class EduRestClient
             return json_decode($res);
         }
         $error = curl_error($ch);
-        error_log($error);
         curl_close($ch);
         throw new \Exception('Error creating content node HTTP STATUS ' . $httpcode . '. Curl error ' . $error, $httpcode);
     }
@@ -227,7 +218,6 @@ class EduRestClient
         }
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        error_log(curl_error($ch));
         curl_close($ch);
         if ($httpcode >= 200 && $httpcode < 300) {
             $person = json_decode($res);
