@@ -57,10 +57,10 @@ if(!isset($_POST['formSubmitted'])) {
 
 require_once __DIR__ . '/../config.php';
 
-$server = SERVER;
-$protocol = PROTOCOL;
+$server = ETHERPAD_SERVER;
+$protocol = ETHERPAD_PROTOCOL;
 //$path = PADPATH;
-$apiKey = APIKEY;
+$apiKey = ETHERPAD_APIKEY;
 
 $padUrl = $protocol . '://' . $server;// . '/' . $path;
 

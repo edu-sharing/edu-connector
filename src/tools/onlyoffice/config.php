@@ -12,7 +12,7 @@ require_once __DIR__ . '/../../../config.php';
 define('WEB_ROOT_URL', WWWURL . '/src/tools/onlyoffice');
 
 $GLOBALS['FILE_SIZE_MAX'] = 5242880;
-$GLOBALS['STORAGE_PATH'] = STORAGEFOLDER;
+$GLOBALS['STORAGE_PATH'] = ONLYOFFICE_STORAGEFOLDER;
 
 $GLOBALS['MODE'] = "";
 
@@ -23,10 +23,10 @@ $GLOBALS['DOC_SERV_CONVERT'] = array(".doc", ".odt", ".xls", ".ods", ".ppt", ".p
 $GLOBALS['DOC_SERV_TIMEOUT'] = "120000";
 
 
-$GLOBALS['DOC_SERV_STORAGE_URL'] = DOCUMENT_SERVER . "/FileUploader.ashx";
-$GLOBALS['DOC_SERV_CONVERTER_URL'] = DOCUMENT_SERVER . "/ConvertService.ashx";
-$GLOBALS['DOC_SERV_API_URL'] = DOCUMENT_SERVER . "/web-apps/apps/api/documents/api.js";
-$GLOBALS['DOC_SERV_PRELOADER_URL'] = DOCUMENT_SERVER . "/web-apps/apps/api/documents/cache-scripts.html";
+$GLOBALS['DOC_SERV_STORAGE_URL'] = ONLYOFFICE_DOCUMENT_SERVER . "/FileUploader.ashx";
+$GLOBALS['DOC_SERV_CONVERTER_URL'] = ONLYOFFICE_DOCUMENT_SERVER . "/ConvertService.ashx";
+$GLOBALS['DOC_SERV_API_URL'] = ONLYOFFICE_DOCUMENT_SERVER . "/web-apps/apps/api/documents/api.js";
+$GLOBALS['DOC_SERV_PRELOADER_URL'] = ONLYOFFICE_DOCUMENT_SERVER . "/web-apps/apps/api/documents/cache-scripts.html";
 
 
 $GLOBALS['ExtsSpreadsheet'] = array(".xls", ".xlsx",

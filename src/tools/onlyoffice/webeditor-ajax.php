@@ -106,7 +106,7 @@ function track($log) {
 
             $downloadUri = $data["url"];
             $saved = 1;
-            $tmpSavePath = STORAGEPATH . '/' . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
+            $tmpSavePath = ONLYOFFICE_STORAGEPATH . '/' . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
             //if($status == 'ForcedSave')
             //    $comment = 'Manually_saved';
             //else

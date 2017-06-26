@@ -11,6 +11,8 @@ class Etherpad extends \connector\lib\Tool {
 		$params = '?fname=' . $fname . '&course_id=' . $courseId . '&resource_link_id=' . $resource_link_id . '&user_id=' . $userId;		
 		$padUrl = WWWURL . '/src/tools/etherpad/' . $params;
 
+
+		//donot save pad url as wwwurl because it contains the user
 		//if(!empty($node->node->properties->{'ccm:wwwurl'}[0])) {
 		//	$this->updateReferenceUrl($_REQUEST['node'], $padUrl);
 		//}
