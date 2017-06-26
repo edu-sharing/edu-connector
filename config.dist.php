@@ -34,3 +34,8 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 -----END PUBLIC KEY-----');
 //edu-sharing repository id corresponding to onyx editor instance
 define('REPOSITORY', 'peter');
+
+/*etherpad*/
+define('ETHERPAD_SERVER', '');
+define('ETHERPAD_PROTOCOL', 'http');
+define('ETHERPAD_APIKEY', '');
