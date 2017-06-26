@@ -36,6 +36,6 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 define('REPOSITORY', 'peter');
 
 /*etherpad*/
-define('SERVER', '');
-define('PROTOCOL', 'http');
-define('APIKEY', '');
+define('ETHERPAD_SERVER', '');
+define('ETHERPAD_PROTOCOL', 'http');
+define('ETHERPAD_APIKEY', '');

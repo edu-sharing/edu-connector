@@ -24,7 +24,7 @@ class Logger {
         /*
         * Log to redis/logstash
         */
-        if(REDISSERVER && !empty(REDISSERVER)) {
+        if(defined('REDISSERVER') && !empty(REDISSERVER)) {
             $redisHandler = new RedisHandler(new Client(REDISSERVER), 'phplogs');
             $formatter = new LogstashFormatter('eduConnector');
             $redisHandler->setFormatter($formatter);
