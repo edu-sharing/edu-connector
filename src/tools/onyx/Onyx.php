@@ -18,8 +18,7 @@ class Onyx extends \connector\lib\Tool {
         openssl_seal($data, $sealed, $ekeys, array($publicKey));
         openssl_free_key($publicKey);
         if(empty($sealed)) {
-            echo 'Encryption error';
-            exit();
+            throw new \Exception('Encryption error');
         }
         return $sealed . '::' . $ekeys[0];
     }
