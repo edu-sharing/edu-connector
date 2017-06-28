@@ -45,7 +45,7 @@ class Connector
     private function validate($data)
     {
         $offset = time() - $data->ts;
-        if ($offset > 10)
+        if ($offset > 30)
             throw new \Exception('Timestamp validation failed. Offset is ' . $offset . ' seconds.');
 
         if(false === filter_var($data->node, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9-]*$/"))))
@@ -54,8 +54,8 @@ class Connector
         if(false === filter_var($data->ticket, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z0-9_]*$/"))))
             throw new \Exception('Invalid ticket');
 
-        if(false === filter_var($data->sessionId, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[A-Z0-9]*$/"))))
-            throw new \Exception('Invalid session ID\'');
+        if(false === filter_var($data->sessionId, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z0-9.]*$/"))))
+            throw new \Exception('Invalid session ID');
 
         if(false === filter_var($data->tool, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[A-Z_]*$/"))))
             throw new \Exception('Invalid tool');
