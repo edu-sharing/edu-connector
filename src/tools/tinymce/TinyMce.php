@@ -13,11 +13,10 @@ class TinyMce extends \connector\lib\Tool {
     public function setNode()
     {
         $node = $this->getNode();
-
         if ($node->node->size === NULL) {
             $_SESSION[$this->connectorId]['content'] = '';
         } else {
-            $_SESSION[$this->connectorId]['content'] = file_get_contents($node->node->contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket']);
+            $_SESSION[$this->connectorId]['content'] = file_get_contents($node->node->contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload');
         }
         if (in_array('Write', $node->node->access)) {
             $_SESSION[$this->connectorId]['readonly'] = 0;
