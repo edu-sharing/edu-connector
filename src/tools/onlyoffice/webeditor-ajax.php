@@ -106,11 +106,11 @@ function track($log) {
 
             $downloadUri = $data["url"];
             $saved = 1;
-            $tmpSavePath = STORAGEPATH . '/' . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
+            $tmpSavePath = ONLYOFFICE_STORAGEPATH . '/' . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
             //if($status == 'ForcedSave')
             //    $comment = 'Manually_saved';
             //else
-                $comment = 'Saved_on_editor_close';
+                $comment = 'EDITOR_UPLOAD,ONLY_OFFICE';
 
             if (($new_data = file_get_contents($downloadUri)) === FALSE) {
                 $saved = 0;

@@ -42,13 +42,9 @@ header {
     margin-bottom: 20px;
 }
 
-#countdown {
-    float: right;
-}
-
-#countdown i, #countdown span {
+#countdown img {
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: bottom;
 }
 
 .btn, .btn:hover {

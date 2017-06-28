@@ -74,11 +74,11 @@ class EduRestClient
         $paramstrusted = array("applicationId"  => 'educonnector',
             "ticket"  => session_id(), "ssoData"  => array(
                 array('key'  => 'userid', 'value' => $_SESSION[$this->connectorId]['user']->userName),
-                array('key'  => 'lastname', 'value' => $_SESSION[$this->connectorId]['user']->lastName),
-                array('key'  => 'firstname', 'value' => $_SESSION[$this->connectorId]['user']->firstName),
-                array('key'  => 'email', 'value' => $_SESSION[$this->connectorId]['user']->email)));
+                array('key'  => 'lastname', 'value' => $_SESSION[$this->connectorId]['user']->profile->lastName),
+                array('key'  => 'firstname', 'value' => $_SESSION[$this->connectorId]['user']->profile->firstName),
+                array('key'  => 'email', 'value' => $_SESSION[$this->connectorId]['user']->profile->email)));
         try {
-            $client = new \connector\lib\SigSoapClient($_SESSION[$this->connectorId]['api_url'] . '../services/authbyapp?wsdl');
+            $client = new \connector\lib\SigSoapClient($this->getApiUrl() . '../services/authbyapp?wsdl');
             $return = $client->authenticateByTrustedApp($paramstrusted);
             $ticket = $return->authenticateByTrustedAppReturn->ticket;
             return 'Authorization: EDU-TICKET ' . $ticket;
@@ -110,15 +110,12 @@ class EduRestClient
         }
         throw new \Exception('Error creating text content', $httpcode);
     }
-
-
     
     public function createContentNodeEnhanced($nodeId, $contentpath, $mimetype, $versionComment = '') {
         try {
            return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
         } catch(\Exception $e) {
             if($e->getCode() === 401) {
-                throw new \Exception('Could not saved with session, trying ticket now');
                 $this->setAuthHeader($this->getTicketHeader());
                 return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
             }
@@ -132,7 +129,6 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $cfile = curl_file_create($contentpath, $mimetype, 'file');
         $fields = array('file' => $cfile);
-
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -142,12 +138,14 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $res = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
 
         if ($httpcode >= 200 && $httpcode < 300) {
+            curl_close($ch);
             return json_decode($res);
         }
-        throw new \Exception('Error creating content node HTTP STATUS ' . $httpcode, $httpcode);
+        $error = curl_error($ch);
+        curl_close($ch);
+        throw new \Exception('Error creating content node HTTP STATUS ' . $httpcode . '. Curl error ' . $error, $httpcode);
     }
 
 /*
