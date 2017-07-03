@@ -45,7 +45,7 @@ class EduRestClient
         if ($httpcode >= 200 && $httpcode < 300) {
             return json_decode($res);
         }
-        throw new \Exception('Error validating session', $httpcode);
+        throw new \Exception('Error validating session: ' . $this->getAuthHeader(), $httpcode);
     }
 
     public function unlockNode($nodeId) {
@@ -67,7 +67,7 @@ class EduRestClient
         if ($httpcode >= 200 && $httpcode < 300) {
             return json_decode($res);
         }
-        throw new \Exception('Error unlocking node', $httpcode);
+        throw new \Exception('Error unlocking node ' . $nodeId, $httpcode);
     }
 
     private function getTicketHeader() {
@@ -108,7 +108,7 @@ class EduRestClient
         if ($httpcode >= 200 && $httpcode < 300) {
             return json_decode($res);
         }
-        throw new \Exception('Error creating text content', $httpcode);
+        throw new \Exception('Error creating text content for node ' . $nodeId, $httpcode);
     }
     
     public function createContentNodeEnhanced($nodeId, $contentpath, $mimetype, $versionComment = '') {
