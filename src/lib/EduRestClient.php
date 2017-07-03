@@ -198,7 +198,7 @@ class EduRestClient
             $node = json_decode($res);
             return $node;
         }
-        throw new \Exception('Error fetching node', $httpcode);
+        throw new \Exception('Error fetching node ' . $nodeId, $httpcode);
     }
 
 
