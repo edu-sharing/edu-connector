@@ -85,7 +85,7 @@ $(document).ready(function() {
         unlockNode();
     }
 
-    window.addEventListener("message", function() {
+    window.addEventListener("message", function(event) {
         if(event.data.event=="SESSION_TIMEOUT"){
             if(event.data.data > 0) {
                 var min = Math.floor(event.data.data/60);

@@ -23,7 +23,20 @@ $_SESSION[$id]['first_run'] = false;
 <head>
   <link rel="stylesheet" href="<?php echo $_SESSION[$id]['WWWURL']?>/css/materialize.min.css">
   <link rel="stylesheet" href="<?php echo $_SESSION[$id]['WWWURL']?>/css/main.css" rel="stylesheet">
+<style>
+body {
+    background-color: #f6f6f6;
+    margin: 0 auto;
+    max-width: 1024px;
+}
+h4 {
+    font-size: 1.2rem;
+}
 
+.mce-content-body p {
+    line-height: 1.5em;
+}
+</style>
   <script>
     var wwwurl = '<?php echo $_SESSION[$id]['WWWURL']?>';
     var readonly = <?php echo $_SESSION[$id]['readonly'] ?>;
