@@ -17,7 +17,7 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2016-10-10 12:19:37",
+        "time": "2016-10-10T12:19:37+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -96,7 +96,7 @@
             "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
             "sentry/sentry": "Allow sending log messages to a Sentry server"
         },
-        "time": "2017-03-13 07:08:03",
+        "time": "2017-03-13T07:08:03+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -153,7 +153,7 @@
             "ext-curl": "Allows access to Webdis when paired with phpiredis",
             "ext-phpiredis": "Allows faster serialization and deserialization of the Redis protocol"
         },
-        "time": "2016-06-16 16:22:20",
+        "time": "2016-06-16T16:22:20+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -198,7 +198,7 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2016-08-06 14:39:51",
+        "time": "2016-08-06T14:39:51+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -250,7 +250,7 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2017-02-14 16:28:37",
+        "time": "2017-02-14T16:28:37+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -301,7 +301,7 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2015-09-11 15:10:35",
+        "time": "2015-09-11T15:10:35+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -349,7 +349,7 @@
         "require": {
             "php": ">=5.4.0"
         },
-        "time": "2017-01-19 11:35:12",
+        "time": "2017-01-19T11:35:12+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -394,9 +394,9 @@
         "require": {
             "psr/container": "^1.0"
         },
-        "time": "2017-02-14 19:40:03",
+        "time": "2017-02-14T19:40:03+00:00",
         "type": "library",
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Interop\\Container\\": "src/Interop/Container/"
@@ -439,9 +439,9 @@
             "phpunit/phpunit": "^4.0",
             "squizlabs/php_codesniffer": "^2.5"
         },
-        "time": "2017-03-19 17:55:20",
+        "time": "2017-03-19T17:55:20+00:00",
         "type": "library",
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Slim\\": "Slim"
