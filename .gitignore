@@ -8,4 +8,6 @@ src/tools/onlyoffice/storage
 assets/private.key
 assets/public.key
 composer.phar
-vendor/**/.git
+vendor
+log
+!log/.gitkeep
