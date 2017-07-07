@@ -8,4 +8,4 @@ src/tools/onlyoffice/storage
 assets/private.key
 assets/public.key
 composer.phar
-vendor
+vendor/**/.git
