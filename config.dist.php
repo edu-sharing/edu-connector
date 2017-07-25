@@ -8,6 +8,8 @@ define('WWWURL', 'http://xxxxxxx/eduConnector');
 define('DOCROOT', '/var/www/html/eduConnector');
 //use this to override the api_url parameter retrieved by request
 define('FORCED_APIURL', '');
+//use intern communication
+define('FORCE_INTERN_COM', false);
 
 /*logging*/
 //additionally to local log files you can push monolog messages to a redis server
