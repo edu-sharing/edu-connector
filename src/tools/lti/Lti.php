@@ -1,71 +1,104 @@
 <?php
+/*
+ * @see from https://gist.github.com/matthanger/1171921
+ */
 namespace connector\tools\lti;
+
+define("LTI_VERSION", "LTI-1p0");
+define("LTI_MESSAGE_TYPE", "basic-lti-launch-request");
+define("OAUTH_CALLBACK", "about:blank");
+define("OAUTH_VERSION", "1.0");
+define("OAUTH_SIGNATUER_METHOD", "HMAC-SHA1");
 
 class Lti extends \connector\lib\Tool {
 
-    public function run() {
+    private $launch_data = array();
+    private $signature = '';
 
-        //from https://gist.github.com/matthanger/1171921
+    //replace with session data
+    private $toolConfig;
 
-        $launch_url = "https://online.dr-chuck.com/sakai-api-test/tool.php";
-        $key = "12345";
-        $secret = "secret";
-        $launch_data = array(
-            "user_id" => "292832126",
-            "roles" => "Instructor",
-            "resource_link_id" => "120988f929-274612",
-            "resource_link_title" => "Weekly Blog",
-            "resource_link_description" => "A weekly blog.",
-            "lis_person_name_full" => "Jane Q. Public",
-            "lis_person_name_family" => "Public",
-            "lis_person_name_given" => "Given",
-            "lis_person_contact_email_primary" => "user@school.edu",
-            "lis_person_sourcedid" => "school.edu:user",
-            "context_id" => "456434513",
-            "context_title" => "Design of Personal Environments",
-            "context_label" => "SI182",
-            "tool_consumer_instance_guid" => "lmsng.school.edu",
-            "tool_consumer_instance_description" => "University of School (LMSng)"
+
+
+    private function prepareLaunchData() {
+
+        //set person details, roles, etc.
+
+        $this->launch_data = array(
+            //"user_id" => "292832126", //nö
+            //"roles" => "Instructor", // nö
+            "resource_link_id" => "achso" //chatroom id / pad id etc.
         );
 
-        $now = new DateTime();
-        $launch_data["lti_version"] = "LTI-1p0";
-        $launch_data["lti_message_type"] = "basic-lti-launch-request";
+        $this->launch_data["lti_version"] = LTI_VERSION;
+        $this->launch_data["lti_message_type"] = LTI_MESSAGE_TYPE;
+
         # Basic LTI uses OAuth to sign requests
-        # OAuth Core 1.0 spec: http://oauth.net/core/1.0/
-        $launch_data["oauth_callback"] = "about:blank";
-        $launch_data["oauth_consumer_key"] = $key;
-        $launch_data["oauth_version"] = "1.0";
-        $launch_data["oauth_nonce"] = uniqid('', true);
-        $launch_data["oauth_timestamp"] = $now->getTimestamp();
-        $launch_data["oauth_signature_method"] = "HMAC-SHA1";
+        $this->addOAuthData();
+        $this->setOAuthSignature();
+    }
+
+    private function setToolConfig() {
+        //get config from node
+        //$this->apiClient()->getNode($nodeId from config object);
+        $this->toolConfig = ''; // config properties....
+    }
+
+    private function setOAuthSignature() {
+
+        //get values from toolconfig
+        //$bla = $this->toolConfig['blub'];
+
         # In OAuth, request parameters must be sorted by name
-        $launch_data_keys = array_keys($launch_data);
+        $launch_data_keys = array_keys($this->launch_data);
         sort($launch_data_keys);
         $launch_params = array();
         foreach ($launch_data_keys as $key) {
-            array_push($launch_params, $key . "=" . rawurlencode($launch_data[$key]));
+            array_push($launch_params, $key . "=" . rawurlencode($this->launch_data[$key]));
         }
-        $base_string = "POST&" . urlencode($launch_url) . "&" . rawurlencode(implode("&", $launch_params));
+        $base_string = "POST&" . urlencode($this->launch_url) . "&" . rawurlencode(implode("&", $launch_params));
         $secret = urlencode($secret) . "&";
-        $signature = base64_encode(hash_hmac("sha1", $base_string, $secret, true));
-        ?>
+        $this->signature = base64_encode(hash_hmac("sha1", $base_string, $secret, true));
+    }
 
-        <html>
+    private function addOAuthData() {
+
+        //get values from toolconfig
+        //$bla = $this->toolConfig['blub'];
+
+        # OAuth Core 1.0 spec: http://oauth.net/core/1.0/
+        $this->launch_data["oauth_callback"] = OAUTH_CALLBACK;
+        $this->launch_data["oauth_consumer_key"] = $key;
+        $this->launch_data["oauth_version"] = OAUTH_VERSION;
+        $this->launch_data["oauth_nonce"] = uniqid('', true);
+        $now = new \DateTime();
+        $this->launch_data["oauth_timestamp"] = $now->getTimestamp();
+        $this->launch_data["oauth_signature_method"] = OAUTH_SIGNATUER_METHOD;
+    }
+
+    private function renderLaunchForm() {
+
+        //get values from toolconfig
+        //$bla = $this->toolConfig['blub'];
+
+        echo '<html>
         <head></head>
         <body onload="document.ltiLaunchForm.submit();">
         <body>
-        <form id="ltiLaunchForm" name="ltiLaunchForm" method="POST" action="<?php printf($launch_url); ?>">
-            <?php foreach ($launch_data as $k => $v ) { ?>
-                <input type="hidden" name="<?php echo $k ?>" value="<?php echo $v ?>">
-            <?php } ?>
-            <input type="hidden" name="oauth_signature" value="<?php echo $signature ?>">
-            <button type="submit">Launch</button>
+        <form id="ltiLaunchForm" name="ltiLaunchForm" method="POST" action="'.printf($this->launch_url).'">';
+            foreach ($this->launch_data as $k => $v ) {
+                echo '<input type="hidden" name="' . $k  . '" value="' . $v . '">';
+            }
+            echo '<input type="hidden" name="oauth_signature" value="' . $this->signature . '">';
+            echo '<button type="submit">Launch</button>
         </form>
         <body>
-        </html>
-        <?php
+        </html>';
     }
 
-
+    public function run() {
+        $this->setToolConfig();
+        $this->prepareLaunchData();
+        $this->renderLaunchForm();
+    }
 }
