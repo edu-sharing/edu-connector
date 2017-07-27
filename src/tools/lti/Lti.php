@@ -17,9 +17,6 @@ class Lti extends \connector\lib\Tool {
 
     //replace with session data
     private $toolConfig;
-
-
-
     private function prepareLaunchData() {
 
         //set person details, roles, etc.
@@ -27,6 +24,9 @@ class Lti extends \connector\lib\Tool {
         $this->launch_data = array(
             //"user_id" => "292832126", //nö
             //"roles" => "Instructor", // nö
+            "lis_person_name_given" => $_SESSION[$this->connectorId]['user']->profile->firstName,
+            "lis_person_name_family" => $_SESSION[$this->connectorId]['user']->profile->lastName,
+            "lis_person_contact_email_primary" => $_SESSION[$this->connectorId]['user']->profile->email,
             "resource_link_id" => "achso" //chatroom id / pad id etc.
         );
 
@@ -39,16 +39,11 @@ class Lti extends \connector\lib\Tool {
     }
 
     private function setToolConfig() {
-        //get config from node
-        //$this->apiClient()->getNode($nodeId from config object);
-        $this->toolConfig = ''; // config properties....
+        $configObj = $this->apiClient->getNode(str_replace('workspace://SpacesStore/', '', $_SESSION[$this->connectorId]['node']->node->properties->{'ccm:tool_instance_ref'}[0]));
+        $this->toolConfig = $configObj->node->properties;
     }
 
     private function setOAuthSignature() {
-
-        //get values from toolconfig
-        //$bla = $this->toolConfig['blub'];
-
         # In OAuth, request parameters must be sorted by name
         $launch_data_keys = array_keys($this->launch_data);
         sort($launch_data_keys);
@@ -56,19 +51,15 @@ class Lti extends \connector\lib\Tool {
         foreach ($launch_data_keys as $key) {
             array_push($launch_params, $key . "=" . rawurlencode($this->launch_data[$key]));
         }
-        $base_string = "POST&" . urlencode($this->launch_url) . "&" . rawurlencode(implode("&", $launch_params));
-        $secret = urlencode($secret) . "&";
+        $base_string = "POST&" . urlencode($this->toolConfig->{'ccm:tool_instance_provider_url'}[0]) . "&" . rawurlencode(implode("&", $launch_params));
+        $secret = urlencode($this->toolConfig->{'ccm:tool_instance_secret'}[0]) . "&";
         $this->signature = base64_encode(hash_hmac("sha1", $base_string, $secret, true));
     }
 
     private function addOAuthData() {
-
-        //get values from toolconfig
-        //$bla = $this->toolConfig['blub'];
-
         # OAuth Core 1.0 spec: http://oauth.net/core/1.0/
         $this->launch_data["oauth_callback"] = OAUTH_CALLBACK;
-        $this->launch_data["oauth_consumer_key"] = $key;
+        $this->launch_data["oauth_consumer_key"] = $this->toolConfig->{'ccm:tool_instance_key'}[0];
         $this->launch_data["oauth_version"] = OAUTH_VERSION;
         $this->launch_data["oauth_nonce"] = uniqid('', true);
         $now = new \DateTime();
@@ -77,22 +68,18 @@ class Lti extends \connector\lib\Tool {
     }
 
     private function renderLaunchForm() {
-
-        //get values from toolconfig
-        //$bla = $this->toolConfig['blub'];
-
         echo '<html>
-        <head></head>
-        <body onload="document.ltiLaunchForm.submit();">
-        <body>
-        <form id="ltiLaunchForm" name="ltiLaunchForm" method="POST" action="'.printf($this->launch_url).'">';
-            foreach ($this->launch_data as $k => $v ) {
-                echo '<input type="hidden" name="' . $k  . '" value="' . $v . '">';
-            }
-            echo '<input type="hidden" name="oauth_signature" value="' . $this->signature . '">';
-            echo '<button type="submit">Launch</button>
-        </form>
-        <body>
+            <head>
+            </head>
+            <body onload="document.ltiLaunchForm.submit();">
+                <form id="ltiLaunchForm" name="ltiLaunchForm" method="POST" action="'.$this->toolConfig->{'ccm:tool_instance_provider_url'}[0].'">';
+                    foreach ($this->launch_data as $k => $v ) {
+                        echo '<input type="hidden" name="' . $k  . '" value="' . $v . '">';
+                    }
+                    echo '<input type="hidden" name="oauth_signature" value="' . $this->signature . '">';
+                    echo '<button id="submitter" type="submit">Launch</button>
+                </form>
+            <body>
         </html>';
     }
 
