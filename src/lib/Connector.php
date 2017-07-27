@@ -81,7 +81,7 @@ class Connector
             case 'TINYMCE':
                 $this -> tool = new \connector\tools\tinymce\TinyMce($this->apiClient, $this->log, $this->id);
                 break;
-            case 'LTI_TOOL':
+            case 'LTI':
                 $this -> tool = new \connector\tools\lti\Lti($this->apiClient, $this->log, $this->id);
                 break;
             default:
