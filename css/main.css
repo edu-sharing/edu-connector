@@ -1,0 +1,52 @@
+/* open-sans-regular - latin */
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/open-sans-v14-latin-regular.eot'); /* IE9 Compat Modes */
+    src: local('Open Sans Regular'), local('OpenSans-Regular'),
+    url('../fonts/open-sans-v14-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('../fonts/open-sans-v14-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+    url('../fonts/open-sans-v14-latin-regular.woff') format('woff'), /* Modern Browsers */
+    url('../fonts/open-sans-v14-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('../fonts/open-sans-v14-latin-regular.svg#OpenSans') format('svg'); /* Legacy iOS */
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    padding: 20px;
+}
+
+#toast-container {
+  top: auto !important;
+  right: auto !important;
+  bottom: 10%;
+  left: calc(50% - 200px);  
+}
+
+#toast-container > div {
+    width: 400px;
+    min-height: 60px;
+    background: #5C5C5C;
+}
+
+#toast-container > div.success {
+    border-left: 5px solid #40BF8E;
+}
+
+#toast-container > div.error {
+    border-left: 5px solid #c15d5d;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+#countdown img {
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+.btn, .btn:hover {
+    background-color: #139442;
+}

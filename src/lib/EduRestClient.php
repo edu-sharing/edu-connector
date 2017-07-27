@@ -110,10 +110,10 @@ class EduRestClient
         }
         throw new \Exception('Error creating text content for node ' . $nodeId, $httpcode);
     }
-
+    
     public function createContentNodeEnhanced($nodeId, $contentpath, $mimetype, $versionComment = '') {
         try {
-            return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
+           return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
         } catch(\Exception $e) {
             if($e->getCode() === 401) {
                 $this->setAuthHeader($this->getTicketHeader());
@@ -148,33 +148,33 @@ class EduRestClient
         throw new \Exception('Error creating content node HTTP STATUS ' . $httpcode . '. Curl error ' . $error, $httpcode);
     }
 
-    /*
-        public function updateReferenceUrl($nodeId, $url)
-        {
+/*
+    public function updateReferenceUrl($nodeId, $url)
+    {
 
-            $fields = '{"ccm:wwwurl":["' . $url . '"]}';
+        $fields = '{"ccm:wwwurl":["' . $url . '"]}';
 
-            $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/metadata');
+        $ch = curl_init($_SESSION['api_url'] . 'node/v1/nodes/-home-/' . $nodeId . '/metadata');
 
-            $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json', 'Content-Type: application/json; charset=utf-8');
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+        $headers = array('Cookie:JSESSIONID=' . $this->getSessionId(), 'Accept: application/json', 'Content-Type: application/json; charset=utf-8');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
 
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            $res = curl_exec($ch);
-            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        $res = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
 
-            if ($httpcode >= 200 && $httpcode < 300) {
-                return true;
-            }
-            echo 'Error updating node';
-            return false;
-        }*/
+        if ($httpcode >= 200 && $httpcode < 300) {
+            return true;
+        }
+        echo 'Error updating node';
+        return false;
+    }*/
 
     public function getNode($nodeId)
     {

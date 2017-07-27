@@ -3,8 +3,12 @@
 .idea/vcs.xml
 .idea/workspace.xml
 config.php
-OnlineEditor/config.php
-OnlineEditor/storage
-!OnlineEditor/storage/templates
+src/tools/onlyoffice/storage
+!src/tools/onlyoffice/storage/templates
 assets/private.key
 assets/public.key
+composer.phar
+vendor
+log
+!log/.gitkeep
+test.php
