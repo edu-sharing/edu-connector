@@ -8,7 +8,7 @@ define("LTI_VERSION", "LTI-1p0");
 define("LTI_MESSAGE_TYPE", "basic-lti-launch-request");
 define("OAUTH_CALLBACK", "about:blank");
 define("OAUTH_VERSION", "1.0");
-define("OAUTH_SIGNATUER_METHOD", "HMAC-SHA1");
+define("OAUTH_SIGNATURE_METHOD", "HMAC-SHA1");
 
 class Lti extends \connector\lib\Tool {
 
@@ -64,7 +64,7 @@ class Lti extends \connector\lib\Tool {
         $this->launch_data["oauth_nonce"] = uniqid('', true);
         $now = new \DateTime();
         $this->launch_data["oauth_timestamp"] = $now->getTimestamp();
-        $this->launch_data["oauth_signature_method"] = OAUTH_SIGNATUER_METHOD;
+        $this->launch_data["oauth_signature_method"] = OAUTH_SIGNATURE_METHOD;
     }
 
     private function renderLaunchForm() {
