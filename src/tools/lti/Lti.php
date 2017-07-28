@@ -18,16 +18,16 @@ class Lti extends \connector\lib\Tool {
     //replace with session data
     private $toolConfig;
     private function prepareLaunchData() {
-
         //set person details, roles, etc.
-
         $this->launch_data = array(
             //"user_id" => "292832126", //nö
             //"roles" => "Instructor", // nö
             "lis_person_name_given" => $_SESSION[$this->connectorId]['user']->profile->firstName,
             "lis_person_name_family" => $_SESSION[$this->connectorId]['user']->profile->lastName,
             "lis_person_contact_email_primary" => $_SESSION[$this->connectorId]['user']->profile->email,
-            "resource_link_id" => "achso" //chatroom id / pad id etc.
+            "resource_link_id" => $_SESSION[$this->connectorId]['node']->node->ref->id, //chatroom id / pad id etc.,
+            "context_id" => "edu-sharing",
+            "user_id" => $_SESSION[$this->connectorId]['user']->authorityName
         );
 
         $this->launch_data["lti_version"] = LTI_VERSION;
