@@ -26,10 +26,10 @@ class Lti extends \connector\lib\Tool {
             "lis_person_name_family" => $_SESSION[$this->connectorId]['user']->profile->lastName,
             "lis_person_contact_email_primary" => $_SESSION[$this->connectorId]['user']->profile->email,
             "resource_link_id" => $_SESSION[$this->connectorId]['node']->node->ref->id, //chatroom id / pad id etc.,
+	    "resource_link_title" => $_SESSION[$this->connectorId]['node']->node->name,
             "context_id" => "edu-sharing",
             "user_id" => $_SESSION[$this->connectorId]['user']->authorityName
         );
-
         $this->launch_data["lti_version"] = LTI_VERSION;
         $this->launch_data["lti_message_type"] = LTI_MESSAGE_TYPE;
 
