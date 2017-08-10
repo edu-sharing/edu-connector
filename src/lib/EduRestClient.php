@@ -120,7 +120,7 @@ class EduRestClient
            return $test;
         } catch(\Exception $e) {
             error_log('11111111' . $e->getMessage());
-            if($e->getCode() === 401) {
+            if($e->getCode() === 401 || $e->getCode() === 403) {
                 $this->setAuthHeader($this->getTicketHeader());
                 error_log($this->getAuthHeader());
                 return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
