@@ -112,25 +112,18 @@ class EduRestClient
     }
     
     public function createContentNodeEnhanced($nodeId, $contentpath, $mimetype, $versionComment = '') {
-        error_log('saving file - or not');
         try {
-           $test =  self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
-           error_log(json_encode($test));
-           return $test;
+           return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
         } catch(\Exception $e) {
-            error_log('11111111' . $e->getMessage());
 
-            if($e->getCode() === 403) {
-                $person = $this->getUser();
-                error_log(json_encode($person));
-                die();
-            }
+            error_log($e->getCode());
+            error_log($e->getMessage());
 
-            if($e->getCode() === 401) {
+            if($e->getCode() === 401 || $e->getCode() === 403) {
                 $this->setAuthHeader($this->getTicketHeader());
-                error_log($this->getAuthHeader());
                 return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
             }
+            throw new \Exception('Error creating text content for node ' . $nodeId, $e->getCode());
         }
     }
 
@@ -155,8 +148,6 @@ class EduRestClient
             curl_close($ch);
             return json_decode($res);
         }
-
-        error_log( curl_error($ch));
 
         $error = curl_error($ch);
         curl_close($ch);
