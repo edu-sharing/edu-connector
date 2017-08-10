@@ -169,7 +169,7 @@ class EduRestClient
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if ($httpcode >= 200 && $httpcode < 300) {
+        if ($httpcode >= 200 && $httpcode < 308) {
             return true;
         }
         echo 'Error updating node';
