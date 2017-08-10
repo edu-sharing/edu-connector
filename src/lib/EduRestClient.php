@@ -42,7 +42,7 @@ class EduRestClient
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-        if ($httpcode >= 200 && $httpcode < 300) {
+        if ($httpcode >= 200 && $httpcode < 308) {
             return json_decode($res);
         }
         throw new \Exception('Error validating session: ' . $this->getAuthHeader(), $httpcode);
@@ -64,7 +64,7 @@ class EduRestClient
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-        if ($httpcode >= 200 && $httpcode < 300) {
+        if ($httpcode >= 200 && $httpcode < 308) {
             return json_decode($res);
         }
         throw new \Exception('Error unlocking node ' . $nodeId, $httpcode);
@@ -105,7 +105,7 @@ class EduRestClient
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if ($httpcode >= 200 && $httpcode < 300) {
+        if ($httpcode >= 200 && $httpcode < 308) {
             return json_decode($res);
         }
         throw new \Exception('Error creating text content for node ' . $nodeId, $httpcode);
@@ -139,7 +139,7 @@ class EduRestClient
         $res = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        if ($httpcode >= 200 && $httpcode < 300) {
+        if ($httpcode >= 200 && $httpcode < 308) {
             curl_close($ch);
             return json_decode($res);
         }
@@ -194,7 +194,7 @@ class EduRestClient
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         curl_close($ch);
-        if ($httpcode >= 200 && $httpcode < 300) {
+        if ($httpcode >= 200 && $httpcode < 308) {
             $node = json_decode($res);
             return $node;
         }
@@ -219,7 +219,7 @@ class EduRestClient
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-        if ($httpcode >= 200 && $httpcode < 300) {
+        if ($httpcode >= 200 && $httpcode < 308) {
             $person = json_decode($res);
             return $person;
         }
