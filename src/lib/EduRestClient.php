@@ -113,12 +113,9 @@ class EduRestClient
     
     public function createContentNodeEnhanced($nodeId, $contentpath, $mimetype, $versionComment = '') {
         try {
-           return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
+           $test =  self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
+           return $test;
         } catch(\Exception $e) {
-
-            error_log($e->getCode());
-            error_log($e->getMessage());
-
             if($e->getCode() === 401 || $e->getCode() === 403) {
                 $this->setAuthHeader($this->getTicketHeader());
                 return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
