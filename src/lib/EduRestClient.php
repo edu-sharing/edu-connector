@@ -112,10 +112,13 @@ class EduRestClient
     }
     
     public function createContentNodeEnhanced($nodeId, $contentpath, $mimetype, $versionComment = '') {
+        error_log('saving file - or not');
         try {
-           return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
+           $test =  self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
+           error_log($test);
+           return $test;
         } catch(\Exception $e) {
-            error_log($e->getMessage());
+            error_log('11111111' . $e->getMessage());
             if($e->getCode() === 401) {
                 $this->setAuthHeader($this->getTicketHeader());
                 error_log($this->getAuthHeader());
