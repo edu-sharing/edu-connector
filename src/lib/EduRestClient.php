@@ -84,9 +84,9 @@ class EduRestClient
             $ticket = $return->authenticateByTrustedAppReturn->ticket;
             return 'Authorization: EDU-TICKET ' . $ticket;
         } catch (\Exception $e) {
-            throw new \Exception('aaaaaaaaaaaaaaaaaaaaaaaaaa' . $e->getMessage(), $e->getCode());
+            throw new \Exception('Error fetching edu-sharing ticket. Check catalina.out. ' . $e->getMessage(), $e->getCode());
         } catch (\SoapFault $s) {
-            throw new \Exception('bbbbbbbbbbbbbbbbbbbbbbbbbb' . $s->getMessage(), $s->faultcode);
+            throw new \Exception('Error fetching edu-sharing ticket. Check catalina.out. ' . $s->getMessage(), $s->faultcode);
         }
 
     }
