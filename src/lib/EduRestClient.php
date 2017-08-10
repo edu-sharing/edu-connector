@@ -10,6 +10,7 @@ class EduRestClient
     public function __construct($connectorId) {
         $this->connectorId = $connectorId;
         $this->authHeader = 'Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId'];
+
     }
 
     private function getAuthHeader() {
@@ -138,7 +139,6 @@ class EduRestClient
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $res = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
         if ($httpcode >= 200 && $httpcode < 308) {
             curl_close($ch);
             return json_decode($res);
