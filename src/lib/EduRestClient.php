@@ -84,9 +84,9 @@ class EduRestClient
             $ticket = $return->authenticateByTrustedAppReturn->ticket;
             return 'Authorization: EDU-TICKET ' . $ticket;
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), $e->getCode());
+            throw new \Exception('aaaaaaaaaaaaaaaaaaaaaaaaaa' . $e->getMessage(), $e->getCode());
         } catch (\SoapFault $s) {
-            throw new \Exception($s->getMessage(), $s->faultcode);
+            throw new \Exception('bbbbbbbbbbbbbbbbbbbbbbbbbb' . $s->getMessage(), $s->faultcode);
         }
 
     }
@@ -116,10 +116,6 @@ class EduRestClient
         try {
            return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
         } catch(\Exception $e) {
-
-            error_log($e->getCode());
-            error_log($e->getMessage());
-
             if($e->getCode() === 401 || $e->getCode() === 403) {
                 $this->setAuthHeader($this->getTicketHeader());
                 return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
