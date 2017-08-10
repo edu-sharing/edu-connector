@@ -115,11 +115,11 @@ class EduRestClient
         error_log('saving file - or not');
         try {
            $test =  self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
-           error_log($test);
+           error_log(json_encode($test));
            return $test;
         } catch(\Exception $e) {
             error_log('11111111' . $e->getMessage());
-            if($e->getCode() === 401) {
+            if($e->getCode() === 401 || $e->getCode() === 403) {
                 $this->setAuthHeader($this->getTicketHeader());
                 error_log($this->getAuthHeader());
                 return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
