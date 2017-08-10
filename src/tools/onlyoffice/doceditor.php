@@ -218,7 +218,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
             return xmlhttp;
         }
 
-        function destroy(text) {
+      /*  function destroy(text) {
             $('#theTextarea').html('');
             $('#modalHeading').html(text[0]);
             $('#modalText').html(text[1]);
@@ -235,7 +235,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                 destroy([language.invalidsessionheading, language.invalidsessiontext, language.closeeditor]);
             }
         }, false);
-
+*/
 
     </script>
 </head>
