@@ -115,8 +115,10 @@ class EduRestClient
         try {
            return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
         } catch(\Exception $e) {
+            error_log($e->getMessage());
             if($e->getCode() === 401) {
                 $this->setAuthHeader($this->getTicketHeader());
+                error_log($this->getAuthHeader());
                 return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
             }
         }
@@ -143,6 +145,9 @@ class EduRestClient
             curl_close($ch);
             return json_decode($res);
         }
+
+        error_log( curl_error($ch));
+
         $error = curl_error($ch);
         curl_close($ch);
         throw new \Exception('Error creating content node HTTP STATUS ' . $httpcode . '. Curl error ' . $error, $httpcode);
