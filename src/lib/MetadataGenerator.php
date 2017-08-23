@@ -24,6 +24,8 @@ class MetadataGenerator {
         $entry->addAttribute('key', 'public_key');
         $entry = $xml->addChild('entry', $_SERVER['SERVER_ADDR']);
         $entry->addAttribute('key', 'host');
+        $entry = $xml->addChild('entry', WWWURL);
+        $entry->addAttribute('key', 'url');
         header('Content-type: text/xml');
         print(html_entity_decode($xml->asXML()));
     }
