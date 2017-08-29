@@ -24,7 +24,7 @@ class TinyMce extends \connector\lib\Tool {
             } else {
                 $contentUrl = $node->node->contentUrl;
             }
-            $_SESSION[$this->connectorId]['content'] = file_get_contents($contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload');
+            $_SESSION[$this->connectorId]['content'] = file_get_contents($contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload&com=internal');
         }
 
         if (in_array('Write', $node->node->access)) {
