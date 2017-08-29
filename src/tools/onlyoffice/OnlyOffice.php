@@ -17,24 +17,26 @@ class OnlyOffice extends \connector\lib\Tool {
      * Set edit mode.
      *
      */
-
     public function getNode() {
         $node = $this->apiClient->getNode($_SESSION[$this->connectorId]['node']);
         if(in_array('ccm:collection_io_reference', $node->node->aspects)) {
-            $originalId = $node->node->properties->{'ccm:original'}[0];
-            $originalNode = $this->apiClient->getNode($originalId);
-            if (in_array('Write', $originalNode->node->access)) {
-                $node = $originalNode;
-                $_SESSION[$this->connectorId]['edit'] = true;
-            } else {
-                $_SESSION[$this->connectorId]['edit'] = false;
+            try {
+                $originalId = $node->node->properties->{'ccm:original'}[0];
+                $originalNode = $this->apiClient->getNode($originalId);
+                if (in_array('Write', $originalNode->node->access)) {
+                    $_SESSION[$this->connectorId]['edit'] = true;
+                } else {
+                    $_SESSION[$this->connectorId]['edit'] = false;
+                }
+                return $originalNode;
+            } catch (\Exception $e) {
+                $this->log->info('No accesss to original object ('.$e->getCode().')');
             }
+        }
+        if (in_array('Write', $node->node->access)) {
+            $_SESSION[$this->connectorId]['edit'] = true;
         } else {
-            if (in_array('Write', $node->node->access)) {
-                $_SESSION[$this->connectorId]['edit'] = true;
-            } else {
-                $_SESSION[$this->connectorId]['edit'] = false;
-            }
+            $_SESSION[$this->connectorId]['edit'] = false;
         }
         return $node;
     }
