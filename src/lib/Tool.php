@@ -22,6 +22,5 @@ class Tool {
     protected function getNode() {
         $node = $this->apiClient->getNode($_SESSION[$this->connectorId]['node']);
         return $node;
-
     }
 }

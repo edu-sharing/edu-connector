@@ -10,15 +10,38 @@ class OnlyOffice extends \connector\lib\Tool {
         $this->forwardToEditor();
     }
 
+    /*
+     * Fetch node from repository
+     *
+     * If node is a collection item, fetch original node if user has write permission.
+     * Set edit mode.
+     *
+     */
+
+    public function getNode() {
+        $node = $this->apiClient->getNode($_SESSION[$this->connectorId]['node']);
+        if(in_array('ccm:collection_io_reference', $node->node->aspects)) {
+            $originalId = $node->node->properties->{'ccm:original'}[0];
+            $originalNode = $this->apiClient->getNode($originalId);
+            if (in_array('Write', $originalNode->node->access)) {
+                $node = $originalNode;
+                $_SESSION[$this->connectorId]['edit'] = true;
+            } else {
+                $_SESSION[$this->connectorId]['edit'] = false;
+            }
+        } else {
+            if (in_array('Write', $node->node->access)) {
+                $_SESSION[$this->connectorId]['edit'] = true;
+            } else {
+                $_SESSION[$this->connectorId]['edit'] = false;
+            }
+        }
+        return $node;
+    }
+
     public function setNode()
     {
         $node = $this->getNode();
-
-        if (in_array('Write', $node->node->access)) {
-            $_SESSION[$this->connectorId]['edit'] = true;
-        } else {
-            $_SESSION[$this->connectorId]['edit'] = false;
-        }
 
         if ($node->node->size === NULL) {
             $this->apiClient->createContentNode($node->node->ref->id, ONLYOFFICE_STORAGEPATH . '/templates/init.' . $_SESSION[$this->connectorId]['filetype'], \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$this->connectorId]['filetype']), 'MAIN_FILE_UPLOAD');
