@@ -20,11 +20,11 @@ class TinyMce extends \connector\lib\Tool {
             if(FORCE_INTERN_COM) {
                 $arrApiUrl = parse_url($_SESSION[$this->id]['api_url']);
                 $arrContentUrl = parse_url($node->node->contentUrl);
-                $contentUrl = $arrApiUrl['scheme'].'://'.$arrApiUrl['host'].':'.$arrApiUrl['port'].$arrContentUrl['path'].'?'.$arrContentUrl['query'];
+                $contentUrl = $arrApiUrl['scheme'].'://'.$arrApiUrl['host'].':'.$arrApiUrl['port'].$arrContentUrl['path'].'?'.$arrContentUrl['query'] . '&com=internal';
             } else {
                 $contentUrl = $node->node->contentUrl;
             }
-            $_SESSION[$this->connectorId]['content'] = file_get_contents($contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload&com=internal');
+            $_SESSION[$this->connectorId]['content'] = file_get_contents($contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload');
         }
 
         if (in_array('Write', $node->node->access)) {
