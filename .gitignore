@@ -12,3 +12,4 @@ vendor
 log
 !log/.gitkeep
 test.php
+.idea/php.xml
