@@ -142,13 +142,13 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                     type: "desktop", // embedded
                     documentType: "<?php echo getDocumentType('dummy.' . $_SESSION[$id]['filetype']) ?>",
                     document: {
-                        title: "<?php echo empty($_SESSION[$id]['node']->node->title)?$_SESSION[$id]['node']->node->name:$_SESSION[$id]['node']->node->title ?>",
+                        title: "<?php echo addslashes(empty($_SESSION[$id]['node']->node->title)?$_SESSION[$id]['node']->node->name:$_SESSION[$id]['node']->node->title) ?>",
                         url: "<?php echo $fileuri ?>",
                         fileType: "<?php echo $_SESSION[$id]['filetype'] ?>",
                         key: "<?php echo getDocEditorKey($id) ?>",
 
                         info: {
-                            author: "<?php echo $_SESSION[$id]['node']->node->createdBy->firstName . ' ' . $_SESSION[$id]['node']->node->createdBy->lastName ?>",
+                            author: "<?php echo addslashes($_SESSION[$id]['node']->node->createdBy->firstName . ' ' . $_SESSION[$id]['node']->node->createdBy->lastName) ?>",
                             created: "<?php echo date_format(date_create($_SESSION[$id]['node']->node->createdAt), 'd.m.Y'); ?>",
                         },
 
@@ -164,8 +164,8 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
 
                         user: {
                             id: "<?php echo session_id()?>",
-                            firstname: "<?php echo $_SESSION[$id]['user']->profile->firstName ?>",
-                            lastname: "<?php echo $_SESSION[$id]['user']->profile->lastName ?>",
+                            firstname: "<?php echo addslashes($_SESSION[$id]['user']->profile->firstName) ?>",
+                            lastname: "<?php echo addslashes($_SESSION[$id]['user']->profile->lastName) ?>",
                         },
 
                         embedded: {
