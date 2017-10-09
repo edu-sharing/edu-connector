@@ -1,3 +1,5 @@
+<?php
+
 /*general*/
 define('WWWURL', '');
 define('DOCROOT', '');
