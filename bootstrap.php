@@ -11,10 +11,41 @@ $container['log'] = function ($container) {
     $log = new \connector\lib\Logger();
     return $log->getLog();
 };
+$container['view'] = function ($container) {
+    $view = new \Slim\Views\Twig('templates', [
+        'cache' => false
+    ]);
+    $basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
+    $view->addExtension(new Slim\Views\TwigExtension($container['router'], $basePath));
+    return $view;
+};
+
+$c['errorHandler'] = function ($container) {
+    return function ($request, $response, $exception) use ($container) {
+        return $container['response']->withStatus(500)
+            ->withHeader('Content-Type', 'text/html')
+            ->write('Something went wrong!');
+    };
+};
 
 $app->get('/', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     $connector = new \connector\lib\Connector($this->get('log'));
+});
+
+$app->get('/error/{errorid}', function (Request $request, Response $response, $args) {
+    $this->get('log')->info($request->getUri());
+    switch($args['errorid']) {
+        case ERROR_INVALID_ID:
+            return $this->view->render($response, 'error/invalidid.html', [
+                'returnurl' => RETURNURL
+            ]);
+            break;
+        default:
+            return $this->view->render($response, 'error/default.html', [
+                'returnurl' => RETURNURL
+            ]);
+    }
 });
 
 $app->get('/metadata', function (Request $request, Response $response) {

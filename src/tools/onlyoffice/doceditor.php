@@ -7,12 +7,6 @@ ini_set('display_errors',0);
 $id = $_GET['id'];
 $lang = 'de';
 
-if(false === filter_var($$id, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))))
-    die('Invalid ID');
-
-if(empty($_SESSION[$id]) || empty($_GET['id']))
-    die('Invalid ID');
-
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2016
@@ -39,9 +33,14 @@ if(empty($_SESSION[$id]) || empty($_GET['id']))
 */
 
 require_once(__DIR__ . '/config.php');
+require_once __DIR__ . '/../../../defines.php';
 require_once(__DIR__ . '/common.php');
 require_once(__DIR__ . '/functions.php');
 
+if(false === filter_var($id, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))) || empty($_SESSION[$id]) || empty($_GET['id'])) {
+    header('Location: ' . '../../../error/' . ERROR_INVALID_ID);
+    exit;
+}
 $filename = $_SESSION[$id]["fileUrl"];
 $fileuri = FileUri($filename);
 

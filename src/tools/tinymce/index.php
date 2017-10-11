@@ -5,11 +5,12 @@ $lang = 'de';
 
 $id = $_GET['id'];
 
-if(false === filter_var($id, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))))
-    die('Invalid ID');
+require_once __DIR__ . '/../../../defines.php';
 
-if(empty($_SESSION[$id]) || empty($_GET['id']))
-  die('Invalid ID');
+if(false === filter_var($id, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))) || empty($_SESSION[$id]) || empty($_GET['id'])) {
+    header('Location: ' . '../../../error/' . ERROR_INVALID_ID);
+    exit;
+}
 
 $access = 1;
 if($_SESSION[$id]['first_run'] !== true) {

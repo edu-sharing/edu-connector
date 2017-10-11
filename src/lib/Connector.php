@@ -2,6 +2,8 @@
 
 namespace connector\lib;
 
+use Slim\Exception\SlimException;
+
 class Connector
 {
     private $id;
@@ -23,7 +25,7 @@ class Connector
             $this->tool->run();
         } catch (\Exception $e) {
             $this->log->error($e->getCode() . ' ' . $e->__toString());
-            echo 'ERROR - Please contact your system administrator.';
+            header('Location: ' . WWWURL . '/error/' . ERROR_DEFAULT);
             exit(0);
         }
     }
