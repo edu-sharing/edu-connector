@@ -15,6 +15,7 @@ $(document).ready(function() {
         readonly: readonly,
         language : lang,
         language_url: 'js/tinymce/langs/' + lang + '.js',
+        removed_menuitems: 'newdocument',
         save_onsavecallback: function () { save() } //save button
     });
 
