@@ -23,12 +23,14 @@ class Connector
             $this->tool->setNode();
             $this->setUser();
             $this->tool->run();
+            $this->tool->run();
         } catch (\Exception $e) {
             $this->log->error($e->getCode() . ' ' . $e->__toString());
             header('Location: ' . WWWURL . '/error/' . ERROR_DEFAULT);
             exit(0);
         }
     }
+
 
     private function setParameters()
     {

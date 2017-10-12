@@ -7,8 +7,13 @@ $id = $_GET['id'];
 
 require_once __DIR__ . '/../../../defines.php';
 
-if(false === filter_var($id, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))) || empty($_SESSION[$id]) || empty($_GET['id'])) {
-    header('Location: ' . '../../../error/' . ERROR_INVALID_ID);
+if(false === filter_var($id, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))) || empty($_GET['id'])) {
+    header('Location: ' . '../../../error/' . ERROR_DEFAULT);
+    exit;
+}
+
+if(empty($_SESSION[$id])) {
+    header('Location: ' . base64_decode($_GET['ref']));
     exit;
 }
 

@@ -3,7 +3,6 @@
 /*general*/
 define('WWWURL', '');
 define('DOCROOT', '');
-define('RETURNURL', '');
 
 /*onlyoffice*/
 define('ONLYOFFICE_EDITORURL', WWWURL . '/src/tools/onlyoffice/doceditor.php');

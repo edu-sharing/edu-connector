@@ -20,14 +20,6 @@ $container['view'] = function ($container) {
     return $view;
 };
 
-$c['errorHandler'] = function ($container) {
-    return function ($request, $response, $exception) use ($container) {
-        return $container['response']->withStatus(500)
-            ->withHeader('Content-Type', 'text/html')
-            ->write('Something went wrong!');
-    };
-};
-
 $app->get('/', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     $connector = new \connector\lib\Connector($this->get('log'));
@@ -37,14 +29,10 @@ $app->get('/error/{errorid}', function (Request $request, Response $response, $a
     $this->get('log')->info($request->getUri());
     switch($args['errorid']) {
         case ERROR_INVALID_ID:
-            return $this->view->render($response, 'error/invalidid.html', [
-                'returnurl' => RETURNURL
-            ]);
+            return $this->view->render($response, 'error/invalidid.html', []);
             break;
         default:
-            return $this->view->render($response, 'error/default.html', [
-                'returnurl' => RETURNURL
-            ]);
+            return $this->view->render($response, 'error/default.html', []);
     }
 });
 

@@ -54,7 +54,7 @@ class OnlyOffice extends \connector\lib\Tool {
 
     private function forwardToEditor()
     {
-        header('Location: ' . ONLYOFFICE_EDITORURL . '?id=' . $this->connectorId);
+        header('Location: ' . ONLYOFFICE_EDITORURL . '?id=' . $this->connectorId . '&ref=' . base64_encode($_SESSION[$this->connectorId]['node']->node->properties->{'virtual:permalink'}[0]));
         exit();
     }
 

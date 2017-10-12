@@ -41,7 +41,7 @@ class TinyMce extends \connector\lib\Tool {
 
     private function forwardToEditor()
     {
-        header('Location: ' . WWWURL . '/src/tools/tinymce/?id=' . $this->connectorId);
+        header('Location: ' . WWWURL . '/src/tools/tinymce/?id=' . $this->connectorId . '&ref=' . base64_encode($_SESSION[$this->connectorId]['node']->node->properties->{'virtual:permalink'}[0]));
         exit();
     }
 
