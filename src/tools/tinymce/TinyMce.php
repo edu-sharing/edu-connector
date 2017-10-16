@@ -18,7 +18,7 @@ class TinyMce extends \connector\lib\Tool {
             $_SESSION[$this->connectorId]['content'] = '';
         } else {
             if(FORCE_INTERN_COM) {
-                $arrApiUrl = parse_url($_SESSION[$this->id]['api_url']);
+                $arrApiUrl = parse_url($_SESSION[$this->connectorId]['api_url']);
                 $arrContentUrl = parse_url($node->node->contentUrl);
                 $contentUrl = $arrApiUrl['scheme'].'://'.$arrApiUrl['host'].':'.$arrApiUrl['port'].$arrContentUrl['path'].'?'.$arrContentUrl['query'] . '&com=internal';
             } else {
