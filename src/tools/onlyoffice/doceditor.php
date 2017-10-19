@@ -45,7 +45,7 @@ if(false === filter_var($id, FILTER_VALIDATE_REGEXP, array("options"=>array("reg
 if(empty($_SESSION[$id])) {
     $permalink = base64_decode($_GET['ref']);
     $permalinkwithoutversion = substr($permalink, 0, strripos($permalink, '/'));
-    header('Location: ' . $permalinkwithoutversion);
+    header('Location: ' . $permalinkwithoutversion . '?editor=ONLY_OFFICE');
     exit;
 }
 
