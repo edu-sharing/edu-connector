@@ -5,7 +5,7 @@ namespace connector\tools\tinymce;
 class TinyMce extends \connector\lib\Tool {
 
     public function run()
-    {   
+    {
         $_SESSION[$this->connectorId]['first_run'] = true;
         $this->forwardToEditor();
     }
@@ -29,7 +29,7 @@ class TinyMce extends \connector\lib\Tool {
 
         if (in_array('Write', $node->node->access)) {
             $_SESSION[$this->connectorId]['readonly'] = 0;
-            $this->apiClient->createTextContent($_SESSION[$this->connectorId]['node'], $_SESSION[$this->connectorId]['content'], $node->node->mimetype);
+            $this->apiClient->createTextContent($_SESSION[$this->connectorId]['node'], $_SESSION[$this->connectorId]['content'], $node->node->mimetype, 'EDITOR_UPLOAD,TINYMCE');
         } else {
             $_SESSION[$this->connectorId]['readonly'] = 1;
         }

@@ -88,6 +88,7 @@ $(document).ready(function() {
 
     window.addEventListener("message", function(event) {
         if(event.data.event=="SESSION_TIMEOUT"){
+            $('#countdown').css('display', 'block');
             if(event.data.data > 0) {
                 var min = Math.floor(event.data.data/60);
                 if(min < 10)
