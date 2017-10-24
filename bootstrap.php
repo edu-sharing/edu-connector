@@ -68,7 +68,7 @@ $app->post('/ajax/setText', function (Request $request, Response $response) {
         $apiClient = new \connector\lib\EduRestClient($id);
         $parsedBody = $request->getParsedBody();
         $content = $parsedBody['text'];
-        $apiClient->createTextContent($_SESSION[$id]['node']->node->ref->id, $content, 'text/html', '');
+        $apiClient->createTextContent($_SESSION[$id]['node']->node->ref->id, $content, 'text/html', 'EDITOR_UPLOAD,TINYMCE');
     } catch (\Exception $e) {
         $response = $response->withStatus($e -> getCode());
         $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
