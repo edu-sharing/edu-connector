@@ -50,3 +50,11 @@ header {
 .btn, .btn:hover {
     background-color: #48708e;
 }
+
+div.modal-overlay {
+    z-index: 99998 !important;
+}
+
+div.modal {
+    z-index: 99999 !important;
+}
