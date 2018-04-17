@@ -1,6 +1,7 @@
 <?php
+session_start();
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 class mod_h5p {
 
@@ -11,13 +12,10 @@ class mod_h5p {
     private static $settings = array();
 
     public function __construct() {
-        if(isset($_GET['h5p']))
-            $this->testfile = $_GET['h5p'];
         global $db;
-        $db = new PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
+        $db = new \PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
         $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-
-        $this->H5PFramework = new H5PFramework();
+        $this->H5PFramework = new connector\tools\h5p\H5PFramework();
         $this->H5PCore = new H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), LANG, false);
         $this->H5PCore->aggregateAssets = TRUE; // why not?
         $this->H5PValidator = new H5PValidator($this->H5PFramework, $this->H5PCore);
@@ -25,16 +23,12 @@ class mod_h5p {
     }
 
     public function run() {
-        @mkdir($this->H5PFramework->get_h5p_path());
-        mkdir($this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->testfile));
-        copy('test' . DIRECTORY_SEPARATOR . $this->testfile, $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->testfile) . DIRECTORY_SEPARATOR . $this->testfile);
-        $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->testfile);
-        $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . md5($this->testfile) . DIRECTORY_SEPARATOR . $this->testfile;
+        $this->H5PFramework->uploadedH5pFolderPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR . $_SESSION[$_GET['id']]['node']->node->ref->id;
+        $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->get_h5p_path() . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR . $_SESSION[$_GET['id']]['node']->node->ref->id . DIRECTORY_SEPARATOR . $_SESSION[$_GET['id']]['node']->node->ref->id . '.h5p';
         $this->H5PCore->disableFileCheck = true;
         $this->H5PValidator->isValidPackage();
         $this->H5PStorage->savePackage(array('title' => 'ein titel', 'disable' => 0));
         $content = $this->H5PCore->loadContent($this->H5PFramework->id);
-
         $this->add_assets($content);
         $this->render($content['id']);
     }
@@ -155,7 +149,7 @@ class mod_h5p {
     public function get_core_settings() {
         $settings = array(
             'baseUrl' =>  DOMAIN,
-            'url' => PATH,
+            'url' => PATH . '/src/tools/h5p',
            // 'postUserStatistics' => (get_option('h5p_track_user', TRUE) === '1') && $current_user->ID,
          /*   'ajax' => array(
                 'setFinished' => admin_url('admin-ajax.php?token=' . wp_create_nonce('h5p_result') . '&action=h5p_setFinished'),

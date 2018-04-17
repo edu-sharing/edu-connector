@@ -4,7 +4,11 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
 $container = new \Slim\Container;
-$app = new \Slim\App($container);
+$app = new \Slim\App([$container, 'settings' => [
+    'displayErrorDetails' => true,
+    'debug'               => true,
+    'whoops.editor'       => 'sublime',
+]]);
 
 $container = $app->getContainer();
 $container['log'] = function ($container) {
@@ -42,10 +46,83 @@ $app->get('/metadata', function (Request $request, Response $response) {
     $metadataGenerator -> serve();
 });
 
-$app->get('/validateSession', function (Request $request, Response $response) {
+//ajax.php needed because h5p concatenates request params
+$app->post('/ajax/ajax.php', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
-    $metadataGenerator = new \connector\lib\MetadataGenerator();
-    $metadataGenerator -> serve();
+    $H5PFramework = new connector\tools\h5p\H5PFramework();
+     if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_files') {
+         $H5PCore = new \H5PCore($H5PFramework, $H5PFramework->get_h5p_path(), $H5PFramework->get_h5p_url(), LANG, false);
+         $H5PEditor = new \H5peditor( $H5PCore, new connector\tools\h5p\H5peditorStorageImpl(), new connector\tools\h5p\H5PEditorAjaxImpl());
+         $token = '';//$_GET['token'];
+         $contentId = 0;//$_GET['contentId'];
+         $H5PEditor->ajax->action(H5PEditorEndpoints::FILES, $token, $contentId);
+     }
+
+    if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_create') {
+        global $db;
+        try {
+            $id = $_REQUEST['id'];
+            $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $contentHandler = new connector\tools\h5p\H5PContentHandler();
+            $cid = $contentHandler->process_new_content();
+            if ($cid) {
+                $apiClient = new \connector\lib\EduRestClient($id);
+                $contentPath = DOCROOT . '/src/tools/h5p/exports/'.$_SESSION[$id]['node']->node->ref->id.'-'.$cid.'.h5p';
+                $res = $apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $contentPath, 'application/zip', 'EDITOR_UPLOAD,H5P');
+
+                if($res) {
+                    $permaWithoutVersion = substr($_SESSION[$id]['node']->node->properties->{'virtual:permalink'}[0], 0, strrpos( $_SESSION[$id]['node']->node->properties->{'virtual:permalink'}[0], '/'));
+
+                    //cleanup filesystem and db
+                    unlink($contentPath);
+
+                    //dele from
+                    $H5PFramework -> deleteContentData($cid);
+                    //h5p_contents_libraries
+
+                    header('location:' . $permaWithoutVersion. '?closeOnBack=true');
+                    exit(0);
+                }
+            }
+        } catch (\Exception $e) {
+            $response = $response->withStatus($e -> getCode());
+            $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
+        }
+    }
+});
+
+//ajax.php needed because h5p concatenates request params
+$app->get('/ajax/ajax.php', function (Request $request, Response $response) {
+    $this->get('log')->info($request->getUri());
+    global $db;
+    $response ->withHeader('Content-Typ', 'application/json');
+    try {
+        $db = new \PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
+        $db->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+        $H5PFramework = new connector\tools\h5p\H5PFramework();
+        $H5PCore = new \H5PCore($H5PFramework, $H5PFramework->get_h5p_path(), $H5PFramework->get_h5p_url(), LANG, false);
+        $H5PEditor = new \H5peditor( $H5PCore, new connector\tools\h5p\H5peditorStorageImpl(), new connector\tools\h5p\H5PEditorAjaxImpl());
+
+        if(isset($request->getQueryParams()['machineName']) && isset($request->getQueryParams()['majorVersion']) && isset($request->getQueryParams()['minorVersion'])) {
+            $lib = $H5PEditor->ajax->action(H5PEditorEndpoints::SINGLE_LIBRARY, $request->getQueryParams()['machineName'],
+                $request->getQueryParams()['majorVersion'], $request->getQueryParams()['minorVersion'], LANG, '',
+                $H5PFramework->get_h5p_path()
+            );
+            return $response->withStatus(200)
+                ->withHeader('Content-type', 'application/json')
+                ->write($lib);
+        } else {
+            $libs = $H5PEditor->ajax->action(H5PEditorEndpoints::LIBRARIES);
+            return $response->withStatus(200)
+                ->withHeader('Content-type', 'application/json')
+                ->write($libs);
+        }
+
+    } catch (\Exception $e) {
+        $response = $response->withStatus($e -> getCode());
+        $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
+    }
 });
 
 $app->get('/ajax/unlockNode', function (Request $request, Response $response) {

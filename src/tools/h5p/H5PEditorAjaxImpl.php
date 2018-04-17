@@ -1,7 +1,8 @@
 <?php
 
+namespace connector\tools\h5p;
 
-class H5PEditorAjaxImpl implements H5PEditorAjaxInterface {
+class H5PEditorAjaxImpl implements \H5PEditorAjaxInterface {
 
     public function getLatestLibraryVersions() {}
 

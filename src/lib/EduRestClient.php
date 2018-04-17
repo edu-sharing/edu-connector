@@ -10,7 +10,6 @@ class EduRestClient
     public function __construct($connectorId) {
         $this->connectorId = $connectorId;
         $this->authHeader = 'Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId'];
-
     }
 
     private function getAuthHeader() {

@@ -59,7 +59,7 @@ class Connector
         if(false === filter_var($data->sessionId, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z0-9.]*$/"))))
             throw new \Exception('Invalid session ID');
 
-        if(false === filter_var($data->tool, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[A-Z_]*$/"))))
+        if(false === filter_var($data->tool, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z0-9_]*$/"))))
             throw new \Exception('Invalid tool');
 
         if(false === filter_var($data->api_url, FILTER_VALIDATE_URL))
@@ -85,6 +85,9 @@ class Connector
                 break;
             case 'LTI':
                 $this -> tool = new \connector\tools\lti\Lti($this->apiClient, $this->log, $this->id);
+                break;
+            case 'H5P':
+                $this -> tool = new \connector\tools\h5p\H5P($this->apiClient, $this->log, $this->id);
                 break;
             default:
                 throw new \Exception('Unknown tool: ' . $_SESSION[$this->id]['tool'] . '.');

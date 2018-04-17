@@ -1,7 +1,8 @@
 <?php
 
+namespace connector\tools\h5p;
 
-class H5peditorStorageImpl implements H5peditorStorage {
+class H5peditorStorageImpl implements \H5peditorStorage {
 
 
     /**
@@ -101,7 +102,7 @@ return $asd->fetchColumn();
           ORDER BY title"
             );
 
-            $libraries_result = $st->fetchAll(PDO::FETCH_CLASS);
+            $libraries_result = $st->fetchAll(\PDO::FETCH_CLASS);
             foreach ($libraries_result as $library) {
                 // Make sure we only display the newest version of a library.
                 foreach ($libraries as $key => $existingLibrary) {
@@ -163,7 +164,7 @@ return $asd->fetchColumn();
      * @param H5peditorFile
      * @param $content_id
      */
-    public static function markFileForCleanup($file, $content_id) {}
+    public static function markFileForCleanup($file, $content_id = null) {}
 
     /**
      * Clean up temporary files

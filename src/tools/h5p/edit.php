@@ -1,12 +1,8 @@
 <?php
-session_start();
-
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 class mod_h5p
 {
-
-
     private $H5PFramework;
     private $H5PCore;
     private $H5PValidator;
@@ -23,14 +19,14 @@ class mod_h5p
         global $db;
         $db = new PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
         $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-        $this->H5PFramework = new H5PFramework();
+        $this->H5PFramework = new connector\tools\h5p\H5PFramework();
         $this->H5PCore = new H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), LANG, false);
         $this->H5PCore->aggregateAssets = TRUE; // why not?
         $this->H5PValidator = new H5PValidator($this->H5PFramework, $this->H5PCore);
         $this->H5PContentValidator = new H5PContentValidator($this->H5PFramework, $this->H5PCore);
-        $this->H5peditorStorageImpl = new H5peditorStorageImpl();
-        $this->H5PEditorAjaxImpl = new H5PEditorAjaxImpl();
-        $this->H5PEditor = new H5peditor( $this->H5PCore, $this->H5peditorStorageImpl, $this->H5PEditorAjaxImpl);
+        $this->H5peditorStorageImpl = new connector\tools\h5p\H5peditorStorageImpl();
+        $this->H5PEditorAjaxImpl = new connector\tools\h5p\H5PEditorAjaxImpl();
+        $this->H5PEditor = new \H5peditor( $this->H5PCore, $this->H5peditorStorageImpl, $this->H5PEditorAjaxImpl);
     }
 
     public function run()
@@ -60,9 +56,9 @@ class mod_h5p
 
         $integration = array();
 
-        $integration['baseUrl'] = DOMAIN . PATH;
+        $integration['baseUrl'] = WWWURL;
         $integration['url'] = '/' . PATH;
-        $integration['siteUrl'] = DOMAIN . PATH;
+        $integration['siteUrl'] = WWWURL;
         $integration['postUserStatistics'] = '';
         $integration['ajax'] = array();
         $integration['saveFreq'] = false;
@@ -75,26 +71,26 @@ class mod_h5p
 
         $integration['editor']['filesPath'] = '/h5p/editor';
         $integration['editor']['fileIcon'] = '';
-        $integration['editor']['ajaxPath'] = DOMAIN . PATH . '/ajax.php?action=h5p_';
-        $integration['editor']['libraryUrl'] = DOMAIN . PATH . '/vendor/h5p/h5p-editor/';
+        $integration['editor']['ajaxPath'] = WWWURL . '/ajax/ajax.php?action=h5p_';
+        $integration['editor']['libraryUrl'] = WWWURL . '/vendor/h5p/h5p-editor/';
         $integration['editor']['copyrightSemantics'] = $this->H5PContentValidator ->getCopyrightSemantics();
 
         foreach(H5PCore::$styles as $b) {
-            $integration['editor']['assets']['css'][] = DOMAIN . PATH . '/vendor/h5p/h5p-core/' . $b;
+            $integration['editor']['assets']['css'][] = WWWURL . '/vendor/h5p/h5p-core/' . $b;
         }
         foreach(H5PEditor::$styles as $b) {
-            $integration['editor']['assets']['css'][] = DOMAIN . PATH . '/vendor/h5p/h5p-editor/' . $b;
+            $integration['editor']['assets']['css'][] = WWWURL . '/vendor/h5p/h5p-editor/' . $b;
         }
 
 
         foreach(H5PCore::$scripts as $b) {
-            $integration['editor']['assets']['js'][] = DOMAIN . PATH . '/vendor/h5p/h5p-core/' . $b;
+            $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-core/' . $b;
         }
         foreach(H5PEditor::$scripts as $b) {
-            $integration['editor']['assets']['js'][] = DOMAIN . PATH . '/vendor/h5p/h5p-editor/' . $b;
+            $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-editor/' . $b;
         }
 
-        $integration['editor']['assets']['js'][] = DOMAIN . PATH . '/vendor/h5p/h5p-editor/language/'.LANG.'.js';
+        $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-editor/language/'.LANG.'.js';
 
         $integration['editor']['deleteMessage'] = 'soll das echt geloescht werden?';
         $integration['editor']['apiVersion'] = $this->H5PCore::$coreApi;
@@ -105,22 +101,22 @@ class mod_h5p
 
 
         foreach(H5PCore::$styles as $style) {
-            echo '<link rel="stylesheet" href="' . DOMAIN . PATH . '/vendor/h5p/h5p-core/' . $style . '"> ';
+            echo '<link rel="stylesheet" href="' . WWWURL . '/vendor/h5p/h5p-core/' . $style . '"> ';
         }
         foreach(H5PEditor::$styles as $style) {
-            echo '<link rel="stylesheet" href="' . DOMAIN . PATH . '/vendor/h5p/h5p-editor/' . $style . '"> ';
+            echo '<link rel="stylesheet" href="' . WWWURL . '/vendor/h5p/h5p-editor/' . $style . '"> ';
         }
         foreach (H5PCore::$scripts as $script) {
-            echo '<script src="' . DOMAIN . PATH . '/vendor/h5p/h5p-core/' . $script . '"></script> ';
+            echo '<script src="' . WWWURL . '/vendor/h5p/h5p-core/' . $script . '"></script> ';
         }
         foreach (H5PEditor::$scripts as $script) {
-            echo '<script src="' . DOMAIN . PATH . '/vendor/h5p/h5p-editor/' . $script . '"></script> ';
+            echo '<script src="' . WWWURL . '/vendor/h5p/h5p-editor/' . $script . '"></script> ';
         }
 
-        echo '<script src="'.DOMAIN . PATH.'/js/editor.js"></script>';
+        //echo '<script src="'.WWWURL.'/src/tools/h5p/js/editor.js"></script>';
         echo '</head><body>';
 
-        echo '<form method="post" enctype="multipart/form-data" id="h5p-content-form" action="edit.php?action=h5p_create">';
+        echo '<form method="post" enctype="multipart/form-data" id="h5p-content-form" action="'.WWWURL.'/ajax/ajax.php?action=h5p_create&id='.$_GET['id'].'">';
 
         echo '<input type="title" name="title" value="'.$this->title.'">';
         echo '<input type="submit" name="submit" value="save" class="button button-primary button-large"/>';
@@ -131,26 +127,9 @@ class mod_h5p
        echo '<input type="hidden" name="parameters" value="'.$this->parameters.'">';
 
         echo '</form>';
-
         echo '</body></html>';
     }
 
-}
-
-if(isset($_GET['action']) && $_GET['action']==='h5p_create') {
-    global $db;
-    $db = new PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
-    $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-    $contentHandler = new H5PContentHandler();
-    $id = $contentHandler -> process_new_content();
-
-    if($id) {
-        copy('exports/'.$_REQUEST['title'].'-'.$id.'.h5p', 'test/'.$_REQUEST['title'].'-'.$id.'.h5p');
-        echo '<a href="show.php?h5p='.$_REQUEST['title'].'-'.$id.'.h5p">'.$_REQUEST['title'].'-'.$id.'.h5p</a>';
-    }
-
-    
-    exit();
 }
 
 $mod = new mod_h5p();

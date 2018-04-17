@@ -1,5 +1,7 @@
 <?php
 
+namespace connector\tools\h5p;
+
 class H5PFramework implements \H5PFrameworkInterface {
 
 
@@ -31,7 +33,7 @@ class H5PFramework implements \H5PFrameworkInterface {
     }
 
     public function get_h5p_url() {
-        return DOMAIN . PATH;
+        return DOMAIN . PATH . '/src/tools/h5p/';
     }
 
 
@@ -532,8 +534,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      *   Id identifying the content
      */
     public function deleteContentData($contentId)
-    {
-        // TODO: Implement deleteContentData() method.
+    {      global $db;
+        $db->query('DELETE FROM h5p_contents WHERE id = ' . $contentId);
     }
 
     /**
@@ -544,7 +546,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function deleteLibraryUsage($contentId)
     {
-        // TODO: Implement deleteLibraryUsage() method.
+        global $db;
+        $db->query('DELETE FROM h5p_contents_libraries WHERE content_id = ' . $contentId);
     }
 
     /**
@@ -660,7 +663,7 @@ class H5PFramework implements \H5PFrameworkInterface {
         JOIN h5p_libraries hl ON hll.required_library_id = hl.id
         WHERE hll.library_id = '.$library['libraryId']);
 
-        $dependencies = $result->fetchAll(PDO::FETCH_ASSOC);
+        $dependencies = $result->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($dependencies as $dependency) {
             $library[$dependency['dependencyType'] . 'Dependencies'][] = array(
@@ -669,13 +672,6 @@ class H5PFramework implements \H5PFrameworkInterface {
                 'minorVersion' => $dependency['minorVersion'],
             );
         }
-        if ($this->isInDevMode()) {
-            $semantics = $this->getSemanticsFromFile($library['machineName'], $library['majorVersion'], $library['minorVersion']);
-            if ($semantics) {
-                $library['semantics'] = $semantics;
-            }
-        }
-
         return $library;
     }
 
@@ -694,16 +690,9 @@ class H5PFramework implements \H5PFrameworkInterface {
     public function loadLibrarySemantics($machineName, $majorVersion, $minorVersion)
     {
         global $db;
-
-        if ($this->isInDevMode()) {
-            $semantics = $this->getSemanticsFromFile($machineName, $majorVersion, $minorVersion);
-        }
-        else {
-
-            $prep = $db->prepare('SELECT semantics FROM h5p_libraries WHERE name = \'' .$machineName . '\' AND major_version='.$majorVersion.' AND minor_version='.$minorVersion);
-            $prep->execute();
-            $semantics = $prep->fetchColumn();
-        }
+        $prep = $db->prepare('SELECT semantics FROM h5p_libraries WHERE name = \'' .$machineName . '\' AND major_version='.$majorVersion.' AND minor_version='.$minorVersion);
+        $prep->execute();
+        $semantics = $prep->fetchColumn();
         return ($semantics === FALSE ? NULL : $semantics);
     }
 
@@ -732,7 +721,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function deleteLibraryDependencies($libraryId)
     {
-        // TODO: Implement deleteLibraryDependencies() method.
+        global $db;
+        $db->query('DELETE FROM h5p_libraries_libraries WHERE library_id = ' . $libraryId);
     }
 
     /**
@@ -854,7 +844,7 @@ if ($type !== NULL) {
 
 
 //var_dump($query);
-return $db->query($query)->fetchAll(PDO::FETCH_ASSOC);
+return $db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
 
 
 

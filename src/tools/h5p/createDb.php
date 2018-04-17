@@ -1,11 +1,14 @@
 <?php
 
-require_once 'config.php';
+require_once __DIR__ . '/../../../config.php';
 
 $pdo = new PDO("mysql:host=" . DBHOST, DBUSER, DBPASSWORD);
 $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+try {
+    $pdo->query("DROP DATABASE `" . DBNAME . "`");
+} catch(\Exception $e) {
 
-$pdo -> query("DROP DATABASE `".DBNAME."`");
+}
 $pdo -> query("CREATE DATABASE `".DBNAME."`");
 $pdo -> query("USE `".DBNAME."`");
 
