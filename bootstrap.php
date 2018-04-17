@@ -46,7 +46,7 @@ $app->get('/metadata', function (Request $request, Response $response) {
     $metadataGenerator -> serve();
 });
 
-//ajax.php needed because h5p concatenates request params
+//ajax.php needed because h5p concatenates GET parameters
 $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     $H5PFramework = new connector\tools\h5p\H5PFramework();
@@ -72,15 +72,15 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
                 $res = $apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $contentPath, 'application/zip', 'EDITOR_UPLOAD,H5P');
 
                 if($res) {
-                    $permaWithoutVersion = substr($_SESSION[$id]['node']->node->properties->{'virtual:permalink'}[0], 0, strrpos( $_SESSION[$id]['node']->node->properties->{'virtual:permalink'}[0], '/'));
-
                     //cleanup filesystem and db
                     unlink($contentPath);
 
-                    //dele from
+                    //delete from 5p_contents
                     $H5PFramework -> deleteContentData($cid);
+
                     //h5p_contents_libraries
 
+                    $permaWithoutVersion = substr($_SESSION[$id]['node']->node->properties->{'virtual:permalink'}[0], 0, strrpos( $_SESSION[$id]['node']->node->properties->{'virtual:permalink'}[0], '/'));
                     header('location:' . $permaWithoutVersion. '?closeOnBack=true');
                     exit(0);
                 }
@@ -92,7 +92,7 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
     }
 });
 
-//ajax.php needed because h5p concatenates request params
+//ajax.php needed because h5p concatenates GET parameters
 $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     global $db;
