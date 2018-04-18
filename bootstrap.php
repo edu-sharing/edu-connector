@@ -74,14 +74,12 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
                 if($res) {
                     //cleanup filesystem and db
                     unlink($contentPath);
-
                     //delete from 5p_contents
                     $H5PFramework -> deleteContentData($cid);
-
                     //h5p_contents_libraries
-
-                    $permaWithoutVersion = substr($_SESSION[$id]['node']->node->properties->{'virtual:permalink'}[0], 0, strrpos( $_SESSION[$id]['node']->node->properties->{'virtual:permalink'}[0], '/'));
-                    header('location:' . $permaWithoutVersion. '?closeOnBack=true');
+                    //$permaWithoutVersion = substr($_SESSION[$id]['node']->node->properties->{'virtual:permalink'}[0], 0, strrpos( $_SESSION[$id]['node']->node->properties->{'virtual:permalink'}[0], '/'));
+                    //header('location:' . $permaWithoutVersion. '?closeOnBack=true');
+                    echo '<script> window.opener.postMessage({event:"REFRESH"},"*");window.close();</script>';
                     exit(0);
                 }
             }
