@@ -48,7 +48,7 @@ header {
 }
 
 .btn, .btn:hover {
-    background-color: #48708e;
+    background-color: #48708e !important;
 }
 
 div.modal-overlay {

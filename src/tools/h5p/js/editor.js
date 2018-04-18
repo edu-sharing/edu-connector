@@ -41,26 +41,12 @@
         //}
 
 
-        $type.change(function () {
-            if ($type.filter(':checked').val() === 'upload') {
-                $create.hide();
-                $upload.show();
-            }
-            else {
-                $upload.hide();
-                if (h5peditor === undefined) {
-                    h5peditor = new ns.Editor(c, $params.val(), $editor[0]);
-                }
-                $create.show();
-            }
-        });
 
-        if ($type.filter(':checked').val() === 'upload') {
-            $type.change();
+        if (h5peditor === undefined) {
+            h5peditor = new ns.Editor(c, $params.val(), $editor[0]);
         }
-        else {
-            $type.filter('input[value="create"]').attr('checked', true).change();
-        }
+        $create.show();
+
 
         $('#h5p-content-form').submit(function () {
             if (h5peditor !== undefined) {
@@ -70,6 +56,7 @@
                     $params.val(JSON.stringify(params));
                 }
             }
+            alert('sadfsdf');
         });
 
         // Title label

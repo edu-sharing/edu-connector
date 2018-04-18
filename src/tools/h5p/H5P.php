@@ -86,6 +86,8 @@ class H5P extends \connector\lib\Tool {
         $integration['editor']['apiVersion'] = \H5PCore::$coreApi;
         $integration['editor']['nodeVersionId'] = $contentId;
 
+        echo '<link rel="stylesheet" href="' . WWWURL . '/css/h5p.css"> ';
+
         echo '<script>'.
             'window.H5PIntegration='. json_encode($integration).
             '</script>';
@@ -101,13 +103,20 @@ class H5P extends \connector\lib\Tool {
         foreach (\H5PEditor::$scripts as $script) {
             echo '<script src="' . WWWURL . '/vendor/h5p/h5p-editor/' . $script . '"></script> ';
         }
-        echo '<script src="'.WWWURL.'/src/tools/h5p/js/editor.js"></script>';
+
+                echo '<script src="'.WWWURL.'/src/tools/h5p/js/editor.js"></script>';
         echo '</head><body>';
+
+        $titleShow = $_SESSION[$this->connectorId]['node']->node->title;
+        if(empty($titleShow))
+            $titleShow = $_SESSION[$this->connectorId]['node']->node->name;
+
         echo '<form method="post" enctype="multipart/form-data" id="h5p-content-form" action="'.WWWURL.'/ajax/ajax.php?title='.$_SESSION[$this->connectorId]['node']->node->ref->id.'&action=h5p_create&id='.$this->connectorId.'">';
-        echo '<input type="submit" name="submit" value="save" class="button button-primary button-large"/>';
+        echo '<div class="h5pSaveBtnWrapper"><h1 class="h5pTitle">'.$titleShow.'</h1><input type="submit" name="submit" value="save" class="h5pSaveBtn btn button button-primary button-large"/></div>';
         echo '<div class="h5p-create"><div class="h5p-editor"></div></div>';
         echo '<input type="hidden" name="library" value="'.$this->library.'">';
         echo '<input type="hidden" name="parameters" value="'.$this->parameters.'">';
+        echo '<div class="h5pSaveBtnWrapper"><input type="submit" name="submit" value="save" class="h5pSaveBtn btn button button-primary button-large"/></div>';
         echo '</form>';
         echo '</body></html>';
     }
