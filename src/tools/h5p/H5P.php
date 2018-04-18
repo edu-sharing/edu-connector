@@ -45,11 +45,11 @@ class H5P extends \connector\lib\Tool {
         $content['language'] = 'de';
         $this->library = \H5PCore::libraryToString($content['library']);
         $this->parameters = htmlentities($this->H5PCore->filterParameters($content));
-        $this->showEditor();
+        $this->showEditor($content['id']);
         //header('Location: ' . WWWURL . '/src/tools/h5p/edit.php?id=' . $this->connectorId);// . '&ref=' . base64_encode($_SESSION[$this->connectorId]['node']->node->properties->{'virtual:permalink'}[0]));
     }
 
-    public function showEditor() {
+    public function showEditor($contentId) {
         echo '<html><head>';
         $integration = array();
         $integration['baseUrl'] = WWWURL;
@@ -83,7 +83,8 @@ class H5P extends \connector\lib\Tool {
         }
         $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-editor/language/'.LANG.'.js';
         $integration['editor']['deleteMessage'] = 'soll das echt geloescht werden?';
-        $integration['editor']['apiVersion'] = $this->H5PCore::$coreApi;
+        $integration['editor']['apiVersion'] = \H5PCore::$coreApi;
+        $integration['editor']['nodeVersionId'] = $contentId;
 
         echo '<script>'.
             'window.H5PIntegration='. json_encode($integration).
