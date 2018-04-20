@@ -80,5 +80,5 @@
     };
 
     $(document).ready(H5PEditor.init);
-
+    
 })(H5P.jQuery);

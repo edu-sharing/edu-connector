@@ -133,15 +133,15 @@ class H5P extends \connector\lib\Tool {
         $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->uploadedH5pFolderPath . '/'.$node->node->ref->id . '.h5p';
 
         if ($node->node->size === NULL) {
-            if(1==2 && !empty($_SESSION[$this->connectorId]['defaultCreateElement']) && file_exists(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p')) {
+                try {
+                    if(!isset($_SESSION[$this->connectorId]['defaultCreateElement']) || !file_exists(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p'))
+                        throw new \Exception('Template not specified or found');
                     @mkdir(__DIR__ . '/temp');
-                    @mkdir(__DIR__ . '/temp/' .$node->node->ref->id);
+                    @mkdir(__DIR__ . '/temp/' . $node->node->ref->id);
                     copy(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p', $this->H5PFramework->uploadedH5pPath);
-            } else {
-                $this->mode = MODE_NEW;
-                //todo show lib select
-                //throw new \Exception('Template '. $_SESSION[$this->connectorId]['defaultCreateElement'] .' not found');
-            }
+                } catch (\Exception $e) {
+                    $this->mode = MODE_NEW;
+                }
         } else {
             if(defined('FORCE_INTERN_COM') && FORCE_INTERN_COM) {
                 $arrApiUrl = parse_url($_SESSION[$this->connectorId]['api_url']);
