@@ -2,6 +2,8 @@
 
 namespace connector\tools\h5p;
 
+define('MODE_NEW', 'mode_new');
+
 class H5P extends \connector\lib\Tool {
 
     private $showLibSelect = false;
@@ -14,6 +16,7 @@ class H5P extends \connector\lib\Tool {
     private $H5peditorStorageImpl;
     private $H5PEditorAjaxImpl;
     private $H5PEditor;
+    private $mode;
 
 
     //private static $settings = array();
@@ -36,17 +39,19 @@ class H5P extends \connector\lib\Tool {
         $this->H5PEditor = new \H5peditor( $this->H5PCore, $this->H5peditorStorageImpl, $this->H5PEditorAjaxImpl);
     }
 
-
     public function run() {
         $this->H5PCore->disableFileCheck = true;
         $this->H5PValidator->isValidPackage();
-        $this->H5PStorage->savePackage(array('title' => $_SESSION[$this->connectorId]['node']->node->ref->id, 'disable' => 0));
-        $content = $this->H5PCore->loadContent($this->H5PFramework->id);
         $content['language'] = 'de';
-        $this->library = \H5PCore::libraryToString($content['library']);
-        $this->parameters = htmlentities($this->H5PCore->filterParameters($content));
+        if($this->mode === MODE_NEW) {
+            $content['id'] = 0;
+        } else {
+             $this->H5PStorage->savePackage(array('title' => $_SESSION[$this->connectorId]['node']->node->ref->id, 'disable' => 0));
+             $content = $this->H5PCore->loadContent($this->H5PFramework->id);
+             $this->library = \H5PCore::libraryToString($content['library']);
+             $this->parameters = htmlentities($this->H5PCore->filterParameters($content));
+        }
         $this->showEditor($content['id']);
-        //header('Location: ' . WWWURL . '/src/tools/h5p/edit.php?id=' . $this->connectorId);// . '&ref=' . base64_encode($_SESSION[$this->connectorId]['node']->node->properties->{'virtual:permalink'}[0]));
     }
 
     public function showEditor($contentId) {
@@ -128,13 +133,14 @@ class H5P extends \connector\lib\Tool {
         $this->H5PFramework->uploadedH5pPath = $this->H5PFramework->uploadedH5pFolderPath . '/'.$node->node->ref->id . '.h5p';
 
         if ($node->node->size === NULL) {
-            if(!empty($_SESSION[$this->connectorId]['defaultCreateElement']) && file_exists(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p')) {
+            if(1==2 && !empty($_SESSION[$this->connectorId]['defaultCreateElement']) && file_exists(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p')) {
                     @mkdir(__DIR__ . '/temp');
                     @mkdir(__DIR__ . '/temp/' .$node->node->ref->id);
                     copy(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p', $this->H5PFramework->uploadedH5pPath);
             } else {
+                $this->mode = MODE_NEW;
                 //todo show lib select
-                throw \Exception('Template '. $_SESSION[$this->connectorId]['defaultCreateElement'] .' not found');
+                //throw new \Exception('Template '. $_SESSION[$this->connectorId]['defaultCreateElement'] .' not found');
             }
         } else {
             if(defined('FORCE_INTERN_COM') && FORCE_INTERN_COM) {

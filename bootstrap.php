@@ -77,8 +77,8 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
                     //delete from 5p_contents
                     $H5PFramework -> deleteContentData($cid);
                     //h5p_contents_libraries
-                    //$permaWithoutVersion = substr($_SESSION[$id]['node']->node->properties->{'virtual:permalink'}[0], 0, strrpos( $_SESSION[$id]['node']->node->properties->{'virtual:permalink'}[0], '/'));
-                    //header('location:' . $permaWithoutVersion. '?closeOnBack=true');
+
+
                     echo '<script> window.opener.postMessage({event:"REFRESH"},"*");window.close();</script>';
                     exit(0);
                 }
@@ -94,7 +94,6 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
 $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     global $db;
-    $response ->withHeader('Content-Typ', 'application/json');
     try {
         $db = new \PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
         $db->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );

@@ -29,24 +29,13 @@
         var $params = $('input[name="parameters"]');
         var library = $library.val();
 
-//return;
-
-
-
         //edit
         h5peditor = new ns.Editor($library.val(), $params.val(), $editor[0]);
         //create
-      //  if (h5peditor === undefined) {
-        //    h5peditor = new ns.Editor(0, $params.val(), $editor[0]);
-        //}
-
-
-
         if (h5peditor === undefined) {
             h5peditor = new ns.Editor(c, $params.val(), $editor[0]);
         }
-        $create.show();
-
+        //$create.show();
 
         $('#h5p-content-form').submit(function () {
             if (h5peditor !== undefined) {
@@ -56,7 +45,6 @@
                     $params.val(JSON.stringify(params));
                 }
             }
-            alert('sadfsdf');
         });
 
         // Title label
@@ -92,4 +80,5 @@
     };
 
     $(document).ready(H5PEditor.init);
+
 })(H5P.jQuery);
