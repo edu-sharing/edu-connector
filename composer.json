@@ -1,12 +1,12 @@
 {
-  "name": "metaventis/eduConnector",
+  "name": "eduConnector",
   "description": "Connect edu-sharing repository with editing tools",
   "minimum-stability": "alpha",
   "license": "proprietary",
   "authors": [
     {
       "name": "hippeli",
-      "email": "hippeli@metaventis.com"
+      "email": "hippeli@edu-sharing.com"
     }
   ],
   "autoload": {
