@@ -78,8 +78,9 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
                     $H5PFramework -> deleteContentData($cid);
                     //h5p_contents_libraries
 
-
-                    echo '<script> window.opener.postMessage({event:"REFRESH"},"*");window.close();</script>';
+		    //cordova
+		    echo '<script>window.shouldClose=true;</script>';
+		    echo '<script>setInterval(function(){if(window.opener){window.opener.postMessage({event:"REFRESH"},"*"); window.opener.postMessage({event:"CLOSE"},"*");}},100);</script>';
                     exit(0);
                 }
             }
