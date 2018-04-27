@@ -26,4 +26,5 @@ body, html {
     width: 100%;
     max-width: 960px;
     display: inline-block;
+    padding: auto 20px;
 }
