@@ -55,7 +55,7 @@ class H5P extends \connector\lib\Tool {
     }
 
     public function showEditor($contentId) {
-        echo '<html><head>';
+        echo '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">';
         $integration = array();
         $integration['baseUrl'] = WWWURL;
         $integration['url'] = '/' . PATH;
