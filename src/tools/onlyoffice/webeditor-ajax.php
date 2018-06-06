@@ -112,8 +112,17 @@ function track($log) {
             //else
                 $comment = 'EDITOR_UPLOAD,ONLY_OFFICE';
 
-            if (($new_data = file_get_contents($downloadUri)) === FALSE) {
+	    $arrContextOptions=array(
+		"ssl"=>array(
+    		    "verify_peer"=>false,
+    		    "verify_peer_name"=>false
+		)
+	    ); 
+
+	    $new_data = file_get_contents($downloadUri, false, stream_context_create($arrContextOptions));
+            if ($new_data === FALSE) {
                 $saved = 0;
+		$log->error('ERROR fetching file from docserver, see webserver log');
             } else {
                 file_put_contents($tmpSavePath, $new_data, LOCK_EX);
                     try {
