@@ -3,7 +3,6 @@ config.php
 assets/private.key
 assets/public.key
 composer.phar
-log/
-!log/.gitkeep
+log/connector*
 test.php
 vendor/h5p
