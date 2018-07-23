@@ -1,13 +1,9 @@
 .idea
-.idea
-.idea
-.idea
 config.php
-src/tools/onlyoffice/storage
-!src/tools/onlyoffice/storage/templates
 assets/private.key
 assets/public.key
 composer.phar
-log
+log/
 !log/.gitkeep
 test.php
+vendor/h5p
