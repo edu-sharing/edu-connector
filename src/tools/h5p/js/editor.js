@@ -1,5 +1,6 @@
 (function ($) {
     H5PEditor.init = function () {
+
         H5PEditor.$ = H5P.jQuery;
         H5PEditor.basePath = H5PIntegration.editor.libraryUrl;
         H5PEditor.fileIcon = H5PIntegration.editor.fileIcon;
@@ -36,6 +37,11 @@
             h5peditor = new ns.Editor(c, $params.val(), $editor[0]);
         }
         //$create.show();
+
+        $('.h5p-editor-iframe').on('load', function() {
+            var $head = $(this).contents().find("head");
+            $head.append('<style>select[name="h5peditor-library"] {display: none}</style>');
+        })
 
         $('#h5p-content-form').submit(function () {
             if (h5peditor !== undefined) {

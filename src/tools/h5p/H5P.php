@@ -117,11 +117,11 @@ class H5P extends \connector\lib\Tool {
             $titleShow = $_SESSION[$this->connectorId]['node']->node->name;
 
         echo '<form method="post" enctype="multipart/form-data" id="h5p-content-form" action="'.WWWURL.'/ajax/ajax.php?title='.$_SESSION[$this->connectorId]['node']->node->ref->id.'&action=h5p_create&id='.$this->connectorId.'">';
-        echo '<div class="h5pSaveBtnWrapper"><h1 class="h5pTitle">'.$titleShow.'</h1><input type="submit" name="submit" value="save" class="h5pSaveBtn btn button button-primary button-large"/></div>';
+        echo '<div class="h5pSaveBtnWrapper"><h1 class="h5pTitle">'.$titleShow.'</h1><input type="submit" name="submit" value="Speichern" class="h5pSaveBtn btn button button-primary button-large"/></div>';
         echo '<div class="h5p-create"><div class="h5p-editor"></div></div>';
         echo '<input type="hidden" name="library" value="'.$this->library.'">';
         echo '<input type="hidden" name="parameters" value="'.$this->parameters.'">';
-        echo '<div class="h5pSaveBtnWrapper"><input type="submit" name="submit" value="save" class="h5pSaveBtn btn button button-primary button-large"/></div>';
+        echo '<div class="h5pSaveBtnWrapper"><input type="submit" name="submit" value="Speichern" class="h5pSaveBtn btn button button-primary button-large"/></div>';
         echo '</form>';
         echo '</body></html>';
     }
