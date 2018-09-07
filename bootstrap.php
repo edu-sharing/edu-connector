@@ -48,23 +48,32 @@ $app->get('/metadata', function (Request $request, Response $response) {
 
 //ajax.php needed because h5p concatenates GET parameters
 $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
+    global $db;
+    $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $contentHandler = new connector\tools\h5p\H5PContentHandler();
     $this->get('log')->info($request->getUri());
     $H5PFramework = new connector\tools\h5p\H5PFramework();
+    $H5PCore = new \H5PCore($H5PFramework, $H5PFramework->get_h5p_path(), $H5PFramework->get_h5p_url(), LANG, false);
+    $H5PEditor = new \H5peditor( $H5PCore, new connector\tools\h5p\H5peditorStorageImpl(), new connector\tools\h5p\H5PEditorAjaxImpl());
      if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_files') {
-         $H5PCore = new \H5PCore($H5PFramework, $H5PFramework->get_h5p_path(), $H5PFramework->get_h5p_url(), LANG, false);
-         $H5PEditor = new \H5peditor( $H5PCore, new connector\tools\h5p\H5peditorStorageImpl(), new connector\tools\h5p\H5PEditorAjaxImpl());
          $token = '';//$_GET['token'];
          $contentId = 0;//$_GET['contentId'];
          $H5PEditor->ajax->action(H5PEditorEndpoints::FILES, $token, $contentId);
      }
 
+    if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_libraries') {
+        $db = new \PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
+        $db->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+        $libs = $H5PEditor->ajax->action(H5PEditorEndpoints::LIBRARIES);
+        return $response->withStatus(200)
+            ->withHeader('Content-type', 'application/json')
+            ->write($libs);
+    }
+
     if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_create') {
-        global $db;
         try {
             $id = $_REQUEST['id'];
-            $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $contentHandler = new connector\tools\h5p\H5PContentHandler();
             $cid = $contentHandler->process_new_content();
             if ($cid) {
                 $apiClient = new \connector\lib\EduRestClient($id);
