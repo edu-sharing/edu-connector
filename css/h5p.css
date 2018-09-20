@@ -2,6 +2,7 @@
 
 .h5pSaveBtn {
     float: right;
+    margin-bottom: 15px;
 }
 
 h1.h5pTitle {
@@ -19,7 +20,8 @@ h1.h5pTitle {
 body, html {
     width: 100% !important;
     max-Width: 100% !important;
-    text-align: center
+    text-align: center;
+    padding-bottom: 30px !important;
 }
 
 #h5p-content-form {
