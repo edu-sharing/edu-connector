@@ -23,7 +23,6 @@ class Connector
             $this->tool->setNode();
             $this->setUser();
             $this->tool->run();
-            $this->tool->run();
         } catch (\Exception $e) {
             $this->log->error($e->getCode() . ' ' . $e->__toString());
             header('Location: ' . WWWURL . '/error/' . ERROR_DEFAULT);
@@ -87,6 +86,9 @@ class Connector
                 break;
             case 'LTI':
                 $this -> tool = new \connector\tools\lti\Lti($this->apiClient, $this->log, $this->id);
+                break;
+            case 'MOODLE_COURSE':
+                $this -> tool = new \connector\tools\moodle\Moodle($this->apiClient, $this->log, $this->id);
                 break;
             default:
                 throw new \Exception('Unknown tool: ' . $_SESSION[$this->id]['tool'] . '.');
