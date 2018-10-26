@@ -89,7 +89,7 @@ class H5P extends \connector\lib\Tool {
         $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-editor/language/'.LANG.'.js';
 
         $integration['editor']['assets']['js'][] = WWWURL . '/src/tools/h5p/js/custom.js';
-        $integration['editor']['assets']['css'][] = WWWURL . '/src/tools/h5p/style/custom.css';
+        $integration['editor']['assets']['css'][] = WWWURL . '/src/tools/h5p/styles/custom.css';
 
         $integration['editor']['deleteMessage'] = 'soll das echt geloescht werden?';
         $integration['editor']['apiVersion'] = \H5PCore::$coreApi;
