@@ -33,7 +33,7 @@ class H5PFramework implements \H5PFrameworkInterface {
     }
 
     public function get_h5p_url() {
-        return DOMAIN . PATH . '/src/tools/h5p/';
+        return DOMAIN . PATH;// . '/src/tools/h5p/';
     }
 
 
