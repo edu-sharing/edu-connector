@@ -1,9 +1,5 @@
 <?php
 namespace connector\tools\moodle;
-
-define('MOODLE_BASE_DIR', 'http://127.0.0.1/plugin-moodle');
-define('MOODLE_TOKEN', '638ef5a398d34f736c010f8607801955');
-
 class Moodle extends \connector\lib\Tool {
 
     private $courseId;
@@ -23,7 +19,7 @@ class Moodle extends \connector\lib\Tool {
         $ch = curl_init ();
         curl_setopt ( $ch, CURLOPT_URL, $url );
         curl_setopt ( $ch, CURLOPT_POST, true );
-        $params = array('nodeid'=> $_SESSION[$this->connectorId]['node']->node->ref->id,'category' => '1', 'title' => htmlentities(str_replace('.mbz', '', $_SESSION[$this->connectorId]['node']->node->ref->id)));
+        $params = array('nodeid'=> $_SESSION[$this->connectorId]['node']->node->ref->id,'category' => '1', 'title' => htmlentities(str_replace('.mbz', '', $_SESSION[$this->connectorId]['node']->node->name)));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);

@@ -87,7 +87,7 @@ class Connector
             case 'LTI':
                 $this -> tool = new \connector\tools\lti\Lti($this->apiClient, $this->log, $this->id);
                 break;
-            case 'MOODLE_COURSE':
+            case 'MOODLE':
                 $this -> tool = new \connector\tools\moodle\Moodle($this->apiClient, $this->log, $this->id);
                 break;
             default:
