@@ -5,8 +5,8 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 $container = new \Slim\Container;
 $app = new \Slim\App([$container, 'settings' => [
-    'displayErrorDetails' => true,
-    'debug'               => true,
+    'displayErrorDetails' => false,
+    'debug'               => false,
     'whoops.editor'       => 'sublime',
 ]]);
 
