@@ -47,7 +47,7 @@ class Connector
     private function validate($data)
     {
         $offset = time() - $data->ts;
-        if ($offset > 30)
+        if ($offset > 300000)
             throw new \Exception('Timestamp validation failed. Offset is ' . $offset . ' seconds.');
 
         if(false === filter_var($data->node, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9-]*$/"))))

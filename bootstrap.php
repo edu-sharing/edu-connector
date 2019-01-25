@@ -3,10 +3,12 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
+error_reporting(0);
+
 $container = new \Slim\Container;
 $app = new \Slim\App([$container, 'settings' => [
-    'displayErrorDetails' => false,
-    'debug'               => false,
+    'displayErrorDetails' => true,
+    'debug'               => true,
     'whoops.editor'       => 'sublime',
 ]]);
 
@@ -52,28 +54,45 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
     $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $contentHandler = new connector\tools\h5p\H5PContentHandler();
-    $this->get('log')->info($request->getUri());
-    $H5PFramework = new connector\tools\h5p\H5PFramework();
-    $H5PCore = new \H5PCore($H5PFramework, $H5PFramework->get_h5p_path(), $H5PFramework->get_h5p_url(), LANG, false);
-    $H5PEditor = new \H5peditor( $H5PCore, new connector\tools\h5p\H5peditorStorageImpl(), new connector\tools\h5p\H5PEditorAjaxImpl());
+    $h5p = connector\tools\h5p\H5P::getInstance();
+
      if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_files') {
          $token = '';//$_GET['token'];
-         $contentId = 0;//$_GET['contentId'];
-         $H5PEditor->ajax->action(H5PEditorEndpoints::FILES, $token, $contentId);
+         $contentId = $_GET['contentId'];
+         $h5p->H5PEditor->ajax->action(H5PEditorEndpoints::FILES, $token, $contentId);
      }
 
     if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_libraries') {
         $db = new \PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
         $db->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
-        $libs = $H5PEditor->ajax->action(H5PEditorEndpoints::LIBRARIES);
+        $libs = $h5p->H5PEditor->ajax->action(H5PEditorEndpoints::LIBRARIES);
         return $response->withStatus(200)
             ->withHeader('Content-type', 'application/json')
             ->write($libs);
     }
 
+    if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_library-install') {
+        $db = new \PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
+        $db->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+        $token = '';//$_GET['token'];
+        $libs = $h5p->H5PEditor->ajax->action(H5PEditorEndpoints::LIBRARY_INSTALL, $token, $request->getQueryParams()['id']);
+        return $response->withStatus(200)
+           ->withHeader('Content-type', 'application/json')
+            ->write($libs);
+    }
+
     if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_create') {
+
+         die('see bootstrap');
+/* todos
+no ->process_new_content
+remove cid
+delete export and content dir
+pass content id with request to do so*/
+
+
         try {
-            $id = $_REQUEST['id'];
+            $id = $_REQUEST['id']; // apiClient id
             $cid = $contentHandler->process_new_content();
             if ($cid) {
                 $apiClient = new \connector\lib\EduRestClient($id);
@@ -84,7 +103,7 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
                     //cleanup filesystem and db
                     unlink($contentPath);
                     //delete from 5p_contents
-                    $H5PFramework -> deleteContentData($cid);
+                    $h5p->H5PFramework -> deleteContentData($cid);
                     //h5p_contents_libraries
 
 		    //cordova
@@ -107,25 +126,22 @@ $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
     try {
         $db = new \PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
         $db->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
-        $H5PFramework = new connector\tools\h5p\H5PFramework();
-        $H5PCore = new \H5PCore($H5PFramework, $H5PFramework->get_h5p_path(), $H5PFramework->get_h5p_url(), LANG, false);
-        $H5PEditor = new \H5peditor( $H5PCore, new connector\tools\h5p\H5peditorStorageImpl(), new connector\tools\h5p\H5PEditorAjaxImpl());
+        $h5p = connector\tools\h5p\H5P::getInstance();
 
         if(isset($request->getQueryParams()['machineName']) && isset($request->getQueryParams()['majorVersion']) && isset($request->getQueryParams()['minorVersion'])) {
-            $lib = $H5PEditor->ajax->action(H5PEditorEndpoints::SINGLE_LIBRARY, $request->getQueryParams()['machineName'],
+            $lib = $h5p->H5PEditor->ajax->action(H5PEditorEndpoints::SINGLE_LIBRARY, $request->getQueryParams()['machineName'],
                 $request->getQueryParams()['majorVersion'], $request->getQueryParams()['minorVersion'], LANG, '',
-                $H5PFramework->get_h5p_path()
+                $h5p->H5PFramework->get_h5p_path()
             );
             return $response->withStatus(200)
                 ->withHeader('Content-type', 'application/json')
                 ->write($lib);
         } else {
-            $libs = $H5PEditor->ajax->action(H5PEditorEndpoints::LIBRARIES);
+            $libs = $h5p->H5PEditor->ajax->action(str_replace('h5p_', '', $request->getQueryParams()['action']));
             return $response->withStatus(200)
                 ->withHeader('Content-type', 'application/json')
                 ->write($libs);
         }
-
     } catch (\Exception $e) {
         $response = $response->withStatus($e -> getCode());
         $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());

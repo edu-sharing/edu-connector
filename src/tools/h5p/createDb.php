@@ -168,7 +168,7 @@ $db-> exec("CREATE TABLE h5p_libraries (
       has_icon INT UNSIGNED NOT NULL DEFAULT 0)");
 
 // Keep track of h5p libraries content type cache
-/*
+
 $db-> exec("CREATE TABLE h5p_libraries_hub_cache (
       id INT UNSIGNED NOT NULL,
       machine_name VARCHAR(127) NOT NULL,
@@ -193,7 +193,7 @@ $db-> exec("CREATE TABLE h5p_libraries_hub_cache (
       categories TEXT,
       owner VARCHAR(511),
       PRIMARY KEY  (id))");
-*/
+
 // Keep track of h5p library dependencies
 $db-> exec("CREATE TABLE h5p_libraries_libraries (
       library_id INT UNSIGNED NOT NULL,

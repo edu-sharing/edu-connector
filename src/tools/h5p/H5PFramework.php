@@ -7,9 +7,6 @@ class H5PFramework implements \H5PFrameworkInterface {
 
 
     private $messages = array('error' => array(), 'info' => array());
-
-    public $uploadedH5pFolderPath;
-    public $uploadedH5pPath;
     public $id;
 
 
@@ -24,7 +21,7 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function getPlatformInfo()
     {
-        return array('name' => 'edu-sharing rendering service', 'version' => '4.1', 'h5pVersion' => '0.1');
+        return array('name' => 'edu-sharing', 'version' => '1.0', 'h5pVersion' => '1.17');
     }
 
 
@@ -33,9 +30,19 @@ class H5PFramework implements \H5PFrameworkInterface {
     }
 
     public function get_h5p_url() {
-        return DOMAIN . PATH;// . '/src/tools/h5p/';
+        return DOMAIN . PATH;
     }
 
+    /**
+     * Convert datetime string to unix timestamp
+     *
+     * @param string $datetime
+     * @return int unix timestamp
+     */
+    public static function dateTimeToTime($datetime) {
+        $dt = new \DateTime($datetime);
+        return $dt->getTimestamp();
+    }
 
     /**
      * Fetches a file from a remote server using HTTP GET
@@ -48,7 +55,43 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function fetchExternalData($url, $data = NULL, $blocking = TRUE, $stream = NULL)
     {
-        return NULL;
+        @set_time_limit(0);
+        if ($data !== NULL) {
+            // Post
+            $options = array(
+                'http' => array(
+                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                    'method'  => 'POST',
+                    'content' => http_build_query($data)
+                )
+            );
+            $context  = stream_context_create($options);
+            $response['body'] = file_get_contents($url, false, $context);
+        }
+        else {
+            $response['body'] = file_get_contents($url, false);
+            file_put_contents($stream, $response['body']);
+        }
+        return empty($response['body']) ? NULL : $response['body'];
+    }
+
+    /**
+     * Load config for libraries
+     *
+     * @param array $libraries
+     * @return array
+     */
+    public function getLibraryConfig($libraries = NULL) {
+        return [];
+    }
+
+    /**
+     * Load addon libraries
+     *
+     * @return array
+     */
+    public function loadAddons() {
+        return [];
     }
 
     /**
@@ -133,7 +176,7 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function getLibraryFileUrl($libraryFolderName, $fileName)
     {
-        return __DIR__ . '/libraries/' . $libraryFolderName . '/' . $fileName;
+        return DOMAIN . PATH . '/libraries/' . $libraryFolderName . '/' . $fileName;
     }
 
     /**
@@ -142,9 +185,14 @@ class H5PFramework implements \H5PFrameworkInterface {
      * @return string
      *   Path to the folder where the last uploaded h5p for this session is located.
      */
-    public function getUploadedH5pFolderPath()
-    {
-        return $this->uploadedH5pFolderPath;
+    public function getUploadedH5pFolderPath() {
+        static $dir;
+
+        if (is_null($dir)) {
+            $h5p = \connector\tools\h5p\H5P::getInstance();
+            $dir = $h5p->H5PCore->fs->getTmpPath();
+        }
+        return $dir;
     }
 
     /**
@@ -153,10 +201,16 @@ class H5PFramework implements \H5PFrameworkInterface {
      * @return string
      *   Path to the last uploaded h5p
      */
-    public function getUploadedH5pPath()
-    {
-        return $this->uploadedH5pPath;
+    public function getUploadedH5pPath() {
+        static $dir;
+
+        if (is_null($dir)) {
+            $h5p = \connector\tools\h5p\H5P::getInstance();
+            $dir = $h5p->H5PCore->fs->getTmpPath() . '.h5p';
+        }
+        return $dir;
     }
+
 
     /**
      * Get a list of the current installed libraries
@@ -167,8 +221,25 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function loadLibraries()
     {
-        return array();
-        // TODO: Implement loadLibraries() method.
+        global $db;
+
+        $query = "SELECT id, name, title, major_version, minor_version, patch_version, runnable, restricted
+          FROM h5p_libraries
+          ORDER BY title ASC, major_version ASC, minor_version ASC";
+
+        $statement = $db -> query($query);
+
+        $results = $statement->fetchAll(\PDO::FETCH_OBJ);
+
+        $libraries = array();
+        if(empty($results))
+            return $libraries;
+
+        foreach ($results as $library) {
+            $libraries[$library->name][] = $library;
+        }
+
+        return $libraries;
     }
 
     /**
@@ -428,9 +499,7 @@ class H5PFramework implements \H5PFrameworkInterface {
     {
         global $db;
 
-
         if (!isset($content['id'])) {
-
             $db -> query('INSERT INTO h5p_contents (updated_at,title,parameters,embed_type,library_id,filtered,disable)'.
                 'values ('.time().','.$db->quote($content['title']).','.$db->quote($content['params']).',\'iframe\','.$content['library']['libraryId'].',\'\','.$db->quote($content['disable']).')');
 
@@ -775,7 +844,6 @@ class H5PFramework implements \H5PFrameworkInterface {
     {
         global $db;
 
-
         $prep = $db->prepare(
             "SELECT hc.id
               , hc.title
@@ -795,8 +863,9 @@ class H5PFramework implements \H5PFrameworkInterface {
         JOIN h5p_libraries hl ON hl.id = hc.library_id
         WHERE hc.id =".$id);
 
-$prep->execute();
-$content = $prep->fetch();
+        $prep->execute();
+        $content = $prep->fetch();
+        $content['metadata'] = []; // @todo fetch this from content lib?
         return $content;
     }
 
@@ -871,6 +940,7 @@ return $ret;
      */
     public function getOption($name, $default = NULL)
     {
+        return true;
         // TODO: Implement getOption() method.
     }
 
@@ -1024,7 +1094,24 @@ return $ret;
      */
     public function hasPermission($permission, $id = NULL)
     {
-        // TODO: Implement hasPermission() method.
+
+        return true;
+//todo implement this
+        /*
+        switch ($permission) {
+            case H5PPermission::DOWNLOAD_H5P:
+            case H5PPermission::EMBED_H5P:
+                return self::currentUserCanEdit($contentUserId);
+
+            case H5PPermission::CREATE_RESTRICTED:
+            case H5PPermission::UPDATE_LIBRARIES:
+                return current_user_can('manage_h5p_libraries');
+
+            case H5PPermission::INSTALL_RECOMMENDED:
+                current_user_can('install_recommended_h5p_libraries');
+
+        }
+        return FALSE;*/
     }
 
     /**
@@ -1035,9 +1122,44 @@ return $ret;
      */
     public function replaceContentTypeCache($contentTypeCache)
     {
-        // TODO: Implement replaceContentTypeCache() method.
+        global $db;
+        // Replace existing content type cache
+        $db->query("TRUNCATE TABLE h5p_libraries_hub_cache");
+        foreach ($contentTypeCache->contentTypes as $ct) {
+            // Insert into db
+              $quArr = array(
+                'machine_name'      => $ct->id,
+                'major_version'     => $ct->version->major,
+                'minor_version'     => $ct->version->minor,
+                'patch_version'     => $ct->version->patch,
+                'h5p_major_version' => $ct->coreApiVersionNeeded->major,
+                'h5p_minor_version' => $ct->coreApiVersionNeeded->minor,
+                'title'             => $ct->title,
+                'summary'           => $ct->summary,
+                'description'       => $ct->description,
+                'icon'              => $ct->icon,
+                'created_at'        => self::dateTimeToTime($ct->createdAt),
+                'updated_at'        => self::dateTimeToTime($ct->updatedAt),
+                'is_recommended'    => $ct->isRecommended === TRUE ? 1 : 0,
+                'popularity'        => $ct->popularity,
+                'screenshots'       => json_encode($ct->screenshots),
+                'license'           => json_encode(isset($ct->license) ? $ct->license : array()),
+                'example'           => $ct->example,
+                'tutorial'          => isset($ct->tutorial) ? $ct->tutorial : '',
+                'keywords'          => json_encode(isset($ct->keywords) ? $ct->keywords : array()),
+                'categories'        => json_encode(isset($ct->categories) ? $ct->categories : array()),
+                'owner'             => $ct->owner
+            );
+
+            $query  = 'INSERT INTO h5p_libraries_hub_cache ';
+            $ks = array();
+            $vs = array();
+            foreach ($quArr as $k => $v) {
+                $ks[] = $k;
+                $vs[] = $db->quote($v);
+            }
+            $query .= '('.implode(',', $ks).') values ('.implode(',', $vs).')';
+            $db -> query($query);
+        }
     }
-
-   
-
 }

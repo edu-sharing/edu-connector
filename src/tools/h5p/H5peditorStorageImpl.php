@@ -20,7 +20,7 @@ class H5peditorStorageImpl implements \H5peditorStorage {
         global $db;
 
         // Load translation field from DB
-        $asd =  $db->query('SELECT hlt.translation
+        $result =  $db->query('SELECT hlt.translation
            FROM h5p_libraries_languages hlt
            JOIN h5p_libraries hl ON hl.id = hlt.library_id
            WHERE hl.name = '.$db->quote($machineName).'
@@ -28,7 +28,7 @@ class H5peditorStorageImpl implements \H5peditorStorage {
             AND hl.minor_version = '.$minorVersion.'
             AND hlt.language_code ='.$db->quote($language));
 
-return $asd->fetchColumn();
+        return $result->fetchColumn();
     }
 
     /**
@@ -155,7 +155,26 @@ return $asd->fetchColumn();
      * @return bool|object Returns false if saving failed or the path to the file
      *  if saving succeeded
      */
-    public static function saveFileTemporarily($data, $move_file) {}
+    public static function saveFileTemporarily($data, $move_file) {
+        // Get temporary path
+        //check this
+
+        $h5p = \connector\tools\h5p\H5P::getInstance();
+        $path = $h5p->H5PCore->getUploadedH5pPath();
+        if ($move_file) {
+            // Move so core can validate the file extension.
+            rename($data, $path);
+        }
+        else {
+            // Create file from data
+            file_put_contents($path, $data);
+        }
+
+        return (object) array (
+            'dir' => dirname($path),
+            'fileName' => basename($path)
+        );
+    }
 
     /**
      * Marks a file for later cleanup, useful when files are not instantly cleaned

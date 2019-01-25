@@ -7,6 +7,7 @@
         H5PEditor.ajaxPath = H5PIntegration.editor.ajaxPath;
         H5PEditor.filesPath = H5PIntegration.editor.filesPath;
         H5PEditor.apiVersion = H5PIntegration.editor.apiVersion;
+        H5PEditor.metadataSemantics = H5PIntegration.editor.metadataSemantics;
 
         // Semantics describing what copyright information can be stored for media.
         H5PEditor.copyrightSemantics = H5PIntegration.editor.copyrightSemantics;
@@ -40,7 +41,7 @@
 
         $('.h5p-editor-iframe').on('load', function() {
             var $head = $(this).contents().find("head");
-            $head.append('<style>select[name="h5peditor-library"] {display: none}</style>');
+            //$head.append('<style>select[name="h5peditor-library"] {display: none}</style>');
         })
 
         $('#h5p-content-form').submit(function () {
