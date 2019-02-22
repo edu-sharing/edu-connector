@@ -58,3 +58,12 @@ div.modal-overlay {
 div.modal {
     z-index: 99999 !important;
 }
+
+div-wrapperCenter {
+
+}
+
+#footer {
+    position: fixed;
+    bottom: 0;
+}

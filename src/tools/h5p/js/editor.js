@@ -47,7 +47,10 @@
         $('#h5p-content-form').submit(function () {
             if (h5peditor !== undefined) {
                 var params = h5peditor.getParams();
-                if (params !== undefined) {
+                if (params.params !== undefined) {
+                    if (!h5peditor.isMainTitleSet()) {
+                        return event.preventDefault();
+                    }
                     $library.val(h5peditor.getLibrary());
                     $params.val(JSON.stringify(params));
                 }

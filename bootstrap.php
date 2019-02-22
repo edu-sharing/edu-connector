@@ -82,29 +82,27 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
     }
 
     if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_create') {
-
-         die('see bootstrap');
-/* todos
-no ->process_new_content
-remove cid
-delete export and content dir
-pass content id with request to do so*/
-
-
-        try {
+    try {
             $id = $_REQUEST['id']; // apiClient id
             $cid = $contentHandler->process_new_content();
+
+        //on loading / editing a package metadata is missing / not part of params anymore / see wordpress
+        // must be fixed onload
+
+
+            die('see bootstrap');
             if ($cid) {
                 $apiClient = new \connector\lib\EduRestClient($id);
                 $contentPath = DOCROOT . '/src/tools/h5p/exports/'.$_SESSION[$id]['node']->node->ref->id.'-'.$cid.'.h5p';
                 $res = $apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $contentPath, 'application/zip', 'EDITOR_UPLOAD,H5P');
-
                 if($res) {
                     //cleanup filesystem and db
-                    unlink($contentPath);
-                    //delete from 5p_contents
                     $h5p->H5PFramework -> deleteContentData($cid);
-                    //h5p_contents_libraries
+                    $h5p->H5PFramework -> deleteLibraryUsage($cid);
+                    unlink($contentPath);
+                    $h5p -> rrmdir($h5p -> H5PFramework -> get_h5p_path() . '/content/' . $cid);
+                    if(isset($_SESSION[$id]['viewContentId']))
+                        $h5p -> rrmdir($h5p -> H5PFramework -> get_h5p_path() . '/content/' . $_SESSION[$id]['viewContentId']);
 
 		    //cordova
 		    echo '<script>window.shouldClose=true;</script>';

@@ -8,7 +8,7 @@ private $content = NULL;
 
     public function __construct() {
         $this->H5PFramework = new H5PFramework();
-        $this->H5PCore = new \H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), LANG, false);
+        $this->H5PCore = new \H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), LANG, true);
         $this->H5PCore->aggregateAssets = TRUE; // why not?
         $this->H5PValidator = new \H5PValidator($this->H5PFramework, $this->H5PCore);
         $this->H5peditorStorageImpl = new H5peditorStorageImpl();
@@ -65,7 +65,6 @@ private $content = NULL;
         $action = 'create';//filter_input(INPUT_POST, 'action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^(upload|create)$/')));
         if ($action) {
            // check_admin_referer('h5p_content', 'yes_sir_will_do'); // Verify form
-
             $result = FALSE;
             if ($action === 'create') {
                 // Handle creation of new content.
@@ -82,12 +81,11 @@ private $content = NULL;
                 $plugin_admin = H5P_Plugin_Admin::get_instance();
                 $result = $plugin_admin->handle_upload($content);
             }*/
-
             if ($result) {
                 $content['id'] = $result;
            //     $this->set_content_tags($content['id'], filter_input(INPUT_POST, 'tags'));
             //    wp_safe_redirect(admin_url('admin.php?page=h5p&task=show&id=' . $result));
-return $content['id'];            }
+            return $content['id'];            }
         }
     }
     #
@@ -144,21 +142,23 @@ return $content['id'];            }
             //$this->H5PCore->h5pF->setErrorMessage(__('Invalid parameters.', $this->plugin_slug));
             return FALSE;
         }
+
+        $content['params'] = json_encode($params->params);
+        $content['metadata'] = (array)$params->metadata;
+
         // Set disabled features
        // $this->get_disabled_content_features($core, $content);
 
         // Save new content
         $content['id'] = $this->H5PCore->saveContent($content);
 
-        // Move images and find all content dependencies
-        $this->H5PEditor->processParameters($content['id'], $content['library'], $params, $oldLibrary, $oldParams);
-        $this->H5PCore->filterParameters($content);
-
-
         $content['library']['name'] = $content['library']['machineName'];
         $content['embedType'] = 'iframe';
 
-        $this->H5PExport->createExportFile($content);
+        // Move images and find all content dependencies
+        $this->H5PEditor->processParameters($content['id'], $content['library'], $params->params, $oldLibrary, $oldParams);
+        $this->H5PCore->filterParameters($content);
+
         return $content['id'];
     }
 

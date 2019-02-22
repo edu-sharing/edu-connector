@@ -6,9 +6,6 @@ define('MODE_NEW', 'mode_new');
 class H5P extends \connector\lib\Tool {
 
     protected static $instance = null;
-
-    private $showLibSelect = false;
-
     public $H5PFramework;
     public $H5PCore;
     public $H5PValidator;
@@ -18,9 +15,6 @@ class H5P extends \connector\lib\Tool {
     public $H5PEditorAjaxImpl;
     public $H5PEditor;
     private $mode;
-
-
-    //private static $settings = array();
     private $library;
     private $parameters;
 
@@ -31,7 +25,7 @@ class H5P extends \connector\lib\Tool {
         $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
         $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->H5PFramework = new H5PFramework();
-        $this->H5PCore = new \H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), LANG, false);
+        $this->H5PCore = new \H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), LANG, true);
         $this->H5PCore->aggregateAssets = TRUE; // why not?
 
         $this->H5PCore->disableFileCheck = TRUE; // @needs approval
@@ -67,11 +61,64 @@ class H5P extends \connector\lib\Tool {
              $this->H5PStorage->savePackage(array('title' => $titleShow, 'disable' => 0));
              $content = $this->H5PCore->loadContent($this->H5PStorage->contentId);
              $this->library = \H5PCore::libraryToString($content['library']);
-             $this->parameters = htmlentities($this->H5PCore->filterParameters($content));
-           // $this->parameters = '{"params":' . $this->H5PCore->filterParameters($content) . ',"metadata":' . json_encode((object)$content['metadata']) . '}';
+             $this->parameters = htmlentities($content['params']); // metadata missing !!!!!!!!!!!!!!!!!!!!!! check if needed => //htmlentities($this->H5PCore->filterParameters($content));
+            //copy media to editor
+            $this->copyr($this->H5PFramework->get_h5p_path().'/content/'.$content['id'], $this->H5PFramework->get_h5p_path().'/editor/');
+            $_SESSION[$this->connectorId]['viewContentId'] = $content['id'];
         }
         $this->showEditor();
     }
+
+    private function copyr($source, $dest)
+    {
+        if(is_file($source) && basename($source) == 'content.json')
+            return true;
+
+        // Simple copy for a file
+        if (is_file($source)) {
+            return copy($source, $dest);
+        }
+
+        // Make destination directory
+        if (!is_dir($dest)) {
+            mkdir($dest);
+        }
+
+        // Loop through the folder
+        $dir = dir($source);
+        while (false !== $entry = $dir->read()) {
+            // Skip pointers
+            if ($entry == '.' || $entry == '..') {
+                continue;
+            }
+
+            // Deep copy directories
+            if ($dest !== "$source/$entry") {
+                $this->copyr("$source/$entry", "$dest/$entry");
+            }
+        }
+
+        // Clean up
+        $dir->close();
+        return true;
+    }
+
+
+    public function rrmdir($dir) {
+       if (is_dir($dir)) {
+         $objects = scandir($dir);
+         foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+             if (is_dir($dir."/".$object))
+               $this -> rrmdir($dir."/".$object);
+             else
+               unlink($dir."/".$object);
+            }
+            }
+            rmdir($dir);
+        }
+    }
+
 
     public function showEditor() {
         echo '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">';
@@ -185,16 +232,9 @@ class H5P extends \connector\lib\Tool {
             $data = curl_exec($curl);
             curl_close($curl);
 
-            //mkdir($this->H5PFramework->getUploadedH5pFolderPath());
-
             $fp = fopen($this->H5PFramework->getUploadedH5pPath(), 'w');
             fwrite($fp, $data);
             fclose($fp);
-            /*$zip = new \ZipArchive;
-            $zip->open($this->H5PFramework->getUploadedH5pPath());
-            $zip->extractTo($this->H5PFramework->getUploadedH5pFolderPath());
-            $zip->close();*/
-
         }
         $node = $this->getNode();
         $_SESSION[$this->connectorId]['node'] = $node;

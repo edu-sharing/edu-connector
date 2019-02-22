@@ -57,7 +57,7 @@ class H5peditorStorageImpl implements \H5peditorStorage {
         global $db;
 
         $super_user = true;//  i am super current_user_can('manage_h5p_libraries');
-/*
+
         if ($libraries !== NULL) {
             // Get details for the specified libraries only.
             $librariesWithDetails = array();
@@ -71,8 +71,7 @@ class H5peditorStorageImpl implements \H5peditorStorage {
               AND minor_version = ' . $library->minorVersion . '
               AND semantics IS NOT NULL');
 
-                $details = $sth->fetchAll();
-
+                $details = $sth->fetch(\PDO::FETCH_OBJ);
                 if ($details) {
                     // Library found, add details to list
                     $library->tutorialUrl = $details->tutorial_url;
@@ -82,10 +81,9 @@ class H5peditorStorageImpl implements \H5peditorStorage {
                     $librariesWithDetails[] = $library;
                 }
             }
-
             // Done, return list with library details
             return $librariesWithDetails;
-        }*/
+        }
 
             // Load all libraries
             $libraries = array();
