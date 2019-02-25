@@ -21,11 +21,12 @@ class H5P extends \connector\lib\Tool {
     public function __construct($apiClient = NULL, $log = NULL, $connectorId = NULL) {
         if($apiClient && $log && $connectorId)
             parent::__construct($apiClient, $log, $connectorId);
-        global $db;
+        global $db, $h5pLang;
+        $h5pLang = $_SESSION[$this->connectorId]['language'];
         $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
         $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->H5PFramework = new H5PFramework();
-        $this->H5PCore = new \H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), LANG, true);
+        $this->H5PCore = new \H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), $h5pLang, true);
         $this->H5PCore->aggregateAssets = TRUE; // why not?
 
         $this->H5PCore->disableFileCheck = TRUE; // @needs approval
@@ -49,9 +50,10 @@ class H5P extends \connector\lib\Tool {
     }
 
     public function run() {
+        global $h5pLang;
         $this->H5PCore->disableFileCheck = true;
         $this->H5PValidator->isValidPackage();
-        $content['language'] = 'de';
+        $content['language'] = $h5pLang;
         if($this->mode === MODE_NEW) {
             $content['id'] = '';
         } else {
@@ -121,6 +123,7 @@ class H5P extends \connector\lib\Tool {
 
 
     public function showEditor() {
+        global $h5pLang;
         echo '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">';
         $integration = array();
         $integration['baseUrl'] = WWWURL;
@@ -152,7 +155,7 @@ class H5P extends \connector\lib\Tool {
         foreach(\H5PEditor::$scripts as $b) {
             $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-editor/' . $b;
         }
-        $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-editor/language/'.LANG.'.js';
+        $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-editor/language/'.$h5pLang.'.js';
 
         $integration['editor']['assets']['js'][] = WWWURL . '/src/tools/h5p/js/custom.js';
         $integration['editor']['assets']['css'][] = WWWURL . '/src/tools/h5p/styles/custom.css';

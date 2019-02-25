@@ -50,7 +50,8 @@ $app->get('/metadata', function (Request $request, Response $response) {
 
 //ajax.php needed because h5p concatenates GET parameters
 $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
-    global $db;
+    global $db, $h5pLang;
+    $h5pLang = 'de'; // msut be set, but will not be used
     $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $contentHandler = new connector\tools\h5p\H5PContentHandler();
@@ -85,12 +86,6 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
     try {
             $id = $_REQUEST['id']; // apiClient id
             $cid = $contentHandler->process_new_content();
-
-        //on loading / editing a package metadata is missing / not part of params anymore / see wordpress
-        // must be fixed onload
-
-
-            die('see bootstrap');
             if ($cid) {
                 $apiClient = new \connector\lib\EduRestClient($id);
                 $contentPath = DOCROOT . '/src/tools/h5p/exports/'.$_SESSION[$id]['node']->node->ref->id.'-'.$cid.'.h5p';

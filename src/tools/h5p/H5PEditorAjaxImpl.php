@@ -25,6 +25,7 @@ class H5PEditorAjaxImpl implements \H5PEditorAjaxInterface {
              AND hl1.major_version = hl2.major_version
         GROUP BY hl2.name, hl2.major_version";
 
+
         $query =
             "SELECT hl4.id,
                 hl4.name AS machine_name,

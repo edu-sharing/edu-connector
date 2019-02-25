@@ -39,18 +39,22 @@
         }
         //$create.show();
 
+        //hide upload
+        //hide title (metadata)
         $('.h5p-editor-iframe').on('load', function() {
             var $head = $(this).contents().find("head");
-            //$head.append('<style>select[name="h5peditor-library"] {display: none}</style>');
+            $head.append('<style> .field-name-extraTitle {display: none} #upload {display: none}</style>');
         })
 
         $('#h5p-content-form').submit(function () {
             if (h5peditor !== undefined) {
                 var params = h5peditor.getParams();
+                console
+
                 if (params.params !== undefined) {
-                    if (!h5peditor.isMainTitleSet()) {
+                   /* if (!h5peditor.isMainTitleSet()) {
                         return event.preventDefault();
-                    }
+                    }*/
                     $library.val(h5peditor.getLibrary());
                     $params.val(JSON.stringify(params));
                 }

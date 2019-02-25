@@ -7,8 +7,9 @@ class H5PContentHandler {
 private $content = NULL;
 
     public function __construct() {
+        global $h5pLang;
         $this->H5PFramework = new H5PFramework();
-        $this->H5PCore = new \H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), LANG, true);
+        $this->H5PCore = new \H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), $h5pLang, true);
         $this->H5PCore->aggregateAssets = TRUE; // why not?
         $this->H5PValidator = new \H5PValidator($this->H5PFramework, $this->H5PCore);
         $this->H5peditorStorageImpl = new H5peditorStorageImpl();
