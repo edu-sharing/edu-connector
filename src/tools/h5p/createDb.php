@@ -73,6 +73,32 @@ $pdo -> query("CREATE TABLE `h5p_libraries_languages` (
   `translation` text COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
 
+
+$pdo-> query("CREATE TABLE `h5p_libraries_hub_cache` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `machine_name` varchar(127) NOT NULL,
+  `major_version` int(10) UNSIGNED NOT NULL,
+  `minor_version` int(10) UNSIGNED NOT NULL,
+  `patch_version` int(10) UNSIGNED NOT NULL,
+  `h5p_major_version` int(10) UNSIGNED DEFAULT NULL,
+  `h5p_minor_version` int(10) UNSIGNED DEFAULT NULL,
+  `title` varchar(255) NOT NULL,
+  `summary` text NOT NULL,
+  `description` text NOT NULL,
+  `icon` varchar(511) NOT NULL,
+  `created_at` int(10) UNSIGNED NOT NULL,
+  `updated_at` int(10) UNSIGNED NOT NULL,
+  `is_recommended` int(10) UNSIGNED NOT NULL,
+  `popularity` int(10) UNSIGNED NOT NULL,
+  `screenshots` text,
+  `license` text,
+  `example` varchar(511) NOT NULL,
+  `tutorial` varchar(511) DEFAULT NULL,
+  `keywords` text,
+  `categories` text,
+  `owner` varchar(511) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
 echo 'Success :)<br/>Do not forget to delete custom content from /test';
 exit();
 
