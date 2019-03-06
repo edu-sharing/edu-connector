@@ -25,7 +25,6 @@
         var h5peditor;
         var $type = $('input[name="action"]');
         var $upload = $('.h5p-upload');
-       // var $create = $('.h5p-create').hide();
         var $editor = $('.h5p-editor');
         var $library = $('input[name="library"]');
         var $params = $('input[name="parameters"]');
@@ -37,7 +36,6 @@
         if (h5peditor === undefined) {
             h5peditor = new ns.Editor(c, $params.val(), $editor[0]);
         }
-        //$create.show();
 
         //hide upload
         //hide title (metadata)

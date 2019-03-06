@@ -510,19 +510,6 @@ class H5PFramework implements \H5PFrameworkInterface {
             $db -> query('UPDATE h5p_contents set updated_at='.time().' , title='.$db->quote($content['title']).', parameters='.$db->quote($content['params']).' ,embed_type=\'iframe\' ,library_id='.$content['library']['libraryId'].' ,filtered=\'\' ,disable='.$db->quote($content['disable']).' WHERE id='.$content['id']);
         }
 
-        // Log content create/update/upload
-     /*   if (!empty($content['uploaded'])) {
-            $event_type .= ' upload';
-        }*/
-       /* new H5P_Event('content', $event_type,
-            $content['id'],
-            $content['title'],
-            $content['library']['machineName'],
-            $content['library']['majorVersion'] . '.' . $content['library']['minorVersion']);
-*/
-
-
-
         return $content['id'];
     }
 
@@ -583,13 +570,6 @@ class H5PFramework implements \H5PFrameworkInterface {
     public function copyLibraryUsage($contentId, $copyFromId, $contentMainId = NULL)
     {
       global $db;
-   /*    $db->exec('INSERT INTO h5p_contents_libraries (content_id, library_id, dependency_type, weight, drop_css)
-        SELECT hcl.content_id, hcl.library_id, hcl.dependency_type, hcl.weight, hcl.drop_css
-          FROM h5p_contents_libraries hcl
-          WHERE hcl.content_id = '. $copyFromId);
-*/
-
-
         $db->query('INSERT INTO h5p_contents_libraries (content_id, library_id, dependency_type, weight, drop_css)
         SELECT '.$contentId.', hcl.library_id, hcl.dependency_type, hcl.weight, hcl.drop_css
           FROM h5p_contents_libraries hcl
@@ -646,9 +626,6 @@ class H5PFramework implements \H5PFrameworkInterface {
         }
 
         foreach ($librariesInUse as $dependency) {
-          /*  $dropCss = in_array($dependency['library']['machineName'], $dropLibraryCssList) ? 1 : 0;
-            $db ->exec('INSERT INTO h5p_contents_libraries (content_id, library_id, dependency_type, drop_css, weight) '.
-            'values('.$contentId.',\''.$dependency['library']['libraryId'].'\',\''.$dependency['type'].'\',\''.$dropCss.'\',\''.$dependency['weight'].'\')');*/
 
             $dropCss = in_array($dependency['library']['machineName'], $dropLibraryCssList) ? 1 : 0;
             $db ->query('INSERT INTO h5p_contents_libraries (content_id, library_id, dependency_type, drop_css, weight) '.
@@ -905,27 +882,20 @@ class H5PFramework implements \H5PFrameworkInterface {
         FROM h5p_contents_libraries hcl
         JOIN h5p_libraries hl ON hcl.library_id = hl.id
         WHERE hcl.content_id ='. $id;
-if ($type !== NULL) {
-    $query .= ' AND hcl.dependency_type = \''. $type . '\'';
-}
+
+        if ($type !== NULL) {
+            $query .= ' AND hcl.dependency_type = \''. $type . '\'';
+        }
+
         $query .= " ORDER BY hcl.weight";
 
-
-
-//var_dump($query);
-return $db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
-
-
-
-
-//echo $query;die();
+        return $db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
         $results = $db -> query($query);
         $ret = array();
         while ($row = $results->fetchArray()) {
             $ret[]= $row;
         }
-       // var_dump($ret);die();
-return $ret;
+        return $ret;
     }
 
     /**

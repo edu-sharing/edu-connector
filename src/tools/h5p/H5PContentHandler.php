@@ -47,14 +47,6 @@ private $content = NULL;
             if ($delete) {
                 if (wp_verify_nonce($delete, 'deleting_h5p_content')) {
                     $this->H5peditorStorageImpl->deletePackage($this->content);
-
-                    // Log content delete
-                    new H5P_Event('content', 'delete',
-                        $this->content['id'],
-                        $this->content['title'],
-                        $this->content['library']['name'],
-                        $this->content['library']['majorVersion'] . '.' . $this->content['library']['minorVersion']);
-
                     wp_safe_redirect(admin_url('admin.php?page=h5p'));
                     return;
                 }
