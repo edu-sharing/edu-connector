@@ -44,13 +44,14 @@
         $('.h5p-editor-iframe').on('load', function() {
             var $head = $(this).contents().find("head");
             $head.append('<style> .field-name-extraTitle {display: none} #upload {display: none}</style>');
+            if(H5PIntegration.editor.hideHub)//geht nich wie gewünscht
+                $head.append('<style>section.h5p-hub {display: none}</style>');
+
         })
 
         $('#h5p-content-form').submit(function () {
             if (h5peditor !== undefined) {
                 var params = h5peditor.getParams();
-                console
-
                 if (params.params !== undefined) {
                    /* if (!h5peditor.isMainTitleSet()) {
                         return event.preventDefault();

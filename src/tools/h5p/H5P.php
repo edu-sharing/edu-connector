@@ -157,13 +157,15 @@ class H5P extends \connector\lib\Tool {
         }
         $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-editor/language/'.$h5pLang.'.js';
 
-        $integration['editor']['assets']['js'][] = WWWURL . '/src/tools/h5p/js/custom.js';
-        $integration['editor']['assets']['css'][] = WWWURL . '/src/tools/h5p/styles/custom.css';
-
         $integration['editor']['deleteMessage'] = 'soll das echt geloescht werden?';
         $integration['editor']['apiVersion'] = \H5PCore::$coreApi;
         $integration['editor']['nodeVersionId'] = $this->H5PStorage->contentId;
         $integration['editor']['metadataSemantics'] = $this->H5PContentValidator->getMetadataSemantics();
+
+        //set visibility of lib selector here!
+        if(isset($_SESSION[$this->connectorId]['defaultCreateElement'])) {
+            $integration['editor']['hideHub'] = true;
+        }
 
         echo '<link rel="stylesheet" href="' . WWWURL . '/css/h5p.css"> ';
 
@@ -204,14 +206,13 @@ class H5P extends \connector\lib\Tool {
         $node = $this->getNode();
         if ($node->node->size === NULL) {
             try {
-                throw new \Exception();
                 if(!isset($_SESSION[$this->connectorId]['defaultCreateElement']) || !file_exists(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p'))
                     throw new \Exception('Template not specified or found');
                 @mkdir(__DIR__ . '/temp');
                 @mkdir(__DIR__ . '/temp/' . $node->node->ref->id);
-                copy(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p', $this->H5PFramework->uploadedH5pPath);
+                copy(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p', $this->H5PFramework->getUploadedH5pPath());
             } catch (\Exception $e) {
-                $this->mode = MODE_NEW;
+               $this->mode = MODE_NEW;
             }
         } else {
             if(defined('FORCE_INTERN_COM') && FORCE_INTERN_COM) {
