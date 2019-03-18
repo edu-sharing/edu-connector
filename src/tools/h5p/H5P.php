@@ -163,7 +163,7 @@ class H5P extends \connector\lib\Tool {
         $integration['editor']['metadataSemantics'] = $this->H5PContentValidator->getMetadataSemantics();
 
         //set visibility of lib selector here!
-        if(isset($_SESSION[$this->connectorId]['defaultCreateElement'])) {
+        if(isset($_SESSION[$this->connectorId]['defaultCreateElement']) && $this->mode !== MODE_NEW) {
             $integration['editor']['hideHub'] = true;
         }
 

@@ -42,7 +42,7 @@
         $('.h5p-editor-iframe').on('load', function() {
             var $head = $(this).contents().find("head");
             $head.append('<style> .field-name-extraTitle {display: none} #upload {display: none}</style>');
-            if(H5PIntegration.editor.hideHub)//geht nich wie gewünscht
+            if(H5PIntegration.editor.hideHub)
                 $head.append('<style>section.h5p-hub {display: none}</style>');
 
         })
