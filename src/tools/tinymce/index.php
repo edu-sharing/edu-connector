@@ -53,7 +53,7 @@ select {
     var id = '<?php echo $id ?>';
     var lang = '<?php echo (isset($_SESSION[$id]['language'])? $_SESSION[$id]['language'] : 'de') ?>';
   </script>
-  <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/lang/<?php echo $lang ?>.js"></script>
+  <script src="<?php echo $_SESSION[$id]['WWWURL']?>/lang/<?php echo (isset($_SESSION[$id]['language'])? $_SESSION[$id]['language'] : 'de') ?>.js"></script>
   <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/jquery-3.2.1.min.js"></script>
   <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/materialize.min.js"></script>
   <script src='js/tinymce/tinymce.min.js'></script>

@@ -17,16 +17,19 @@ class H5P extends \connector\lib\Tool {
     private $mode;
     private $library;
     private $parameters;
+    private $h5pLang;
+    private $language;
 
     public function __construct($apiClient = NULL, $log = NULL, $connectorId = NULL) {
         if($apiClient && $log && $connectorId)
             parent::__construct($apiClient, $log, $connectorId);
-        global $db, $h5pLang;
-        $h5pLang = $_SESSION[$this->connectorId]['language'];
+        global $db;
+        $this -> h5pLang = isset($_SESSION[$connectorId]['language'])? $_SESSION[$connectorId]['language'] : 'de';
+        $this -> language = str_replace('/', DIRECTORY_SEPARATOR,include __DIR__ . '/../../../lang/' . $this -> h5pLang . '.php');
         $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
         $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->H5PFramework = new H5PFramework();
-        $this->H5PCore = new \H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), $h5pLang, true);
+        $this->H5PCore = new \H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), $this -> h5pLang, true);
         $this->H5PCore->aggregateAssets = TRUE; // why not?
 
         $this->H5PCore->disableFileCheck = TRUE; // @needs approval
@@ -50,10 +53,9 @@ class H5P extends \connector\lib\Tool {
     }
 
     public function run() {
-        global $h5pLang;
         $this->H5PCore->disableFileCheck = true;
         $this->H5PValidator->isValidPackage();
-        $content['language'] = $h5pLang;
+        $content['language'] = $this -> h5pLang;
         if($this->mode === MODE_NEW) {
             $content['id'] = '';
         } else {
@@ -123,7 +125,6 @@ class H5P extends \connector\lib\Tool {
 
 
     public function showEditor() {
-        global $h5pLang;
         echo '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">';
         $integration = array();
         $integration['baseUrl'] = WWWURL;
@@ -155,7 +156,7 @@ class H5P extends \connector\lib\Tool {
         foreach(\H5PEditor::$scripts as $b) {
             $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-editor/' . $b;
         }
-        $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-editor/language/'.$h5pLang.'.js';
+        $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-editor/language/'.$this -> h5pLang.'.js';
 
         $integration['editor']['deleteMessage'] = 'soll das echt geloescht werden?';
         $integration['editor']['apiVersion'] = \H5PCore::$coreApi;
@@ -193,11 +194,11 @@ class H5P extends \connector\lib\Tool {
             $titleShow = $_SESSION[$this->connectorId]['node']->node->name;
 
         echo '<form method="post" enctype="multipart/form-data" id="h5p-content-form" action="'.WWWURL.'/ajax/ajax.php?title='.$_SESSION[$this->connectorId]['node']->node->ref->id.'&action=h5p_create&id='.$this->connectorId.'">';
-        echo '<div class="h5pSaveBtnWrapper"><h1 class="h5pTitle">'.$titleShow.'</h1><input type="submit" name="submit" value="Speichern" class="h5pSaveBtn btn button button-primary button-large"/></div>';
+        echo '<div class="h5pSaveBtnWrapper"><h1 class="h5pTitle">'.$titleShow.'</h1><input type="submit" name="submit" value="' . $this -> language['save'] . '" class="h5pSaveBtn btn button button-primary button-large"/></div>';
         echo '<div class="h5p-create"><div class="h5p-editor"></div></div>';
         echo '<input type="hidden" name="library" value="'.$this->library.'">';
         echo '<input type="hidden" name="parameters" value="'.$this->parameters.'">';
-        echo '<div class="h5pSaveBtnWrapper"><input type="submit" name="submit" value="Speichern" class="h5pSaveBtn btn button button-primary button-large"/></div>';
+        echo '<div class="h5pSaveBtnWrapper"><input type="submit" name="submit" value="' . $this -> language['save'] . '" class="h5pSaveBtn btn button button-primary button-large"/></div>';
         echo '</form>';
         echo '</body></html>';
     }
