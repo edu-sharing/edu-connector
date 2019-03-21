@@ -44,6 +44,9 @@ h4 {
 .mce-content-body p {
     line-height: 1.5em;
 }
+select {
+    display: initial;
+}
 </style>
   <script>
     var wwwurl = '<?php echo $_SESSION[$id]['WWWURL']?>';

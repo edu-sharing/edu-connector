@@ -5,13 +5,13 @@ $(document).ready(function() {
         plugins: [
             'advlist autolink lists link charmap hr anchor pagebreak',
             'searchreplace wordcount visualblocks visualchars fullscreen',
-            'insertdatetime nonbreaking save table contextmenu directionality',
-            'emoticons paste textcolor colorpicker help print'
+            'insertdatetime nonbreaking save table directionality',
+            'emoticons paste help print'
         ],
         toolbar: 'save | print | undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link',
         image_advtab: true,
         branding: false,
-        height: 500,
+        height: 600,
         readonly: readonly,
         language : lang,
         language_url: 'js/tinymce/langs/' + lang + '.js',
