@@ -46,7 +46,7 @@ class OnlyOffice extends \connector\lib\Tool {
         $node = $this->getNode();
 
         if ($node->node->size === NULL) {
-            $this->apiClient->createContentNode($node->node->ref->id, ONLYOFFICE_STORAGEPATH . '/templates/init.' . $_SESSION[$this->connectorId]['filetype'], \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$this->connectorId]['filetype']), 'MAIN_FILE_UPLOAD');
+            $this->apiClient->createContentNode($node->node->ref->id, DOCROOT . '/src/tools/onlyoffice/storage/templates/init.' . $_SESSION[$this->connectorId]['filetype'], \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$this->connectorId]['filetype']), 'MAIN_FILE_UPLOAD');
             $node = $this->apiClient->getNode($node->node->ref->id);
         }
         $_SESSION[$this->connectorId]['node'] = $node;
@@ -54,7 +54,7 @@ class OnlyOffice extends \connector\lib\Tool {
 
     private function forwardToEditor()
     {
-        header('Location: ' . ONLYOFFICE_EDITORURL . '?id=' . $this->connectorId . '&ref=' . base64_encode($_SESSION[$this->connectorId]['node']->node->properties->{'virtual:permalink'}[0]));
+        header('Location: ' . WWWURL . '/src/tools/onlyoffice/doceditor.php?id=' . $this->connectorId . '&ref=' . base64_encode($_SESSION[$this->connectorId]['node']->node->properties->{'virtual:permalink'}[0]));
         exit();
     }
 

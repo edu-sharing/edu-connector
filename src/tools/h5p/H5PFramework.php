@@ -30,7 +30,7 @@ class H5PFramework implements \H5PFrameworkInterface {
     }
 
     public function get_h5p_url() {
-        return DOMAIN . PATH;
+        return WWWURL . '/src/tools/h5p';
     }
 
     /**
@@ -176,7 +176,7 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function getLibraryFileUrl($libraryFolderName, $fileName)
     {
-        return DOMAIN . PATH . '/libraries/' . $libraryFolderName . '/' . $fileName;
+        return WWWURL . '/src/tools/h5p/libraries/' . $libraryFolderName . '/' . $fileName;
     }
 
     /**

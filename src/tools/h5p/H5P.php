@@ -128,7 +128,7 @@ class H5P extends \connector\lib\Tool {
         echo '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">';
         $integration = array();
         $integration['baseUrl'] = WWWURL;
-        $integration['url'] = '/' . PATH;
+        $integration['url'] = '/eduConnector/src/tools/h5p';
         $integration['siteUrl'] = WWWURL;
         $integration['postUserStatistics'] = '';
         $integration['ajax'] = array();
@@ -139,7 +139,7 @@ class H5P extends \connector\lib\Tool {
         $integration['core'] = array('style'=>\H5PCore::$styles, 'scripts'=>\H5PCore::$scripts);
         $integration['loadedJs'] = '';
         $integration['loadedCss'] = '';
-        $integration['editor']['filesPath'] = DOMAIN . PATH . '/editor';
+        $integration['editor']['filesPath'] = WWWURL . '/src/tools/h5p/editor';
         $integration['editor']['fileIcon'] = '';
         $integration['editor']['ajaxPath'] = WWWURL . '/ajax/ajax.php?action=h5p_';
         $integration['editor']['libraryUrl'] = WWWURL . '/vendor/h5p/h5p-editor/';
