@@ -164,8 +164,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function t($message, $replacements = array())
     {
-
-        return $message;
+        $message = preg_replace('/(!|@|%)[a-z0-9-]+/i', '%s', $message);
+        return vsprintf($message, $replacements);
     }
 
     /**
@@ -321,7 +321,17 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function isPatchedLibrary($library)
     {
-        return true;
+        global $db;
+
+        $query = 'SELECT id 
+          FROM h5p_libraries
+          WHERE name = \'' . $library['machineName'] . '\'
+          AND major_version = '. $library['majorVersion'] .'
+          AND minor_version = '. $library['minorVersion'] .'
+          AND patch_version < ' . $library['patchVersion'] ;
+
+        $statement = $db -> query($query);
+        return $statement->fetch() !== FALSE;
     }
 
     /**
