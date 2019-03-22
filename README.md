@@ -15,7 +15,7 @@ The TinyMCE WYSIWYG editor runs out of the box. What a luck!
 ### H5P
 To use the H5P editor you need to install and configure a database. At this time only __MySQL/MariaDB__ is supported.
 - Create database and database user and grant all priviliges to him.
-- Set values in config.php
+- Set values for
     - __DBHOST__ database host, e.g. `localhost`
     - __DBUSER__ database user
     - __DBPASSWORD__ the users password
