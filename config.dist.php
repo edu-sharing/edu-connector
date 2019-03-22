@@ -5,13 +5,10 @@ define('WWWURL', '');
 define('DOCROOT', '');
 
 /*h5p*/
-define('DOMAIN', '');
-define('PATH', '');
 define('DBHOST', '');
 define('DBUSER', '');
 define('DBPASSWORD', '');
 define('DBNAME', '');
-define('LANG', '');
 
 /*onlyoffice*/
 define('ONLYOFFICE_DOCUMENT_SERVER', '');
