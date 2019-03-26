@@ -72,7 +72,6 @@ function track($log) {
     global $_trackerStatus;
 
     $log->info('Track START');
-    $data;
     $result["error"] = 0;
 
     if (($body_stream = file_get_contents('php://input'))===FALSE){
@@ -106,7 +105,7 @@ function track($log) {
 
             $downloadUri = $data["url"];
             $saved = 1;
-            $tmpSavePath = DOCROOT . '/src/tools/onlyoffice/storage/' . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
+            $tmpSavePath = DATA . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
             //if($status == 'ForcedSave')
             //    $comment = 'Manually_saved';
             //else
@@ -132,10 +131,8 @@ function track($log) {
                             $log->info('SAVED - ' . json_encode(array($_SESSION[$id]['node']->node->ref->id, $tmpSavePath)));
                         }
                     } catch (Exception $e) {
-                        $log->error('ERROR saving file - ' . json_encode($e->__toString()));
-                        $log->error('ERROR unsaved file: ' . $tmpSavePath);
                         $result["c"] = "not saved";
-                        $result["error"] = "error: " . json_encode($e->__toString());
+                        $result["error"] = "error: " . json_encode($e -> __toString());
                         break;
                     }
             }

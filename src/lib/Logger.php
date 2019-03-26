@@ -18,8 +18,8 @@ class Logger {
         /*
         * Log to local file
         * */
-        $this->log->pushHandler(new \Monolog\Handler\RotatingFileHandler(__DIR__ . '/../../log/connector_error.log', 0, \Monolog\Logger::ERROR));
-        $this->log->pushHandler(new \Monolog\Handler\RotatingFileHandler(__DIR__ . '/../../log/connector_info.log', 0, \Monolog\Logger::INFO));
+        $this->log->pushHandler(new \Monolog\Handler\RotatingFileHandler(DATA . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'error.log', 0, \Monolog\Logger::ERROR));
+        $this->log->pushHandler(new \Monolog\Handler\RotatingFileHandler(DATA . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'info.log', 0, \Monolog\Logger::INFO));
 
         /*
         * Log to redis/logstash

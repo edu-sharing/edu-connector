@@ -26,7 +26,7 @@ class H5PFramework implements \H5PFrameworkInterface {
 
 
     public function get_h5p_path() {
-        return __DIR__;
+        return DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'h5p';
     }
 
     public function get_h5p_url() {
@@ -176,7 +176,7 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function getLibraryFileUrl($libraryFolderName, $fileName)
     {
-        return WWWURL . '/src/tools/h5p/libraries/' . $libraryFolderName . '/' . $fileName;
+        return WWWURL . '/' . 'src' . '/' . 'tools' . '/' . 'h5p' . '/' . 'libraries' . '/' . $libraryFolderName . '/' . $fileName;
     }
 
     /**
@@ -510,8 +510,8 @@ class H5PFramework implements \H5PFrameworkInterface {
         global $db;
 
         if (!isset($content['id'])) {
-            $db -> query('INSERT INTO h5p_contents (updated_at,title,parameters,embed_type,library_id,filtered,disable)'.
-                'values ('.time().','.$db->quote($content['title']).','.$db->quote($content['params']).',\'iframe\','.$content['library']['libraryId'].',\'\','.$db->quote($content['disable']).')');
+            $db -> query('INSERT INTO h5p_contents (updated_at,title,parameters,embed_type,library_id,disable)'.
+                'values ('.time().','.$db->quote($content['title']).','.$db->quote($content['params']).',\'iframe\','.$content['library']['libraryId'].','.$db->quote($content['disable']).')');
 
             $content['id'] = $this->id =  $db->lastInsertId();
 

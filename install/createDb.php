@@ -1,17 +1,12 @@
 <?php
 
-require_once __DIR__ . '/../../../config.php';
+require_once __DIR__ . '/../config.php';
 
 $pdo = new PDO("mysql:host=" . DBHOST, DBUSER, DBPASSWORD);
 $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-try {
-    $pdo->query("DROP DATABASE `" . DBNAME . "`");
-} catch(\Exception $e) {
 
-}
-$pdo -> query("CREATE DATABASE `".DBNAME."`");
+$pdo -> query("CREATE DATABASE IF NOT EXISTS `".DBNAME."`");
 $pdo -> query("USE `".DBNAME."`");
-
 
 $pdo -> query("CREATE TABLE `h5p_contents` (
   `id` int(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -99,5 +94,5 @@ $pdo-> query("CREATE TABLE `h5p_libraries_hub_cache` (
   `owner` varchar(511) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
 
-echo 'Success :)';
+echo 'Success';
 exit();

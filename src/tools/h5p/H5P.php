@@ -25,7 +25,7 @@ class H5P extends \connector\lib\Tool {
             parent::__construct($apiClient, $log, $connectorId);
         global $db;
         $this -> h5pLang = isset($_SESSION[$connectorId]['language'])? $_SESSION[$connectorId]['language'] : 'de';
-        $this -> language = str_replace('/', DIRECTORY_SEPARATOR,include __DIR__ . '/../../../lang/' . $this -> h5pLang . '.php');
+        $this -> language = str_replace('/', DIRECTORY_SEPARATOR, include __DIR__ . '/../../../lang/' . $this -> h5pLang . '.php');
         $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
         $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->H5PFramework = new H5PFramework();
@@ -209,9 +209,9 @@ class H5P extends \connector\lib\Tool {
             try {
                 if(!isset($_SESSION[$this->connectorId]['defaultCreateElement']) || !file_exists(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p'))
                     throw new \Exception('Template not specified or found');
-                @mkdir(__DIR__ . '/temp');
-                @mkdir(__DIR__ . '/temp/' . $node->node->ref->id);
-                copy(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p', $this->H5PFramework->getUploadedH5pPath());
+                @mkdir(DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR .'temp');
+                @mkdir(DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR .'temp' .DIRECTORY_SEPARATOR . $node->node->ref->id);
+                copy(__DIR__ . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p', $this->H5PFramework->getUploadedH5pPath());
             } catch (\Exception $e) {
                $this->mode = MODE_NEW;
             }

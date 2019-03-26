@@ -30,12 +30,11 @@ class Cryptographer
 
     public function checkPrivateKey()
     {
-        if (!file_exists(__DIR__ . '/../../assets/private.key')) {
+        if (!file_exists(DATA . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'private.key')) {
             $this->generateSslKeys();
-            throw new \Exception('No key found. Please check keys and try it again!');
         }
 
-        $privateKey = openssl_pkey_get_private('file://' . __DIR__ . '/../../assets/private.key');
+        $privateKey = openssl_pkey_get_private('file://' . DATA . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'private.key');
         if (false === $privateKey)
             throw new \Exception('Cannot load private key');
         openssl_free_key($privateKey);
@@ -45,14 +44,14 @@ class Cryptographer
 
     public function getPrivateKey()
     {
-        $privateKey = openssl_pkey_get_private('file://' . __DIR__ . '/../../assets/private.key');
+        $privateKey = openssl_pkey_get_private('file://' . DATA . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'private.key');
         return $privateKey;
     }
 
-    public function getPublicKey($keyname = 'public') {
-        $publicKey = openssl_pkey_get_public ('file://' . __DIR__ . '/../../assets/'.$keyname.'.key');
+    public function getPublicKey() {
+        $publicKey = openssl_pkey_get_public ('file://' . DATA . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'public.key');
         if(false === $publicKey)
-            throw new \Exception('Cannot load public key from "file://' . __DIR__ . '/../../assets/'.$keyname.'.key"');
+            throw new \Exception('Cannot load public key from "file://' . DATA . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'public.key"');
         return $publicKey;
     }
 
@@ -62,9 +61,10 @@ class Cryptographer
             'private_key_bits' => 2048,
             'private_key_type' => OPENSSL_KEYTYPE_RSA,
         ));
-        openssl_pkey_export_to_file($privateKey, __DIR__ . '/../../assets/private.key');
+
+        openssl_pkey_export_to_file($privateKey, DATA . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'private.key');
         $keyStr = openssl_pkey_get_details($privateKey);
-        file_put_contents(__DIR__ . '/../../assets/public.key', $keyStr['key']);
+        file_put_contents(DATA  . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'public.key', $keyStr['key']);
         openssl_free_key($privateKey);
     }
 

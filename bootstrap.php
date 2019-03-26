@@ -3,7 +3,7 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-error_reporting(0);
+error_reporting(0); //do not change, can cause ajax problems
 
 $container = new \Slim\Container;
 $app = new \Slim\App([$container, 'settings' => [
@@ -31,14 +31,18 @@ $app->get('/', function (Request $request, Response $response) {
     $connector = new \connector\lib\Connector($this->get('log'));
 });
 
-$app->get('/error/{errorid}', function (Request $request, Response $response, $args) {
+$app->get('/error/{errorid}/{language}', function (Request $request, Response $response, $args) {
     $this->get('log')->info($request->getUri());
+    $language = include __DIR__ . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $args['language'] . '.php';
     switch($args['errorid']) {
         case ERROR_INVALID_ID:
-            return $this->view->render($response, 'error/invalidid.html', []);
+            return $this->view->render($response, 'error/invalidid.html', array('title' => $language['error'], 'message' => $language['errorInvalidId']));
+            break;
+        case ERROR_NOT_SAVED:
+            return $this->view->render($response, 'error/notsaved.html', array('title' => $language['error'], 'message' => $language['errorNotSaved']));
             break;
         default:
-            return $this->view->render($response, 'error/default.html', []);
+            return $this->view->render($response, 'error/default.html', array('title' => $language['error'], 'message' => $language['errorDefault']));
     }
 });
 
@@ -48,10 +52,15 @@ $app->get('/metadata', function (Request $request, Response $response) {
     $metadataGenerator -> serve();
 });
 
+$app->get('/install', function (Request $request, Response $response) {
+    $this->get('log')->info($request->getUri());
+    $installer = new \connector\lib\install();
+    $installer -> install();
+});
+
 //ajax.php needed because h5p concatenates GET parameters
 $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
-    global $db, $h5pLang;
-    $h5pLang = 'de'; // msut be set, but will not be used
+    global $db;
     $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $contentHandler = new connector\tools\h5p\H5PContentHandler();
@@ -88,7 +97,7 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
             $cid = $contentHandler->process_new_content();
             if ($cid) {
                 $apiClient = new \connector\lib\EduRestClient($id);
-                $contentPath = DOCROOT . '/src/tools/h5p/exports/'.$_SESSION[$id]['node']->node->ref->id.'-'.$cid.'.h5p';
+                $contentPath = DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'exports' . DIRECTORY_SEPARATOR . $_SESSION[$id]['node']->node->ref->id.'-'.$cid.'.h5p';
                 $res = $apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $contentPath, 'application/zip', 'EDITOR_UPLOAD,H5P');
                 if($res) {
                     //cleanup filesystem and db
@@ -106,8 +115,8 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
                 }
             }
         } catch (\Exception $e) {
-            $response = $response->withStatus($e -> getCode());
-            $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
+            $this -> get('log') -> error('HTTP ' . $e -> getCode() . ' ' . $e -> getMessage());
+            return $response->withStatus(302)->withHeader('Location', WWWURL . '/error/2/' . $_SESSION[$_REQUEST['id']]['language']);
         }
     }
 });
@@ -136,8 +145,8 @@ $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
                 ->write($libs);
         }
     } catch (\Exception $e) {
-        $response = $response->withStatus($e -> getCode());
         $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
+        return $response->withStatus(302)->withHeader('Location', WWWURL . '/error/0/' . $_SESSION[$_REQUEST['id']]['language']);
     }
 });
 
@@ -148,7 +157,6 @@ $app->get('/ajax/unlockNode', function (Request $request, Response $response) {
         $apiClient = new \connector\lib\EduRestClient($id);
         $apiClient->unlockNode($_SESSION[$id]['node']->node->ref->id);
     } catch (\Exception $e) {
-        $response = $response->withStatus($e -> getCode());
         $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
     }
     return $response;
@@ -163,7 +171,6 @@ $app->post('/ajax/setText', function (Request $request, Response $response) {
         $content = $parsedBody['text'];
         $apiClient->createTextContent($_SESSION[$id]['node']->node->ref->id, $content, 'text/html', 'EDITOR_UPLOAD,TINYMCE');
     } catch (\Exception $e) {
-        $response = $response->withStatus($e -> getCode());
         $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
     }
     $_SESSION[$id]['content'] = $content;
