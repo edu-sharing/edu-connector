@@ -3,6 +3,7 @@
 /*general*/
 define('WWWURL', '');
 define('DOCROOT', '');
+define('DATA', '');
 
 /*h5p*/
 define('DBHOST', '');
