@@ -9,8 +9,6 @@ class MetadataGenerator {
     }
 
     public function serve() {
-        $installer = new install();
-        $installer -> install();
         $cryptographer = new Cryptographer();
         $publicKey = $cryptographer -> getPublicKey();
         $publicKeyData = openssl_pkey_get_details($publicKey);
