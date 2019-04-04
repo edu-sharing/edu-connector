@@ -23,14 +23,12 @@ class Connector
             $this->tool->setNode();
             $this->setUser();
             $this->tool->run();
-            $this->tool->run();
         } catch (\Exception $e) {
             $this->log->error($e->getCode() . ' ' . $e->__toString());
             header('Location: ' . WWWURL . '/error/' . ERROR_DEFAULT);
             exit(0);
         }
     }
-
 
     private function setParameters()
     {
@@ -49,7 +47,7 @@ class Connector
     private function validate($data)
     {
         $offset = time() - $data->ts;
-        if ($offset > 30)
+        if ($offset > 300000)
             throw new \Exception('Timestamp validation failed. Offset is ' . $offset . ' seconds.');
 
         if(false === filter_var($data->node, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9-]*$/"))))
@@ -61,7 +59,7 @@ class Connector
         if(false === filter_var($data->sessionId, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z0-9.]*$/"))))
             throw new \Exception('Invalid session ID');
 
-        if(false === filter_var($data->tool, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[A-Z_]*$/"))))
+        if(false === filter_var($data->tool, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z0-9_]*$/"))))
             throw new \Exception('Invalid tool');
 
         if(false === filter_var($data->api_url, FILTER_VALIDATE_URL))
@@ -87,6 +85,9 @@ class Connector
                 break;
             case 'LTI':
                 $this -> tool = new \connector\tools\lti\Lti($this->apiClient, $this->log, $this->id);
+                break;
+            case 'H5P':
+                $this -> tool = new \connector\tools\h5p\H5P($this->apiClient, $this->log, $this->id);
                 break;
             default:
                 throw new \Exception('Unknown tool: ' . $_SESSION[$this->id]['tool'] . '.');

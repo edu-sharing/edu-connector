@@ -1,8 +1,6 @@
 <?php
 session_start();
 
-$lang = 'de';
-
 $id = $_GET['id'];
 
 require_once __DIR__ . '/../../../defines.php';
@@ -44,16 +42,18 @@ h4 {
 .mce-content-body p {
     line-height: 1.5em;
 }
+select {
+    display: initial;
+}
 </style>
   <script>
     var wwwurl = '<?php echo $_SESSION[$id]['WWWURL']?>';
     var readonly = <?php echo $_SESSION[$id]['readonly'] ?>;
     var access = <?php echo $access ?>;
     var id = '<?php echo $id ?>';
-    var lang = '<?php echo $lang ?>';
+    var lang = '<?php echo (isset($_SESSION[$id]['language'])? $_SESSION[$id]['language'] : 'de') ?>';
   </script>
-
-  <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/lang/<?php echo $lang ?>.js"></script>
+  <script src="<?php echo $_SESSION[$id]['WWWURL']?>/lang/<?php echo (isset($_SESSION[$id]['language'])? $_SESSION[$id]['language'] : 'de') ?>.js"></script>
   <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/jquery-3.2.1.min.js"></script>
   <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/materialize.min.js"></script>
   <script src='js/tinymce/tinymce.min.js'></script>

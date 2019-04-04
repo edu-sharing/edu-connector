@@ -1,0 +1,32 @@
+@import "template.css";
+
+.h5pSaveBtn {
+    float: right;
+    margin-bottom: 15px;
+}
+
+h1.h5pTitle {
+    font-size: 30px;
+    float: left;
+    margin-top: 0;
+
+}
+
+.h5pSaveBtnWrapper {
+    width: 100%;
+    padding: 30px 0;
+}
+
+body, html {
+    width: 100% !important;
+    max-Width: 100% !important;
+    text-align: center;
+    padding-bottom: 30px !important;
+}
+
+#h5p-content-form {
+    width: 100%;
+    max-width: 960px;
+    display: inline-block;
+    padding: 0 20px;
+}

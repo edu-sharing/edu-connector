@@ -10,7 +10,6 @@ class EduRestClient
     public function __construct($connectorId) {
         $this->connectorId = $connectorId;
         $this->authHeader = 'Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId'];
-
     }
 
     private function getAuthHeader() {
@@ -109,7 +108,9 @@ class EduRestClient
         if ($httpcode >= 200 && $httpcode < 308) {
             return json_decode($res);
         }
-        throw new \Exception('Error creating text content for node ' . $nodeId, $httpcode);
+        $errorStr = $_SESSION[$this->connectorId]['tool'] . ' Error creating text content for node "' . $nodeId . '" - repo "' . $_SESSION[$this->connectorId]['node'] -> node -> ref -> repo
+            . '" - parent "' . $_SESSION[$this->connectorId]['node'] -> node -> parent -> id . '" - user "' . $_SESSION[$this->connectorId]['user'] -> authorityName . '"';
+        throw new \Exception($errorStr, $httpcode);
     }
     
     public function createContentNodeEnhanced($nodeId, $contentpath, $mimetype, $versionComment = '') {
@@ -120,7 +121,9 @@ class EduRestClient
                 $this->setAuthHeader($this->getTicketHeader());
                 return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
             }
-            throw new \Exception('Error creating text content for node ' . $nodeId, $e->getCode());
+            $errorStr = $_SESSION[$this->connectorId]['tool'] . ' Error creating content for node "' . $nodeId . '" - repo "' . $_SESSION[$this->connectorId]['node'] -> node -> ref -> repo
+                . '" - parent "' . $_SESSION[$this->connectorId]['node'] -> node -> parent -> id . '" - user "' . $_SESSION[$this->connectorId]['user'] -> authorityName . '" - content path "' . $contentpath . '"';
+            throw new \Exception($errorStr, $e->getCode());
         }
     }
 

@@ -10,7 +10,6 @@ class MetadataGenerator {
 
     public function serve() {
         $cryptographer = new Cryptographer();
-        $cryptographer -> checkPrivateKey();
         $publicKey = $cryptographer -> getPublicKey();
         $publicKeyData = openssl_pkey_get_details($publicKey);
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"><properties></properties>');
