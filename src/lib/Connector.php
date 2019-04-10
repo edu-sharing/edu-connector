@@ -42,6 +42,7 @@ class Connector
         }
         $_SESSION[$this->id]['api_url'] =  rtrim($_SESSION[$this->id]['api_url'], '/') . '/';
         $_SESSION[$this->id]['WWWURL'] = WWWURL;
+
     }
 
     private function validate($data)

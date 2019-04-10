@@ -31,18 +31,20 @@ $app->get('/', function (Request $request, Response $response) {
     $connector = new \connector\lib\Connector($this->get('log'));
 });
 
-$app->get('/error/{errorid}/{language}', function (Request $request, Response $response, $args) {
+$app->get('/error/{errorid}[/{language}]', function (Request $request, Response $response, $args) {
     $this->get('log')->info($request->getUri());
+    if(!isset($args['language']))
+	$args['language'] = 'en';
     $language = include __DIR__ . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $args['language'] . '.php';
     switch($args['errorid']) {
         case ERROR_INVALID_ID:
-            return $this->view->render($response, 'error/invalidid.html', array('title' => $language['error'], 'message' => $language['errorInvalidId']));
+            return $this->view->render($response, 'error/invalidid.html', array('title' => $language['error'], 'message' => $language['errorInvalidId'], 'wwwurl' => WWWURL));
             break;
         case ERROR_NOT_SAVED:
-            return $this->view->render($response, 'error/notsaved.html', array('title' => $language['error'], 'message' => $language['errorNotSaved']));
+            return $this->view->render($response, 'error/notsaved.html', array('title' => $language['error'], 'message' => $language['errorNotSaved'], 'wwwurl' => WWWURL));
             break;
         default:
-            return $this->view->render($response, 'error/default.html', array('title' => $language['error'], 'message' => $language['errorDefault']));
+            return $this->view->render($response, 'error/default.html', array('title' => $language['error'], 'message' => $language['errorDefault'], 'wwwurl' => WWWURL));
     }
 });
 
