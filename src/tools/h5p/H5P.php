@@ -209,8 +209,6 @@ class H5P extends \connector\lib\Tool {
             try {
                 if(!isset($_SESSION[$this->connectorId]['defaultCreateElement']) || !file_exists(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p'))
                     throw new \Exception('Template not specified or found');
-                @mkdir(DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR .'temp');
-                @mkdir(DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR .'temp' .DIRECTORY_SEPARATOR . $node->node->ref->id);
                 copy(__DIR__ . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p', $this->H5PFramework->getUploadedH5pPath());
             } catch (\Exception $e) {
                $this->mode = MODE_NEW;
