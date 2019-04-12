@@ -76,6 +76,8 @@
             return confirm(H5PIntegration.editor.deleteMessage);
         });
 
+        clearInterval(window.i);
+
     };
 
     H5PEditor.getAjaxUrl = function (action, parameters) {
@@ -92,6 +94,8 @@
         return url;
     };
 
-    $(document).ready(H5PEditor.init);
+    $(document).ready(function() {
+        window.i = setInterval(H5PEditor.init, 10);
+    });
 
 })(H5P.jQuery);
