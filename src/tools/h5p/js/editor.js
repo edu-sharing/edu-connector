@@ -95,7 +95,7 @@
     };
 
     $(document).ready(function() {
-        window.i = setInterval(H5PEditor.init, 100);
+        window.i = setInterval(H5PEditor.init, 10);
     });
 
 })(H5P.jQuery);
