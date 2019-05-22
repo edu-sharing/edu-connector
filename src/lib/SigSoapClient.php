@@ -53,7 +53,7 @@ class SigSoapClient extends \SoapClient {
     private function setSigHeaders() {
         try {
             $timestamp = round(microtime(true) * 1000);
-            $signdata = 'educonnector' . $timestamp;
+            $signdata = APPID . $timestamp;
             $cryptographer = new \connector\lib\Cryptographer();
             $privkey = $cryptographer->getPrivateKey();
             $pkeyid = openssl_get_privatekey($privkey);
@@ -61,7 +61,7 @@ class SigSoapClient extends \SoapClient {
             $signature = base64_encode($signature);
             openssl_free_key($pkeyid);
             $headers = array();
-            $headers[] = new \SOAPHeader('http://webservices.edu_sharing.org', 'appId', 'educonnector');
+            $headers[] = new \SOAPHeader('http://webservices.edu_sharing.org', 'appId', APPID);
             $headers[] = new \SOAPHeader('http://webservices.edu_sharing.org', 'timestamp', $timestamp);
             $headers[] = new \SOAPHeader('http://webservices.edu_sharing.org', 'signature', $signature);
             $headers[] = new \SOAPHeader('http://webservices.edu_sharing.org', 'signed', $signdata);
