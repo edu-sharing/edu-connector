@@ -160,6 +160,7 @@ $app->get('/ajax/unlockNode', function (Request $request, Response $response) {
         $apiClient->unlockNode($_SESSION[$id]['node']->node->ref->id);
     } catch (\Exception $e) {
         $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
+        $response = $response->withStatus($e -> getCode());
     }
     return $response;
 });
@@ -174,6 +175,7 @@ $app->post('/ajax/setText', function (Request $request, Response $response) {
         $apiClient->createTextContent($_SESSION[$id]['node']->node->ref->id, $content, 'text/html', 'EDITOR_UPLOAD,TINYMCE');
     } catch (\Exception $e) {
         $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
+        $response = $response->withStatus($e -> getCode());
     }
     $_SESSION[$id]['content'] = $content;
     return $response;
