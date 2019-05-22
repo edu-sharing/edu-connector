@@ -57,6 +57,7 @@ $app->get('/ajax/unlockNode', function (Request $request, Response $response) {
     } catch (\Exception $e) {
         $response = $response->withStatus($e -> getCode());
         $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
+        $response = $response->withStatus($e -> getCode());
     }
     return $response;
 });
@@ -72,6 +73,7 @@ $app->post('/ajax/setText', function (Request $request, Response $response) {
     } catch (\Exception $e) {
         $response = $response->withStatus($e -> getCode());
         $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
+        $response = $response->withStatus($e -> getCode());
     }
     $_SESSION[$id]['content'] = $content;
     return $response;
