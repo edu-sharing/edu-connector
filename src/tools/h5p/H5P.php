@@ -41,7 +41,10 @@ class H5P extends \connector\lib\Tool {
 
     public function run() {
         $this->H5PCore->disableFileCheck = true;
-        $this->H5PValidator->isValidPackage();
+        if(!$this->H5PValidator->isValidPackage()){
+            $error=$this->H5PFramework->getMessages('error');
+            $this->log->error('H5P was unable to validate the package: '.print_r($error,true));
+        }
         $content['language'] = 'de';
         if($this->mode === MODE_NEW) {
             $content['id'] = 0;

@@ -928,7 +928,7 @@ return $ret;
      * @param int $libraryId
      * @return int
      */
-    public function getNumContent($libraryId)
+    public function getNumContent($libraryId, $skip = NULL)
     {
         // TODO: Implement getNumContent() method.
     }
@@ -1038,6 +1038,36 @@ return $ret;
         // TODO: Implement replaceContentTypeCache() method.
     }
 
-   
 
+    /**
+     * Load addon libraries
+     *
+     * @return array
+     */
+    public function loadAddons()
+    {
+        // TODO: Implement loadAddons() method.
+    }
+
+    /**
+     * Load config for libraries
+     *
+     * @param array $libraries
+     * @return array
+     */
+    public function getLibraryConfig($libraries = NULL)
+    {
+        // TODO: Implement getLibraryConfig() method.
+    }
+
+    /**
+     * Checks if the given library has a higher version.
+     *
+     * @param array $library
+     * @return boolean
+     */
+    public function libraryHasUpgrade($library)
+    {
+        // TODO: Implement libraryHasUpgrade() method.
+    }
 }
