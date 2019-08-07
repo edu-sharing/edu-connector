@@ -12,7 +12,7 @@ $pdo -> query("CREATE TABLE `h5p_contents` (
   `id` int(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `user_id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL DEFAULT '',
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `library_id` int(10) UNSIGNED NOT NULL,
   `parameters` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
