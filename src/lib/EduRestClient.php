@@ -49,6 +49,27 @@ class EduRestClient
         return $_SESSION[$this->connectorId]['api_url'];
     }
 
+    public function getBinaryContent($node){
+        $arrApiUrl=parse_url($_SESSION[$this->connectorId]['api_url']);
+        $url = $arrApiUrl['scheme'].'://'.$arrApiUrl['host'].':'.$arrApiUrl['port']."/edu-sharing/eduservlet/download?nodeId=".urlencode($node->node->ref->id);
+        $curlHeader=$this->getHeaders();
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $curlHeader);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        $data = curl_exec($curl);
+        $code = curl_getinfo($curl,CURLINFO_RESPONSE_CODE);
+        curl_close($curl);
+        if($code!=200){
+            throw new \Exception("Curl status code ".$code.", url ".$url);
+        }
+        return $data;
+    }
+
     public function validateSession()
     {
         $ch = curl_init($this->getApiUrl() . 'authentication/v1/validateSession');
