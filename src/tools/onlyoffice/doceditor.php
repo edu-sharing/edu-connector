@@ -56,7 +56,7 @@ $fileuri = FileUri($filename);
 
 function getDocEditorKey($id)
 {   
-    return GenerateRevisionId(md5($_SESSION[$id]['node']->node->ref->id . $_SESSION[$id]['node']->node->contentVersion));
+    return GenerateRevisionId(md5($_SESSION[$id]['node']->node->ref->id . $_SESSION[$id]['node']->node->content->version));
 }
 
 function getCallbackUrl($id)
