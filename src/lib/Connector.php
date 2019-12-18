@@ -90,6 +90,9 @@ class Connector
             case 'H5P':
                 $this -> tool = new \connector\tools\h5p\H5P($this->apiClient, $this->log, $this->id);
                 break;
+            case 'MOODLE':
+                $this -> tool = new \connector\tools\moodle\Moodle($this->apiClient, $this->log, $this->id);
+                break;
             default:
                 throw new \Exception('Unknown tool: ' . $_SESSION[$this->id]['tool'] . '.');
         }
