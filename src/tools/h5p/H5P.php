@@ -11,7 +11,7 @@ class H5P extends \connector\lib\Tool {
     public $H5PValidator;
     public $H5PStorage;
     public $H5PContentValidator;
-    public $H5peditorStorageImpl;
+    public $H5PEditorStorageImpl;
     public $H5PEditorAjaxImpl;
     public $H5PEditor;
     private $mode;
@@ -21,25 +21,28 @@ class H5P extends \connector\lib\Tool {
     private $language;
 
     public function __construct($apiClient = NULL, $log = NULL, $connectorId = NULL) {
+
         if($apiClient && $log && $connectorId)
             parent::__construct($apiClient, $log, $connectorId);
         global $db;
+
         $this -> h5pLang = isset($_SESSION[$connectorId]['language'])? $_SESSION[$connectorId]['language'] : 'de';
-	$this -> language = str_replace('/', DIRECTORY_SEPARATOR, include __DIR__ . '/../../../lang/' . $this -> h5pLang . '.php');
+	    $this -> language = str_replace('/', DIRECTORY_SEPARATOR, include __DIR__ . '/../../../lang/' . $this -> h5pLang . '.php');
         $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
         $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->H5PFramework = new H5PFramework();
+
         $this->H5PCore = new \H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), $this -> h5pLang, true);
         $this->H5PCore->aggregateAssets = TRUE; // why not?
-
         $this->H5PCore->disableFileCheck = TRUE; // @needs approval
 
         $this->H5PValidator = new \H5PValidator($this->H5PFramework, $this->H5PCore);
         $this->H5PStorage = new \H5PStorage($this->H5PFramework, $this->H5PCore);
         $this->H5PContentValidator = new \H5PContentValidator($this->H5PFramework, $this->H5PCore);
-        $this->H5peditorStorageImpl = new H5peditorStorageImpl();
+        $this->H5PEditorStorageImpl = new H5peditorStorageImpl();
         $this->H5PEditorAjaxImpl = new H5PEditorAjaxImpl();
-        $this->H5PEditor = new \H5peditor( $this->H5PCore, $this->H5peditorStorageImpl, $this->H5PEditorAjaxImpl);
+        $this->H5PEditor = new \H5peditor( $this->H5PCore, $this->H5PEditorStorageImpl, $this->H5PEditorAjaxImpl);
+
         self::$instance = $this;
     }
 

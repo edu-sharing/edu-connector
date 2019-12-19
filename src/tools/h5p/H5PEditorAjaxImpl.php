@@ -80,9 +80,38 @@ class H5PEditorAjaxImpl implements \H5PEditorAjaxInterface {
      * @return bool True if successful validation
      */
     public function validateEditorToken($token) {
-
-return true;
-
+        return true;
     }
 
+    /**
+     * Get translations for a language for a list of libraries
+     *
+     * @param array $libraries An array of libraries, in the form "<machineName> <majorVersion>.<minorVersion>
+     * @param string $language_code
+     * @return array
+     */
+    public function getTranslations($libraries, $language_code) {
+        global $db;
+
+        $querylibs = '';
+        foreach ($libraries as $lib) {
+            $querylibs .= (empty($querylibs) ? '' : ',') . '%s';
+        }
+
+        array_unshift($libraries, $language_code);
+
+        $st = $db->query(
+            "SELECT hll.translation, CONCAT(hl.name, ' ', hl.major_version, '.', hl.minor_version) AS lib
+         FROM h5p_libraries hl
+         JOIN h5p_libraries_languages hll ON hll.library_id = hl.id
+        WHERE hll.language_code = ".$libraries."
+          AND CONCAT(hl.name, ' ', hl.major_version, '.', hl.minor_version) IN ({$querylibs})"
+        );
+        $result = $st->fetch(\PDO::FETCH_OBJ);
+        $translations = array();
+        foreach ($result as $row) {
+            $translations[$row->lib] = $row->translation;
+        }
+        return $translations;
+    }
 }

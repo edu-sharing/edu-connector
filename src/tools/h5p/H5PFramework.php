@@ -4,8 +4,6 @@ namespace connector\tools\h5p;
 
 class H5PFramework implements \H5PFrameworkInterface {
 
-
-
     private $messages = array('error' => array(), 'info' => array());
     public $id;
 
@@ -21,7 +19,7 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function getPlatformInfo()
     {
-        return array('name' => 'edu-sharing', 'version' => '1.0', 'h5pVersion' => '1.17');
+        return array('name' => 'edu-sharing', 'version' => '1.0', 'h5pVersion' => '1.24');
     }
 
 
@@ -39,7 +37,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      * @param string $datetime
      * @return int unix timestamp
      */
-    public static function dateTimeToTime($datetime) {
+    public static function dateTimeToTime($datetime)
+    {
         $dt = new \DateTime($datetime);
         return $dt->getTimestamp();
     }
@@ -60,15 +59,14 @@ class H5PFramework implements \H5PFrameworkInterface {
             // Post
             $options = array(
                 'http' => array(
-                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                    'method'  => 'POST',
+                    'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+                    'method' => 'POST',
                     'content' => http_build_query($data)
                 )
             );
-            $context  = stream_context_create($options);
+            $context = stream_context_create($options);
             $response['body'] = file_get_contents($url, false, $context);
-        }
-        else {
+        } else {
             $response['body'] = file_get_contents($url, false);
             file_put_contents($stream, $response['body']);
         }
@@ -81,7 +79,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      * @param array $libraries
      * @return array
      */
-    public function getLibraryConfig($libraries = NULL) {
+    public function getLibraryConfig($libraries = NULL)
+    {
         return [];
     }
 
@@ -90,7 +89,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      *
      * @return array
      */
-    public function loadAddons() {
+    public function loadAddons()
+    {
         return [];
     }
 
@@ -185,7 +185,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      * @return string
      *   Path to the folder where the last uploaded h5p for this session is located.
      */
-    public function getUploadedH5pFolderPath() {
+    public function getUploadedH5pFolderPath()
+    {
         static $dir;
 
         if (is_null($dir)) {
@@ -193,6 +194,7 @@ class H5PFramework implements \H5PFrameworkInterface {
             $dir = $h5p->H5PCore->fs->getTmpPath();
         }
         return $dir;
+
     }
 
     /**
@@ -201,7 +203,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      * @return string
      *   Path to the last uploaded h5p
      */
-    public function getUploadedH5pPath() {
+    public function getUploadedH5pPath()
+    {
         static $dir;
 
         if (is_null($dir)) {
@@ -209,6 +212,7 @@ class H5PFramework implements \H5PFrameworkInterface {
             $dir = $h5p->H5PCore->fs->getTmpPath() . '.h5p';
         }
         return $dir;
+
     }
 
 
@@ -227,12 +231,12 @@ class H5PFramework implements \H5PFrameworkInterface {
           FROM h5p_libraries
           ORDER BY title ASC, major_version ASC, minor_version ASC";
 
-        $statement = $db -> query($query);
+        $statement = $db->query($query);
 
         $results = $statement->fetchAll(\PDO::FETCH_OBJ);
 
         $libraries = array();
-        if(empty($results))
+        if (empty($results))
             return $libraries;
 
         foreach ($results as $library) {
@@ -271,7 +275,7 @@ class H5PFramework implements \H5PFrameworkInterface {
         global $db;
 
         // Look for specific library
-        $sql_where = 'WHERE name = \''. $machineName . '\'';
+        $sql_where = 'WHERE name = \'' . $machineName . '\'';
 
         if ($majorVersion !== NULL) {
             // Look for major version
@@ -283,8 +287,8 @@ class H5PFramework implements \H5PFrameworkInterface {
         }
 
         // Get the lastest version which matches the input parameters
-        $statement = $db -> query('SELECT id FROM h5p_libraries ' . $sql_where . ' ORDER BY major_version DESC, minor_version DESC, patch_version DESC LIMIT 1');
-        $row= $statement->fetch();
+        $statement = $db->query('SELECT id FROM h5p_libraries ' . $sql_where . ' ORDER BY major_version DESC, minor_version DESC, patch_version DESC LIMIT 1');
+        $row = $statement->fetch();
         return $row['id'] === NULL ? FALSE : $row['id'];
     }
 
@@ -326,11 +330,11 @@ class H5PFramework implements \H5PFrameworkInterface {
         $query = 'SELECT id 
           FROM h5p_libraries
           WHERE name = \'' . $library['machineName'] . '\'
-          AND major_version = '. $library['majorVersion'] .'
-          AND minor_version = '. $library['minorVersion'] .'
-          AND patch_version < ' . $library['patchVersion'] ;
+          AND major_version = ' . $library['majorVersion'] . '
+          AND minor_version = ' . $library['minorVersion'] . '
+          AND patch_version < ' . $library['patchVersion'];
 
-        $statement = $db -> query($query);
+        $statement = $db->query($query);
         return $statement->fetch() !== FALSE;
     }
 
@@ -344,6 +348,7 @@ class H5PFramework implements \H5PFrameworkInterface {
     public function isInDevMode()
     {
         // TODO: Implement isInDevMode() method.
+        return false;
     }
 
     /**
@@ -391,7 +396,7 @@ class H5PFramework implements \H5PFrameworkInterface {
         global $db;
 
         $preloadedJs = $this->pathsToCsv($library, 'preloadedJs');
-        $preloadedCss =  $this->pathsToCsv($library, 'preloadedCss');
+        $preloadedCss = $this->pathsToCsv($library, 'preloadedCss');
         $dropLibraryCss = '';
 
         if (isset($library['dropLibraryCss'])) {
@@ -417,37 +422,39 @@ class H5PFramework implements \H5PFrameworkInterface {
         }
         $library['hasIcon'] ? $hasIcon = 1 : $hasIcon = 0;
 
+
+
         if ($new) {
-            $db->query('INSERT INTO h5p_libraries '.
-                '(name,title,major_version,minor_version,patch_version,runnable,fullscreen,embed_types,preloaded_js,'.
-                    'preloaded_css,drop_library_css,semantics,has_icon) '.
-                'values ('. $db->quote($library['machineName']) .','
-                .$db->quote($library['title']).','
-                .$library['majorVersion'].','.$library['minorVersion'].','.$library['patchVersion'].','.$library['runnable'].','
-                .$library['fullscreen'].','
-                .$db->quote($embedTypes).','
-                .$db->quote($preloadedJs).','
-                .$db->quote($preloadedCss).','
-                .$db->quote($dropLibraryCss).','
-                .$db->quote($library['semantics']).','
-                .$hasIcon .')');
+
+            $db->query('INSERT INTO h5p_libraries ' .
+                '(name,title,major_version,minor_version,patch_version,runnable,fullscreen,embed_types,preloaded_js,' .
+                'preloaded_css,drop_library_css,semantics,tutorial_url,has_icon) ' .
+                'values (' . $db->quote($library['machineName']) . ','
+                . $db->quote($library['title']) . ','
+                . $library['majorVersion'] . ',' . $library['minorVersion'] . ',' . $library['patchVersion'] . ',' . $library['runnable'] . ','
+                . $library['fullscreen'] . ','
+                . $db->quote($embedTypes) . ','
+                . $db->quote($preloadedJs) . ','
+                . $db->quote($preloadedCss) . ','
+                . $db->quote($dropLibraryCss) . ','
+                . $db->quote($library['semantics']) . ','
+                . $db->quote($library['tutorial_url']) . ','
+                . $hasIcon . ')');
             $library['libraryId'] = $db->lastInsertId();
 
         } else {
 
-
-
-            $db->query('UPDATE h5p_libraries SET '.
-                    'title = '. $db->quote($library['title']) .','.
-                    'patch_version = '.$library['patchVersion'].','.
-                'runnable = '.$library['runnable'].','.
-                'fullscreen = '.$library['fullscreen'].','.
-                'embed_types = '. $db->quote($embedTypes).','.
-                'preloaded_js = '.$db->quote($preloadedJs).','.
-                'preloaded_css= '. $db->quote($preloadedCss).','.
-                'drop_library_css = '. $db->quote($dropLibraryCss).','.
-                'semantics = ' . $db->quote($library['semantics']).','.
-                'has_icon= '. $hasIcon.
+            $db->query('UPDATE h5p_libraries SET ' .
+                'title = ' . $db->quote($library['title']) . ',' .
+                'patch_version = ' . $library['patchVersion'] . ',' .
+                'runnable = ' . $library['runnable'] . ',' .
+                'fullscreen = ' . $library['fullscreen'] . ',' .
+                'embed_types = ' . $db->quote($embedTypes) . ',' .
+                'preloaded_js = ' . $db->quote($preloadedJs) . ',' .
+                'preloaded_css= ' . $db->quote($preloadedCss) . ',' .
+                'drop_library_css = ' . $db->quote($dropLibraryCss) . ',' .
+                'semantics = ' . $db->quote($library['semantics']) . ',' .
+                'has_icon= ' . $hasIcon .
                 ' WHERE id = ' . $library['libraryId']);
             $this->deleteLibraryDependencies($library['libraryId']);
         }
@@ -458,14 +465,15 @@ class H5PFramework implements \H5PFrameworkInterface {
 
         if (isset($library['language'])) {
             foreach ($library['language'] as $languageCode => $translation) {
-               $db -> query('INSERT INTO h5p_libraries_languages (library_id,language_code,translation)'.
-                   'values('.$library['libraryId'].','.$db->quote($languageCode).','.$db->quote($translation).')');
+                $db->query('INSERT INTO h5p_libraries_languages (library_id,language_code,translation)' .
+                    'values(' . $library['libraryId'] . ',' . $db->quote($languageCode) . ',' . $db->quote($translation) . ')');
             }
         }
     }
 
 
-    private function pathsToCsv($library, $key) {
+    private function pathsToCsv($library, $key)
+    {
         if (isset($library[$key])) {
             $paths = array();
             foreach ($library[$key] as $file) {
@@ -510,14 +518,13 @@ class H5PFramework implements \H5PFrameworkInterface {
         global $db;
 
         if (!isset($content['id'])) {
-            $db -> query('INSERT INTO h5p_contents (updated_at,title,parameters,embed_type,library_id,disable)'.
-                'values ('.time().','.$db->quote($content['title']).','.$db->quote($content['params']).',\'iframe\','.$content['library']['libraryId'].','.$db->quote($content['disable']).')');
+            $db->query('INSERT INTO h5p_contents (updated_at,title,parameters,embed_type,library_id,user_id,slug,filtered,disable)' .
+                'values (' . time() . ',' . $db->quote($content['title']) . ',' . $db->quote($content['params']) . ', \'iframe\' ,' . $db->quote($content['library']['libraryId']) . ',' . $db->quote('') . ',' . $db->quote('') . ',' . $db->quote('') . ',' . $db->quote($content['disable']) . ')');
 
-            $content['id'] = $this->id =  $db->lastInsertId();
+            $content['id'] = $this->id = $db->lastInsertId();
 
-        }
-        else {
-            $db -> query('UPDATE h5p_contents set updated_at='.time().' , title='.$db->quote($content['title']).', parameters='.$db->quote($content['params']).' ,embed_type=\'iframe\' ,library_id='.$content['library']['libraryId'].' ,filtered=\'\' ,disable='.$db->quote($content['disable']).' WHERE id='.$content['id']);
+        } else {
+            $db->query('UPDATE h5p_contents set updated_at=' . time() . ' , title=' . $db->quote($content['title']) . ', parameters=' . $db->quote($content['params']) . ' ,embed_type=\'iframe\' ,library_id=' . $content['library']['libraryId'] . ' ,filtered=\'\' ,disable=' . $db->quote($content['disable']) . ' WHERE id=' . $content['id']);
         }
 
         return $content['id'];
@@ -552,17 +559,16 @@ class H5PFramework implements \H5PFrameworkInterface {
     public function saveLibraryDependencies($libraryId, $dependencies, $dependency_type)
     {
         global $db;
-
+        $db->beginTransaction();
         foreach ($dependencies as $dependency) {
             $db->query('INSERT INTO h5p_libraries_libraries (library_id, required_library_id, dependency_type)
-            SELECT '.$libraryId.', hl.id, '.$db->quote($dependency_type).'
+            SELECT ' . $libraryId . ', hl.id, ' . $db->quote($dependency_type) . '
             FROM h5p_libraries hl
-            WHERE name = '.$db->quote($dependency['machineName']).'
-                AND major_version = '.$dependency['majorVersion'].'
-                AND minor_version = '.$dependency['minorVersion'].'
-            ON DUPLICATE KEY UPDATE dependency_type ='.$db->quote($dependency_type));
-            
+            WHERE name = ' . $db->quote($dependency['machineName']) . '
+                AND major_version = ' . $dependency['majorVersion'] . '
+                AND minor_version = ' . $dependency['minorVersion']);// ON CONFLICT(library_id) REPLACE SET dependency_type ='.$db->quote($dependency_type));
         }
+        $db->commit();
     }
 
     /**
@@ -579,11 +585,11 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function copyLibraryUsage($contentId, $copyFromId, $contentMainId = NULL)
     {
-      global $db;
+        global $db;
         $db->query('INSERT INTO h5p_contents_libraries (content_id, library_id, dependency_type, weight, drop_css)
-        SELECT '.$contentId.', hcl.library_id, hcl.dependency_type, hcl.weight, hcl.drop_css
+        SELECT ' . $contentId . ', hcl.library_id, hcl.dependency_type, hcl.weight, hcl.drop_css
           FROM h5p_contents_libraries hcl
-          WHERE hcl.content_id ='.$copyFromId);
+          WHERE hcl.content_id =' . $copyFromId);
     }
 
     /**
@@ -593,7 +599,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      *   Id identifying the content
      */
     public function deleteContentData($contentId)
-    {      global $db;
+    {
+        global $db;
         $db->query('DELETE FROM h5p_contents WHERE id = ' . $contentId);
     }
 
@@ -635,14 +642,13 @@ class H5PFramework implements \H5PFrameworkInterface {
             }
         }
 
+        $db->beginTransaction();
         foreach ($librariesInUse as $dependency) {
-
             $dropCss = in_array($dependency['library']['machineName'], $dropLibraryCssList) ? 1 : 0;
-            $db ->query('INSERT INTO h5p_contents_libraries (content_id, library_id, dependency_type, drop_css, weight) '.
-                'values('.$contentId.',\''.$dependency['library']['libraryId'].'\',\''.$dependency['type'].'\',\''.$dropCss.'\',\''.$dependency['weight'].'\')');
-
-
+            $db->query('INSERT INTO h5p_contents_libraries (content_id, library_id, dependency_type, drop_css, weight) ' .
+                'values(' . $contentId . ',\'' . $dependency['library']['libraryId'] . '\',\'' . $dependency['type'] . '\',\'' . $dropCss . '\',\'' . $dependency['weight'] . '\')');
         }
+        $db->commit();
     }
 
     /**
@@ -705,19 +711,19 @@ class H5PFramework implements \H5PFrameworkInterface {
     public function loadLibrary($machineName, $majorVersion, $minorVersion)
     {
         global $db;
-        $statement = $db->query ('SELECT id as libraryId, name as machineName, title, major_version as majorVersion, minor_version as minorVersion, patch_version as patchVersion,
+        $statement = $db->query('SELECT id as libraryId, name as machineName, title, major_version as majorVersion, minor_version as minorVersion, patch_version as patchVersion,
           embed_types as embedTypes, preloaded_js as preloadedJs, preloaded_css as preloadedCss, drop_library_css as dropLibraryCss, fullscreen, runnable,
           semantics, has_icon as hasIcon
         FROM h5p_libraries
-        WHERE name = '.$db->quote($machineName).'
-        AND major_version = '.$majorVersion.'
-        AND minor_version ='.$minorVersion);
+        WHERE name = ' . $db->quote($machineName) . '
+        AND major_version = ' . $majorVersion . '
+        AND minor_version =' . $minorVersion);
         $library = $statement->fetch();
 
-        $result = $db -> query ('SELECT hl.name as machineName, hl.major_version as majorVersion, hl.minor_version as minorVersion, hll.dependency_type as dependencyType
+        $result = $db->query('SELECT hl.name as machineName, hl.major_version as majorVersion, hl.minor_version as minorVersion, hll.dependency_type as dependencyType
         FROM h5p_libraries_libraries hll
         JOIN h5p_libraries hl ON hll.required_library_id = hl.id
-        WHERE hll.library_id = '.$library['libraryId']);
+        WHERE hll.library_id = ' . $library['libraryId']);
 
         $dependencies = $result->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -746,7 +752,7 @@ class H5PFramework implements \H5PFrameworkInterface {
     public function loadLibrarySemantics($machineName, $majorVersion, $minorVersion)
     {
         global $db;
-        $prep = $db->prepare('SELECT semantics FROM h5p_libraries WHERE name = \'' .$machineName . '\' AND major_version='.$majorVersion.' AND minor_version='.$minorVersion);
+        $prep = $db->prepare('SELECT semantics FROM h5p_libraries WHERE name = \'' . $machineName . '\' AND major_version=' . $majorVersion . ' AND minor_version=' . $minorVersion);
         $prep->execute();
         $semantics = $prep->fetchColumn();
         return ($semantics === FALSE ? NULL : $semantics);
@@ -848,7 +854,7 @@ class H5PFramework implements \H5PFrameworkInterface {
               , hl.fullscreen AS libraryFullscreen
         FROM h5p_contents hc
         JOIN h5p_libraries hl ON hl.id = hc.library_id
-        WHERE hc.id =".$id);
+        WHERE hc.id =" . $id);
 
         $prep->execute();
         $content = $prep->fetch();
@@ -878,7 +884,7 @@ class H5PFramework implements \H5PFrameworkInterface {
      *   - dropCss(optional): csv of machine names
      */
     public function loadContentDependencies($id, $type = NULL)
-    {//echo $id;
+    {
         global $db;
         $query = 'SELECT hl.id
               , hl.name AS machineName
@@ -891,19 +897,19 @@ class H5PFramework implements \H5PFrameworkInterface {
               , hcl.dependency_type AS dependencyType
         FROM h5p_contents_libraries hcl
         JOIN h5p_libraries hl ON hcl.library_id = hl.id
-        WHERE hcl.content_id ='. $id;
+        WHERE hcl.content_id =' . $id;
 
         if ($type !== NULL) {
-            $query .= ' AND hcl.dependency_type = \''. $type . '\'';
+            $query .= ' AND hcl.dependency_type = \'' . $type . '\'';
         }
 
         $query .= " ORDER BY hcl.weight";
 
         return $db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
-        $results = $db -> query($query);
+        $results = $db->query($query);
         $ret = array();
         while ($row = $results->fetchArray()) {
-            $ret[]= $row;
+            $ret[] = $row;
         }
         return $ret;
     }
@@ -978,24 +984,42 @@ class H5PFramework implements \H5PFrameworkInterface {
      * @param int $libraryId
      * @return int
      */
-    public function getNumContent($libraryId)
+    public function getNumContent($libraryId, $skip = NULL)
     {
         // TODO: Implement getNumContent() method.
     }
 
     /**
      * Determines if content slug is used.
-     *
-     * @param string $slug
+     *     * @param string $slug
      * @return boolean
      */
     public function isContentSlugAvailable($slug)
     {
         global $db;
         $st = $db->prepare('SELECT slug FROM h5p_contents WHERE slug = \'' . $slug . '\'');
-        $st -> execute();
+        $st->execute();
         return !$st->fetchColumn();
     }
+
+    public function libraryHasUpgrade($library)
+    {
+        global $db;
+
+        return $db->get_var($db->prepare(
+                "SELECT id
+          FROM h5p_libraries
+          WHERE name = '%s'
+          AND (major_version > %d
+           OR (major_version = %d AND minor_version > %d))
+        LIMIT 1",
+                $library['machineName'],
+                $library['majorVersion'],
+                $library['majorVersion'],
+                $library['minorVersion']
+            )) !== NULL;
+    }
+
 
     /**
      * Generates statistics from the event log per library
@@ -1107,39 +1131,40 @@ class H5PFramework implements \H5PFrameworkInterface {
         $db->query("TRUNCATE TABLE h5p_libraries_hub_cache");
         foreach ($contentTypeCache->contentTypes as $ct) {
             // Insert into db
-              $quArr = array(
-                'machine_name'      => $ct->id,
-                'major_version'     => $ct->version->major,
-                'minor_version'     => $ct->version->minor,
-                'patch_version'     => $ct->version->patch,
+            $quArr = array(
+                'machine_name' => $ct->id,
+                'major_version' => $ct->version->major,
+                'minor_version' => $ct->version->minor,
+                'patch_version' => $ct->version->patch,
                 'h5p_major_version' => $ct->coreApiVersionNeeded->major,
                 'h5p_minor_version' => $ct->coreApiVersionNeeded->minor,
-                'title'             => $ct->title,
-                'summary'           => $ct->summary,
-                'description'       => $ct->description,
-                'icon'              => $ct->icon,
-                'created_at'        => self::dateTimeToTime($ct->createdAt),
-                'updated_at'        => self::dateTimeToTime($ct->updatedAt),
-                'is_recommended'    => $ct->isRecommended === TRUE ? 1 : 0,
-                'popularity'        => $ct->popularity,
-                'screenshots'       => json_encode($ct->screenshots),
-                'license'           => json_encode(isset($ct->license) ? $ct->license : array()),
-                'example'           => $ct->example,
-                'tutorial'          => isset($ct->tutorial) ? $ct->tutorial : '',
-                'keywords'          => json_encode(isset($ct->keywords) ? $ct->keywords : array()),
-                'categories'        => json_encode(isset($ct->categories) ? $ct->categories : array()),
-                'owner'             => $ct->owner
+                'title' => $ct->title,
+                'summary' => $ct->summary,
+                'description' => $ct->description,
+                'icon' => $ct->icon,
+                'created_at' => self::dateTimeToTime($ct->createdAt),
+                'updated_at' => self::dateTimeToTime($ct->updatedAt),
+                'is_recommended' => $ct->isRecommended === TRUE ? 1 : 0,
+                'popularity' => $ct->popularity,
+                'screenshots' => json_encode($ct->screenshots),
+                'license' => json_encode(isset($ct->license) ? $ct->license : array()),
+                'example' => $ct->example,
+                'tutorial' => isset($ct->tutorial) ? $ct->tutorial : '',
+                'keywords' => json_encode(isset($ct->keywords) ? $ct->keywords : array()),
+                'categories' => json_encode(isset($ct->categories) ? $ct->categories : array()),
+                'owner' => $ct->owner
             );
 
-            $query  = 'INSERT INTO h5p_libraries_hub_cache ';
+            $query = 'INSERT INTO h5p_libraries_hub_cache ';
             $ks = array();
             $vs = array();
             foreach ($quArr as $k => $v) {
                 $ks[] = $k;
                 $vs[] = $db->quote($v);
             }
-            $query .= '('.implode(',', $ks).') values ('.implode(',', $vs).')';
-            $db -> query($query);
+            $query .= '(' . implode(',', $ks) . ') values (' . implode(',', $vs) . ')';
+            $db->query($query);
         }
     }
 }
+
