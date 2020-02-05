@@ -56,8 +56,6 @@ If you'll get 404 errors check for active `mod_rewrite` in Apache. You can activ
  AllowOverride All
  Require all granted
 </Directory>
-
-</VirtualHost>
 ```
 
 
