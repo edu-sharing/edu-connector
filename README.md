@@ -48,6 +48,19 @@ See https://drive.google.com/open?id=1lbkVAzqRh72zoqR0S_Gffvs6CCwl4Kot
 # Troubleshooting
 The error logs can be found in the `log` folder.
 
+If you'll get 404 errors check for active `mod_rewrite` in Apache. You can activate it in the default vhost (`000-default`) like this: 
+
+```
+<Directory /var/www/html>
+ Options indexes FollowSymLinks MultiViews
+ AllowOverride All
+ Require all granted
+</Directory>
+
+</VirtualHost>
+```
+
+
 # Hints & ToDos
 ## etherpad
 New pads will be created but the reference is not saved to repository at this time. See `Etherpad.php` for details.
