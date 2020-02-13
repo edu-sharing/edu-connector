@@ -1,5 +1,6 @@
 <?php
 
 define('VERSION', '5.1');
-define('BUILD_DATE', '20200213'); //YYYYMMDD
-define('BUILD_COMMIT', '');
+// replaced by gitlab ci
+define('BUILD_DATE', '#BUILD_DATE'); //YYYYMMDD
+define('BUILD_COMMIT', '#BUILD_COMMIT');
