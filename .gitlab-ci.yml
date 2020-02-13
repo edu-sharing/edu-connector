@@ -23,6 +23,6 @@ deploy_release:
   stage: deploy
   artifacts:
     paths:
-      - /
+      - /vendor
   script:
-      - ls /
+      - ls /vendor
