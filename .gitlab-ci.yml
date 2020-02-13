@@ -30,4 +30,4 @@ deploy_release:
     paths:
       - /
   script:
-      ls /
+      - ls /
