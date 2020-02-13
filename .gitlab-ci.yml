@@ -16,7 +16,8 @@ before_script:
   # Install and run Composer
   - curl -sS https://getcomposer.org/installer | php
   - php composer.phar install
-  - echo 'commit $CI_COMMIT_SHORT_SHA' > VERSION
+  - echo "commit $CI_COMMIT_SHORT_SHA" > VERSION.md
+  - rm -rf .git/
 
 
 deploy_release:
@@ -25,5 +26,4 @@ deploy_release:
     paths:
       - ./
   script:
-      - pwd
       - ls ./
