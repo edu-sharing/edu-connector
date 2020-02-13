@@ -29,5 +29,5 @@ deploy_release:
   artifacts:
     paths:
       - /
-    script:
+  script:
       ls /
