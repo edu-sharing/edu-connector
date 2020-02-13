@@ -1,5 +1,5 @@
 {
-  "name": "eduConnector",
+  "name": "edu-sharing/eduConnector",
   "description": "Connect edu-sharing repository with editing tools",
   "minimum-stability": "alpha",
   "license": "proprietary",

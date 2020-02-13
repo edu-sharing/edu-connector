@@ -1,7 +1,11 @@
 <?php
 
+use connector\lib\Connector;
+use connector\lib\Logger;
+use connector\lib\MetadataGenerator;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+use Slim\Views\Twig;
 
 error_reporting(0); //do not change, can cause ajax problems
 
@@ -14,11 +18,11 @@ $app = new \Slim\App([$container, 'settings' => [
 
 $container = $app->getContainer();
 $container['log'] = function ($container) {
-    $log = new \connector\lib\Logger();
+    $log = new Logger();
     return $log->getLog();
 };
 $container['view'] = function ($container) {
-    $view = new \Slim\Views\Twig('templates', [
+    $view = new Twig('templates', [
         'cache' => false
     ]);
     $basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
@@ -28,7 +32,7 @@ $container['view'] = function ($container) {
 
 $app->get('/', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
-    $connector = new \connector\lib\Connector($this->get('log'));
+    $connector = new Connector($this->get('log'));
 });
 
 $app->get('/error/{errorid}[/{language}]', function (Request $request, Response $response, $args) {
@@ -50,7 +54,7 @@ $app->get('/error/{errorid}[/{language}]', function (Request $request, Response 
 
 $app->get('/metadata', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
-    $metadataGenerator = new \connector\lib\MetadataGenerator();
+    $metadataGenerator = new MetadataGenerator();
     $metadataGenerator -> serve();
 });
 

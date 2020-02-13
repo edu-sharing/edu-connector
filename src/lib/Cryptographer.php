@@ -35,11 +35,12 @@ class Cryptographer
         }
 
         $privateKey = openssl_pkey_get_private('file://' . DATA . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'private.key');
-        if (false === $privateKey)
+        if (false === $privateKey){
             throw new \Exception('Cannot load private key');
+            return false;
+        }
         openssl_free_key($privateKey);
         return true;
-
     }
 
     public function getPrivateKey()
