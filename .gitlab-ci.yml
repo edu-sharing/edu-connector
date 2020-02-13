@@ -23,6 +23,7 @@ before_script:
 deploy_release:
   stage: deploy
   artifacts:
+    name: "educonnector_release_${CI_COMMIT_SHORT_SHA}"
     paths:
       - ./
   script:
