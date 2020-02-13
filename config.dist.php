@@ -1,6 +1,7 @@
 <?php
 
 /*general*/
+define('VERSION', '');
 define('WWWURL', '');
 define('DOCROOT', '');
 define('DATA', '');
