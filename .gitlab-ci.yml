@@ -6,6 +6,9 @@ image: php:latest
 cache:
   paths:
     - vendor/
+    
+stages:
+  - deploy
 
 before_script:
   - apt-get update -yqq
