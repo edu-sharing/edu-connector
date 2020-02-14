@@ -25,7 +25,7 @@ before_script:
 deploy_release:
   stage: deploy
   artifacts:
-    name: "educonnector_release_$(date +\"%Y%m%d\")_${CI_COMMIT_SHORT_SHA}"
+    name: "educonnector_release$(date +\"%Y-%m-%d\")${CI_COMMIT_SHORT_SHA}"
     paths:
       - ./
   script:
