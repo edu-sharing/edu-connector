@@ -16,7 +16,7 @@ before_script:
   # Install and run Composer
   - curl -sS https://getcomposer.org/installer | php
   - php composer.phar install
-  - date=$(date '+%Y%m%d')
+  - EXPORT date=$(date '+%Y%m%d')
   - sed -i "s/#BUILD_DATE/$date/g" install/version_info.php
   - sed -i "s/#BUILD_COMMIT/$CI_COMMIT_SHORT_SHA/g" install/version_info.php
   - rm -rf .git/
