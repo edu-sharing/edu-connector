@@ -93,6 +93,9 @@ class Connector
             case 'MOODLE':
                 $this -> tool = new \connector\tools\moodle\Moodle($this->apiClient, $this->log, $this->id);
                 break;
+            case 'WORDPRESS':
+                $this -> tool = new \connector\tools\wordpress\Wordpress($this->apiClient, $this->log, $this->id);
+                break;
             default:
                 throw new \Exception('Unknown tool: ' . $_SESSION[$this->id]['tool'] . '.');
         }
