@@ -4,12 +4,7 @@
 define('WWWURL', '');
 define('DOCROOT', '');
 define('DATA', '');
-
-/*h5p*/
-define('DBHOST', '');
-define('DBUSER', '');
-define('DBPASSWORD', '');
-define('DBNAME', '');
+define('REPO_URL', '');
 
 /*h5p*/
 define('DOMAIN', '');
@@ -37,3 +32,8 @@ define('ETHERPAD_APIKEY', '');
 /*moodle*/
 define('MOODLE_BASE_DIR', '');
 define('MOODLE_TOKEN', '');
+
+/*wordpress*/
+define('WP_USER', '');
+define('WP_PW', '');
+define('WP_URL', '');

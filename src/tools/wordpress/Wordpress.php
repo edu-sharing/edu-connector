@@ -11,10 +11,7 @@ class Wordpress extends \connector\lib\Tool {
     private $createdPage = '';
 
     public function run() {
-        $wp_page_id = $this->createPage();
-
-        //echo '<iframe src="'.WP_URL.'wp-login.php?user='.WP_USER.'&pw='.WP_PW.'&page='.$wp_page_id.'" width="100%" height="100%" frameBorder="0"></iframe>';
-        $this->displayIframe($wp_page_id);
+        $this->displayIframe( $this->createPage() );
     }
 
     private function displayIframe($wp_page_id){
@@ -47,8 +44,8 @@ class Wordpress extends \connector\lib\Tool {
             return false;
         }
 
-        $url = WORDPRESS_URL . 'wp-json/wp/v2/pages/'.$id;
-        $auth = WORDPRESS_USER.':'.WORDPRESS_PW;
+        $url = WP_URL . 'wp-json/wp/v2/pages/'.$id;
+        $auth = WP_USER.':'.WP_PW;
         $response = '';
         try {
             $curl = curl_init($url);
@@ -85,50 +82,29 @@ class Wordpress extends \connector\lib\Tool {
     private function createPage(){
         $node = $_SESSION[$this->connectorId]['node']->node;
         $nodeId = $node->ref->id;
+        $ticket = $_SESSION[$this->connectorId]['ticket'];
 
-        //Load current content and look for a wordpress-page-id
-        $currentFileUrl = $_SESSION[$this->connectorId]['api_url'].'node/v1/nodes/-home-/'.$nodeId.'/textContent';
-        $currentFile = '';
-        try {
-            $ch = curl_init($currentFileUrl);
-            $headers = array(
-                'Authorization: EDU-TICKET '.$_SESSION[$this->connectorId]['ticket'],
-                'Accept: application/json',
-                'Content-Type: multipart/form-data'
-            );
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            $res = curl_exec($ch);
-            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            var_dump('$httpcode: '.$httpcode);
-            var_dump('$res: '.$res);
-            if ($httpcode >= 200 && $httpcode < 308) {
-                $currentFile = json_decode($res);
-            }
-        } catch (Exception $e) {
-            $this->log->error('Could not load textContent: '.$e->getMessage());
-        }
-        curl_close($ch);
+        $fileContent = $this->downloadContent($nodeId, $ticket);
 
-        //var_dump($currentFile);
-        $rawContent = json_decode($currentFile->raw);
-        if ($this->checkWpPage($rawContent->id)){
+        if ($this->checkWpPage($fileContent->id)){
             //Page found, no need to create one.
-            $this->log->info('WORDPRESS_PageId: '.$rawContent->id);
-            return $rawContent->id;
+            $this->log->info('WORDPRESS_PageId: '.$fileContent->id);
+            return $fileContent->id;
+        }
+
+        $wpContent = '';
+        if(!empty($fileContent->content)){
+            $wpContent = $fileContent->content;
         }
 
         $data = array(
             "title" => $node->name,
-            "content" => '',
+            "content" => $wpContent,
             "status" => 'publish',
             "meta" => array(
                 'eduConnector' => array(
                     'nodeID' => $nodeId,
-                    'ticket' => $_SESSION[$this->connectorId]['ticket'],
+                    'ticket' => $ticket,
                     'repoUrl' => $_SESSION[$this->connectorId]['api_url']
                 )
             )
@@ -162,6 +138,66 @@ class Wordpress extends \connector\lib\Tool {
         $this->createdPage = json_decode($response);
         $this->log->info('Created wordpress-page with ID: '.$this->createdPage->id);
         return $this->createdPage->id;
+    }
+
+    protected function downloadContent($nodeId, $ticket){
+
+        error_log('ApiUrl: '.$_SESSION[$this->connectorId]['api_url']);
+
+        $downloadUrl = 'http://localhost:8080/edu-sharing/eduservlet/download?nodeId='.$nodeId.'&ticket='.$ticket;
+        $content = '';
+        try {
+            $ch = curl_init($downloadUrl);
+            $headers = array(
+                'Accept: application/json',
+                'Content-Type: multipart/form-data'
+            );
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            $res = curl_exec($ch);
+            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            if ($httpcode >= 200 && $httpcode < 308) {
+                curl_close($ch);
+                $content = json_decode($res);
+            }
+        } catch (Exception $e) {
+            $this->log->error('Could not load textContent: '.$e->getMessage());
+        }
+
+        return $content;
+    }
+
+    protected function loadTextContent($nodeId, $ticket){
+        $currentFileUrl = $_SESSION[$this->connectorId]['api_url'].'node/v1/nodes/-home-/'.$nodeId.'/textContent';
+        $currentFile = '';
+        try {
+            $ch = curl_init($currentFileUrl);
+            $headers = array(
+                'Authorization: EDU-TICKET '.$ticket,
+                'Accept: application/json',
+                'Content-Type: multipart/form-data'
+            );
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            $res = curl_exec($ch);
+            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            var_dump('$httpcode: '.$httpcode);
+            var_dump('$res: '.$res);
+            if ($httpcode >= 200 && $httpcode < 308) {
+                $currentFile = json_decode($res);
+                curl_close($ch);
+            }
+        } catch (Exception $e) {
+            $this->log->error('Could not load textContent: '.$e->getMessage());
+        }
+
+        return json_decode($currentFile->raw);
     }
 
 }
