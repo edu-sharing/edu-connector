@@ -142,8 +142,6 @@ class Wordpress extends \connector\lib\Tool {
 
     protected function downloadContent($nodeId, $ticket){
 
-        error_log('ApiUrl: '.$_SESSION[$this->connectorId]['api_url']);
-
         $downloadUrl = 'http://localhost:8080/edu-sharing/eduservlet/download?nodeId='.$nodeId.'&ticket='.$ticket;
         $content = '';
         try {
