@@ -69,8 +69,8 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
     global $db;
     $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $contentHandler = new connector\tools\h5p\H5PContentHandler();
-    $h5p = connector\tools\h5p\H5P::getInstance();
+    $contentHandler = new \connector\tools\h5p\H5PContentHandler();
+    $h5p = \connector\tools\h5p\H5P::getInstance();
 
      if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_files') {
          $token = '';//$_GET['token'];
@@ -134,7 +134,7 @@ $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
     try {
         $db = new \PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
         $db->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
-        $h5p = connector\tools\h5p\H5P::getInstance();
+        $h5p = \connector\tools\h5p\H5P::getInstance();
 
         if(isset($request->getQueryParams()['machineName']) && isset($request->getQueryParams()['majorVersion']) && isset($request->getQueryParams()['minorVersion'])) {
             $lib = $h5p->H5PEditor->ajax->action(H5PEditorEndpoints::SINGLE_LIBRARY, $request->getQueryParams()['machineName'],
