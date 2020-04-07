@@ -51,6 +51,7 @@ if(empty($_SESSION[$id])) {
 
 $filename = $_SESSION[$id]["fileUrl"];
 $fileuri = FileUri($filename);
+error_log('################$fileuri:'.$fileuri);
 
 //setcookie('EDUCONNECTOR', getDocEditorKey(), 0, '/', '.metaventis.com');
 
@@ -140,7 +141,9 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                 innerAlert(event.data);
         };
 
+
         var сonnectEditor = function () {
+            const ticket = "<?php echo $_SESSION[$id]["ticket"] ?>";
             docEditor = new DocsAPI.DocEditor("iframeEditor",
                 {
                     width: "100%",
@@ -150,13 +153,13 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                     documentType: "<?php echo getDocumentType('dummy.' . $_SESSION[$id]['filetype']) ?>",
                     document: {
                         title: "<?php echo addslashes(empty($_SESSION[$id]['node']->node->title)?$_SESSION[$id]['node']->node->name:$_SESSION[$id]['node']->node->title) ?>",
-                        url: "<?php echo $fileuri ?>",
+                        url: "<?php echo $fileuri.'&ticket='.$_SESSION[$id]["ticket"] ?>",
                         fileType: "<?php echo $_SESSION[$id]['filetype'] ?>",
                         key: "<?php echo getDocEditorKey($id) ?>",
 
                         info: {
-                            author: "<?php echo addslashes($_SESSION[$id]['node']->node->createdBy->firstName . ' ' . $_SESSION[$id]['node']->node->createdBy->lastName) ?>",
-                            created: "<?php echo date_format(date_create($_SESSION[$id]['node']->node->createdAt), 'd.m.Y'); ?>",
+                            owner: "<?php echo addslashes($_SESSION[$id]['node']->node->createdBy->firstName . ' ' . $_SESSION[$id]['node']->node->createdBy->lastName) ?>",
+                            uploaded: "<?php echo date_format(date_create($_SESSION[$id]['node']->node->createdAt), 'd.m.Y'); ?>",
                         },
 
                         permissions: {
@@ -171,8 +174,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
 
                         user: {
                             id: "<?php echo session_id()?>",
-                            firstname: "<?php echo addslashes($_SESSION[$id]['user']->profile->firstName) ?>",
-                            lastname: "<?php echo addslashes($_SESSION[$id]['user']->profile->lastName) ?>",
+                            name: "<?php echo addslashes($_SESSION[$id]['user']->profile->firstName).' '.addslashes($_SESSION[$id]['user']->profile->lastName)?>"
                         },
 
                         embedded: {
@@ -198,6 +200,11 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                         'onDocumentStateChange': onDocumentStateChange,
                         'onRequestEditRights': onRequestEditRights,
                         'onError': onError,
+                        'onInfo': function ( data ) {
+                            if( data && data.data && data.data.getConfig ){
+                                docEditor.serviceCommand ( 'getConfig', ticket );
+                            }
+                        }
                     }
                 });
         };
