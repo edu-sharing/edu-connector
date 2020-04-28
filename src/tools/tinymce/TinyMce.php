@@ -18,11 +18,16 @@ class TinyMce extends \connector\lib\Tool {
             $_SESSION[$this->connectorId]['content'] = '';
         } else {
             if(defined('FORCE_INTERN_COM') && FORCE_INTERN_COM) {
-                $arrApiUrl = parse_url($_SESSION[$this->connectorId]['api_url']);
+                $apiUrlStr = $_SESSION[$this->connectorId]['api_url'];
+                if(defined('FORCED_APIURL') && FORCED_APIURL){
+                    $apiUrlStr = FORCED_APIURL;
+                }
+                $arrApiUrl = parse_url($apiUrlStr);
                 $arrContentUrl = parse_url($node->node->contentUrl);
                 $contentUrl = $arrApiUrl['scheme'].'://'.$arrApiUrl['host'].':'.$arrApiUrl['port'].$arrContentUrl['path'].'?'.$arrContentUrl['query'] . '&com=internal';
                 $curlHeader = array('Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId']);
                 $url = $contentUrl . '&params=display%3Ddownload';
+                $url = $url . '&ticket=' . $_SESSION[$this->connectorId]['ticket'];
             } else {
                 $contentUrl = $node->node->contentUrl;
                 $curlHeader = array();
