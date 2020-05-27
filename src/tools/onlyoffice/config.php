@@ -27,6 +27,7 @@ $GLOBALS['DOC_SERV_STORAGE_URL'] = ONLYOFFICE_DOCUMENT_SERVER . "/FileUploader.a
 $GLOBALS['DOC_SERV_CONVERTER_URL'] = ONLYOFFICE_DOCUMENT_SERVER . "/ConvertService.ashx";
 $GLOBALS['DOC_SERV_API_URL'] = ONLYOFFICE_DOCUMENT_SERVER . "/web-apps/apps/api/documents/api.js";
 $GLOBALS['DOC_SERV_PRELOADER_URL'] = ONLYOFFICE_DOCUMENT_SERVER . "/web-apps/apps/api/documents/cache-scripts.html";
+$GLOBALS['DOC_SERV_JWT_SECRET'] = ONLYOFFICE_JWT_SECRET;
 
 
 $GLOBALS['ExtsSpreadsheet'] = array(".xls", ".xlsx",

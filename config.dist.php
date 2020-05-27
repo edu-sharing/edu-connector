@@ -15,6 +15,7 @@ define('DBNAME', '');
 /*onlyoffice*/
 define('ONLYOFFICE_DOCUMENT_SERVER', '');
 define('ONLYOFFICE_PLUGIN_URL', '');
+define('ONLYOFFICE_JWT_SECRET','');
 
 /*onyx*/
 define('ONYXURL', '');
