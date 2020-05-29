@@ -708,9 +708,9 @@ class H5PFramework implements \H5PFrameworkInterface {
      *     - majorVersion: Major version for a library this library is depending on
      *     - minorVersion: Minor for a library this library is depending on
      */
-    public function loadLibrary($machineName, $majorVersion, $minorVersion)
-    {
+    public function loadLibrary($machineName, $majorVersion, $minorVersion){
         global $db;
+
         $statement = $db->query('SELECT id as libraryId, name as machineName, title, major_version as majorVersion, minor_version as minorVersion, patch_version as patchVersion,
           embed_types as embedTypes, preloaded_js as preloadedJs, preloaded_css as preloadedCss, drop_library_css as dropLibraryCss, fullscreen, runnable,
           semantics, has_icon as hasIcon

@@ -56,24 +56,31 @@ class H5P extends \connector\lib\Tool {
     }
 
     public function run() {
+
         $this->H5PCore->disableFileCheck = true;
-        $this->H5PValidator->isValidPackage();
-        $content['language'] = $this -> h5pLang;
-        if($this->mode === MODE_NEW) {
-            $content['id'] = '';
-        } else {
-            $titleShow = $_SESSION[$this->connectorId]['node']->node->title;
-            if(empty($titleShow))
-                $titleShow = $_SESSION[$this->connectorId]['node']->node->name;
-             $this->H5PStorage->savePackage(array('title' => $titleShow, 'disable' => 0));
-             $content = $this->H5PCore->loadContent($this->H5PStorage->contentId);
-             $this->library = \H5PCore::libraryToString($content['library']);
-             $this->parameters = htmlentities($content['params']); // metadata missing !!!!!!!!!!!!!!!!!!!!!! check if needed => //htmlentities($this->H5PCore->filterParameters($content));
-            //copy media to editor
-            $this->copyr($this->H5PFramework->get_h5p_path().'/content/'.$content['id'], $this->H5PFramework->get_h5p_path().'/editor/');
-            $_SESSION[$this->connectorId]['viewContentId'] = $content['id'];
+        if($this->H5PValidator->isValidPackage()){
+            $content['language'] = $this -> h5pLang;
+            if($this->mode === MODE_NEW) {
+                $content['id'] = '';
+            } else {
+                $titleShow = $_SESSION[$this->connectorId]['node']->node->title;
+                if(empty($titleShow)){
+                    $titleShow = $_SESSION[$this->connectorId]['node']->node->name;
+                }
+                $this->H5PStorage->savePackage(array('title' => $titleShow, 'disable' => 0));
+                $content = $this->H5PCore->loadContent($this->H5PStorage->contentId);
+                $this->library = \H5PCore::libraryToString($content['library']);
+                $this->parameters = htmlentities($content['params']); // metadata missing !!!!!!!!!!!!!!!!!!!!!! check if needed => //htmlentities($this->H5PCore->filterParameters($content));
+                //copy media to editor
+                $this->copyr($this->H5PFramework->get_h5p_path().'/content/'.$content['id'], $this->H5PFramework->get_h5p_path().'/editor/');
+                $_SESSION[$this->connectorId]['viewContentId'] = $content['id'];
+            }
+            $this->showEditor();
+
+        }else{
+            $h5p_error = end(array_values($this->H5PFramework->getMessages('error')));
+            error_log('eduConnector: There was a problem with the H5P-file: '.$h5p_error->code);
         }
-        $this->showEditor();
     }
 
     private function copyr($source, $dest)
@@ -210,8 +217,9 @@ class H5P extends \connector\lib\Tool {
         $node = $this->getNode();
         if ($node->node->size === NULL) {
             try {
-                if(!isset($_SESSION[$this->connectorId]['defaultCreateElement']) || !file_exists(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p'))
+                if(!isset($_SESSION[$this->connectorId]['defaultCreateElement']) || !file_exists(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p')){
                     throw new \Exception('Template not specified or found');
+                }
                 copy(__DIR__ . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p', $this->H5PFramework->getUploadedH5pPath());
 	    } catch (\Exception $e) {
                $this->mode = MODE_NEW;
@@ -224,7 +232,12 @@ class H5P extends \connector\lib\Tool {
                 $curlHeader = array('Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId']);
                 $url = $contentUrl . '&params=display%3Ddownload';
             } else {
-                $contentUrl = $node->node->contentUrl;
+                if ($node->node->contentUrl){
+                    $contentUrl = $node->node->contentUrl; //repo-version 5.0 or older
+                }else{
+                    $contentUrl = $node->node->downloadUrl;  //repo-version 5.1 or newer
+                }
+
                 $curlHeader = array();
                 $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
             }
