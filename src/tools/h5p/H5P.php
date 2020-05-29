@@ -58,11 +58,11 @@ class H5P extends \connector\lib\Tool {
     public function run() {
 
         $this->H5PCore->disableFileCheck = true;
-        if($this->H5PValidator->isValidPackage()){
-            $content['language'] = $this -> h5pLang;
-            if($this->mode === MODE_NEW) {
-                $content['id'] = '';
-            } else {
+        if($this->mode === MODE_NEW) {
+            $content['id'] = '';
+        } else {
+            if($this->H5PValidator->isValidPackage()){
+                $content['language'] = $this -> h5pLang;
                 $titleShow = $_SESSION[$this->connectorId]['node']->node->title;
                 if(empty($titleShow)){
                     $titleShow = $_SESSION[$this->connectorId]['node']->node->name;
@@ -74,13 +74,12 @@ class H5P extends \connector\lib\Tool {
                 //copy media to editor
                 $this->copyr($this->H5PFramework->get_h5p_path().'/content/'.$content['id'], $this->H5PFramework->get_h5p_path().'/editor/');
                 $_SESSION[$this->connectorId]['viewContentId'] = $content['id'];
+            }else{
+                $h5p_error = end(array_values($this->H5PFramework->getMessages('error')));
+                error_log('eduConnector: There was a problem with the H5P-file: '.$h5p_error->code);
             }
-            $this->showEditor();
-
-        }else{
-            $h5p_error = end(array_values($this->H5PFramework->getMessages('error')));
-            error_log('eduConnector: There was a problem with the H5P-file: '.$h5p_error->code);
         }
+        $this->showEditor();
     }
 
     private function copyr($source, $dest)
