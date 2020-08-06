@@ -42,8 +42,15 @@ class TinyMce extends \connector\lib\Tool {
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
             $data = curl_exec($curl);
+            $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             curl_close($curl);
-            $_SESSION[$this->connectorId]['content'] = $data;
+
+            if ($httpcode >= 200 && $httpcode < 308) {
+                $_SESSION[$this->connectorId]['content'] = $data;
+            }else{
+                $this->log->info('Curl error! (httpcode: '.$httpcode.')');
+            }
+
         }
 
         if (in_array('Write', $node->node->access)) {
