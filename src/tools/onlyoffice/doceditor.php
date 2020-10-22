@@ -55,8 +55,15 @@ $fileuri = FileUri($filename);
 //setcookie('EDUCONNECTOR', getDocEditorKey(), 0, '/', '.metaventis.com');
 
 function getDocEditorKey($id)
-{   
-    return GenerateRevisionId(md5($_SESSION[$id]['node']->node->ref->id . $_SESSION[$id]['node']->node->contentVersion));
+{
+    if (!empty($_SESSION[$id]['node']->node->contentVersion)){
+        $contentVersion = $_SESSION[$id]['node']->node->contentVersion;
+    }else{
+        // since  repo 6.0
+        $contentVersion = $_SESSION[$id]['node']->node->content->version;
+    }
+    $revisionId = GenerateRevisionId(md5($_SESSION[$id]['node']->node->ref->id . $contentVersion));
+    return $revisionId;
 }
 
 function getCallbackUrl($id)
