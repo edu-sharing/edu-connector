@@ -523,12 +523,12 @@ class H5PFramework implements \H5PFrameworkInterface {
 
         if (!isset($content['id'])) {
             $db->query('INSERT INTO h5p_contents (updated_at,title,parameters,embed_type,library_id,user_id,slug,filtered,disable)' .
-                'values (' . time() . ',' . $db->quote($content['title']) . ',' . $db->quote($content['params']) . ', \'iframe\' ,' . $db->quote($content['library']['libraryId']) . ',' . $db->quote('') . ',' . $db->quote('') . ',' . $db->quote('') . ',' . $db->quote($content['disable']) . ')');
+                'values (NOW(),' . $db->quote($content['title']) . ',' . $db->quote($content['params']) . ', \'iframe\' ,' . $db->quote($content['library']['libraryId']) . ',' . $db->quote('0') . ',' . $db->quote('') . ',' . $db->quote('') . ',' . $db->quote($content['disable']) . ')');
 
             $content['id'] = $this->id = $db->lastInsertId();
 
         } else {
-            $db->query('UPDATE h5p_contents set updated_at=' . time() . ' , title=' . $db->quote($content['title']) . ', parameters=' . $db->quote($content['params']) . ' ,embed_type=\'iframe\' ,library_id=' . $content['library']['libraryId'] . ' ,filtered=\'\' ,disable=' . $db->quote($content['disable']) . ' WHERE id=' . $content['id']);
+            $db->query('UPDATE h5p_contents set updated_at=NOW() , title=' . $db->quote($content['title']) . ', parameters=' . $db->quote($content['params']) . ' ,embed_type=\'iframe\' ,library_id=' . $content['library']['libraryId'] . ' ,filtered=\'\' ,disable=' . $db->quote($content['disable']) . ' WHERE id=' . $content['id']);
         }
 
         return $content['id'];
