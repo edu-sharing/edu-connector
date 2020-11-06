@@ -97,7 +97,7 @@ function track($log)
         return $result;
     }
 
-    $log->info("InputStream data: " . json_encode($data));
+    //$log->info("InputStream data: " . json_encode($data));
 
     $status = $_trackerStatus[$data["status"]];
 
@@ -126,8 +126,7 @@ function track($log)
             if ($new_data === FALSE) {
                 $saved = 0;
                 $log->error('ERROR fetching file from docserver, see webserver log');
-            } else {
-                file_put_contents($tmpSavePath, $new_data, LOCK_EX);
+            } else if (file_put_contents($tmpSavePath, $new_data, LOCK_EX) !== false) {
                 try {
                     $apiClient = new connector\lib\EduRestClient($id);
                     if ($aa = $apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $tmpSavePath, OnlyOffice::getMimetype($_SESSION[$id]['filetype']), $comment)) {
@@ -139,6 +138,14 @@ function track($log)
                     $result["error"] = "error: " . json_encode($e->__toString());
                     break;
                 }
+            }else{
+                //try to save local an return error
+                $log->error('ERROR saving file to cache.');
+                $localPath = DOCROOT . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
+                file_put_contents($localPath, $new_data, LOCK_EX);
+                $result["c"] = "not saved";
+                $result["error"] = "error: could not save file to cache";
+                break;
             }
 
             $result["c"] = "saved";
