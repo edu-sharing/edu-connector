@@ -62,10 +62,12 @@ if (isset($_GET["type"]) && !empty($_GET["type"])) { //Checks if type value exis
         case "track":
             $response_array = track($log);
             $response_array['status'] = 'success';
+            http_response_code($response_array['error'] ? 500 : 200);
             die (json_encode($response_array));
         default:
             $response_array['status'] = 'error';
             $response_array['error'] = '404 Method not found';
+            http_response_code(404);
             die(json_encode($response_array));
     }
 }
