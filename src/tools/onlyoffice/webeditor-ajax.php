@@ -141,9 +141,11 @@ function track($log)
             }else{
                 //try to save local an return error
                 $log->error('ERROR saving file to cache. Check path and permissions: ' . $tmpSavePath);
-                $localPath = DOCROOT . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
+                $localPath = DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
                 if(file_put_contents($localPath, $new_data, LOCK_EX) === false) {
                     $log->error('FATAL ERROR: saving to fallback folder failed (' . $localPath . ')! The document may be lost! Check the configuration!');
+                } else {
+                    $log->error('SUCCESS: Stored file to backup path ' . $localPath);
                 }
 
                 $result["c"] = "not saved";
