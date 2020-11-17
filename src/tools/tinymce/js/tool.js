@@ -58,13 +58,19 @@ $(document).ready(function() {
 
     unlockNode = function() {
         $.ajax({
-            type: 'GET',
-            async: false, // will not work if changed
+            type: 'POST',
+            //async: false, // will not work if changed
             url: wwwurl + '/ajax/unlockNode',
             beforeSend: function(request) {
                 request.setRequestHeader("X-CSRF-Token", id);
             },
             crossDomain: true
+        })
+        .done(function() {
+            console.log('unlockNode done');
+        })
+        .fail(function(jqXHR) {
+            console.log('unlockNode failed. status: '+jqXHR.status);
         });
     }
 
