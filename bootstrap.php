@@ -156,7 +156,7 @@ $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
     }
 });
 
-$app->get('/ajax/unlockNode', function (Request $request, Response $response) {
+$app->post('/ajax/unlockNode', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     $id = $request->getHeaderLine('X-CSRF-Token');
     try {
