@@ -62,10 +62,12 @@ if (isset($_GET["type"]) && !empty($_GET["type"])) { //Checks if type value exis
         case "track":
             $response_array = track($log);
             $response_array['status'] = 'success';
+            http_response_code($response_array['error'] ? 500 : 200);
             die (json_encode($response_array));
         default:
             $response_array['status'] = 'error';
             $response_array['error'] = '404 Method not found';
+            http_response_code(404);
             die(json_encode($response_array));
     }
 }
@@ -110,7 +112,7 @@ function track($log)
             $saved = 1;
             $tmpSavePath = DATA . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
             if ($status == 'ForcedSave') {
-                $comment = 'Manually_saved';
+                $comment = 'EDITOR_UPLOAD_USER,ONLY_OFFICE';
             } else {
                 $comment = 'EDITOR_UPLOAD,ONLY_OFFICE';
             }
@@ -140,9 +142,14 @@ function track($log)
                 }
             }else{
                 //try to save local an return error
-                $log->error('ERROR saving file to cache.');
-                $localPath = DOCROOT . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
-                file_put_contents($localPath, $new_data, LOCK_EX);
+                $log->error('ERROR saving file to cache. Check path and permissions: ' . $tmpSavePath);
+                $localPath = DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
+                if(file_put_contents($localPath, $new_data, LOCK_EX) === false) {
+                    $log->error('FATAL ERROR: saving to fallback folder failed (' . $localPath . ')! The document may be lost! Check the configuration!');
+                } else {
+                    $log->error('SUCCESS: Stored file to backup path ' . $localPath);
+                }
+
                 $result["c"] = "not saved";
                 $result["error"] = "error: could not save file to cache";
                 break;
