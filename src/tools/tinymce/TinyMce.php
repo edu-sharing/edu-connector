@@ -29,7 +29,11 @@ class TinyMce extends \connector\lib\Tool {
                 $url = $contentUrl . '&params=display%3Ddownload';
                 $url = $url . '&ticket=' . $_SESSION[$this->connectorId]['ticket'];
             } else {
-                $contentUrl = $node->node->contentUrl;
+                if ($node->node->contentUrl){
+                    $contentUrl = $node->node->contentUrl; //repo-version 5.0 or older
+                }else{
+                    $contentUrl = $node->node->downloadUrl;  //repo-version 5.1 or newer
+                }
                 $curlHeader = array();
                 $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
             }
