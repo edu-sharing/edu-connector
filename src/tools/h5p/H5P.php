@@ -69,7 +69,7 @@ class H5P extends \connector\lib\Tool {
                 }
                 $this->H5PStorage->savePackage(array('title' => $titleShow, 'disable' => 0));
                 $content = $this->H5PCore->loadContent($this->H5PStorage->contentId);
-                $this->library = \H5PCore::libraryToString($content['library']);
+                $this->library = $this->H5PCore->libraryToString($content['library']);
                 $this->parameters = htmlentities($content['params']); // metadata missing !!!!!!!!!!!!!!!!!!!!!! check if needed => //htmlentities($this->H5PCore->filterParameters($content));
                 //copy media to editor
                 $this->copyr($this->H5PFramework->get_h5p_path().'/content/'.$content['id'], $this->H5PFramework->get_h5p_path().'/editor/');
@@ -143,7 +143,7 @@ class H5P extends \connector\lib\Tool {
         $integration['ajax'] = array();
         $integration['saveFreq'] = false;
         $integration['l10n'] = array('H5P' => $this->H5PCore->getLocalization());
-        $integration['hubIsEnabled'] = true;
+        $integration['hubIsEnabled'] = false;
         $integration['user'] = array();
         $integration['core'] = array('style'=>\H5PCore::$styles, 'scripts'=>\H5PCore::$scripts);
         $integration['loadedJs'] = '';
