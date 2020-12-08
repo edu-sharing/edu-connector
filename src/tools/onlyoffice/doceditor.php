@@ -56,13 +56,16 @@ $fileuri = FileUri($filename);
 
 function getDocEditorKey($id)
 {
+    $node = $_SESSION[$id]['node']->node;
+    // use the unique id (which is the original id in case of a collection) to make sure everyone edits the real content
+    $nodeId = $node->originalId ? $node->originalId : $node->ref->id;
     if (!empty($_SESSION[$id]['node']->node->contentVersion)){
-        $contentVersion = $_SESSION[$id]['node']->node->contentVersion;
+        $contentVersion = $node->contentVersion;
     }else{
         // since  repo 6.0
-        $contentVersion = $_SESSION[$id]['node']->node->content->version;
+        $contentVersion = $node->content->version;
     }
-    $revisionId = GenerateRevisionId(md5($_SESSION[$id]['node']->node->ref->id . $contentVersion));
+    $revisionId = GenerateRevisionId(md5($nodeId . $contentVersion));
     return $revisionId;
 }
 
