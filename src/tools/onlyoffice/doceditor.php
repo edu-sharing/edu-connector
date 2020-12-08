@@ -205,6 +205,11 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                         'onDocumentStateChange': onDocumentStateChange,
                         'onRequestEditRights': onRequestEditRights,
                         'onError': onError,
+                        'onInfo': function ( data ) {
+                            if ( data && data.data && data.data.getConfig ) {
+                                docEditor.serviceCommand ( 'getConfig', '<?php echo $_SESSION[$id]['ticket']; ?>' );
+                            }
+                        }
                     }
                 });
         };
