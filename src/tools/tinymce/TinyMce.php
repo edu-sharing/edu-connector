@@ -38,6 +38,7 @@ class TinyMce extends \connector\lib\Tool {
                     // 5.1 and newer use signature based client
                     $client = new EduRestClient($this->connectorId);
                     $data = $client->getContent($node);
+                    $_SESSION[$this->connectorId]['content'] = $data;
                 }
                 $curlHeader = array();
                 $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
@@ -59,7 +60,6 @@ class TinyMce extends \connector\lib\Tool {
                     $this->log->info('Curl error! (httpcode: ' . $httpcode . ')');
                 }
             }
-            $_SESSION[$this->connectorId]['content'] = $data;
 
         }
 
