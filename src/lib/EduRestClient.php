@@ -92,6 +92,29 @@ class EduRestClient
         }
         throw new \Exception('Error unlocking node ' . $nodeId, $httpcode);
     }
+    public function getContent($node){
+        if ($node->node->contentUrl){
+            $contentUrl = $node->node->contentUrl; //repo-version 5.0 or older
+        }else{
+            $contentUrl = $node->node->downloadUrl;  //repo-version 5.1 or newer
+        }
+        $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $this->getHeaders());
+        $data = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+        if ($httpcode >= 200 && $httpcode < 308) {
+            return $data;
+        }else{
+            throw new \Exception("curl error " . $httpcode);
+        }
+    }
 
     private function getTicketHeader() {
         $paramstrusted = array("applicationId"  => APPID,

@@ -2,6 +2,8 @@
 
 namespace connector\tools\tinymce;
 
+use connector\lib\EduRestClient;
+
 class TinyMce extends \connector\lib\Tool {
 
     public function run()
@@ -33,27 +35,31 @@ class TinyMce extends \connector\lib\Tool {
                     $contentUrl = $node->node->contentUrl; //repo-version 5.0 or older
                 }else{
                     $contentUrl = $node->node->downloadUrl;  //repo-version 5.1 or newer
+                    // 5.1 and newer use signature based client
+                    $client = new EduRestClient($this->connectorId);
+                    $data = $client->getContent($node);
                 }
                 $curlHeader = array();
                 $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
             }
-
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $curlHeader);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-            $data = curl_exec($curl);
-            $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            curl_close($curl);
-
-            if ($httpcode >= 200 && $httpcode < 308) {
-                $_SESSION[$this->connectorId]['content'] = $data;
-            }else{
-                $this->log->info('Curl error! (httpcode: '.$httpcode.')');
+            if(!$data) {
+                $curl = curl_init();
+                curl_setopt($curl, CURLOPT_URL, $url);
+                curl_setopt($curl, CURLOPT_HTTPHEADER, $curlHeader);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+                $data = curl_exec($curl);
+                $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                curl_close($curl);
+                if ($httpcode >= 200 && $httpcode < 308) {
+                    $_SESSION[$this->connectorId]['content'] = $data;
+                } else {
+                    $this->log->info('Curl error! (httpcode: ' . $httpcode . ')');
+                }
             }
+            $_SESSION[$this->connectorId]['content'] = $data;
 
         }
 
