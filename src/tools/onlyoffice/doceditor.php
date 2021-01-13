@@ -181,8 +181,9 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
 
                         user: {
                             id: "<?php echo session_id()?>",
-                            firstname: "<?php echo addslashes($_SESSION[$id]['user']->profile->firstName) ?>",
-                            lastname: "<?php echo addslashes($_SESSION[$id]['user']->profile->lastName) ?>",
+                            name: "<?php echo addslashes($_SESSION[$id]['user']->profile->firstName) . ' ' . addslashes($_SESSION[$id]['user']->profile->lastName) ?>",
+                            //firstname: "<?php echo addslashes($_SESSION[$id]['user']->profile->firstName) ?>",
+                            //lastname: "<?php echo addslashes($_SESSION[$id]['user']->profile->lastName) ?>",
                         },
 
                         embedded: {
