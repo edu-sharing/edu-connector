@@ -70,7 +70,8 @@ class H5P extends \connector\lib\Tool {
                 $this->H5PStorage->savePackage(array('title' => $titleShow, 'disable' => 0));
                 $content = $this->H5PCore->loadContent($this->H5PStorage->contentId);
                 $this->library = $this->H5PCore->libraryToString($content['library']);
-                $this->parameters = htmlentities($content['params']); // metadata missing !!!!!!!!!!!!!!!!!!!!!! check if needed => //htmlentities($this->H5PCore->filterParameters($content));
+                $this->parameters = $this->H5PCore->filterParameters($this->content) . ',"metadata":' . ($content['metadata'] ? json_encode((object)$content['metadata']) : '{}');
+                //$this->parameters = htmlentities($content['params']); // metadata missing !!!!!!!!!!!!!!!!!!!!!! check if needed => //htmlentities($this->H5PCore->filterParameters($content));
                 //copy media to editor
                 $this->copyr($this->H5PFramework->get_h5p_path().'/content/'.$content['id'], $this->H5PFramework->get_h5p_path().'/editor/');
                 $_SESSION[$this->connectorId]['viewContentId'] = $content['id'];
@@ -167,10 +168,11 @@ class H5P extends \connector\lib\Tool {
         }
         $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-editor/language/'.$this -> h5pLang.'.js';
 
-        $integration['editor']['deleteMessage'] = 'soll das echt geloescht werden?';
+        $integration['editor']['deleteMessage'] = 'Soll das wirklich geloescht werden?';
         $integration['editor']['apiVersion'] = \H5PCore::$coreApi;
         $integration['editor']['nodeVersionId'] = $this->H5PStorage->contentId;
         $integration['editor']['metadataSemantics'] = $this->H5PContentValidator->getMetadataSemantics();
+        $integration['hubIsEnabled'] = true;
 
         //set visibility of lib selector here!
         if(isset($_SESSION[$this->connectorId]['defaultCreateElement']) && $this->mode !== MODE_NEW) {
