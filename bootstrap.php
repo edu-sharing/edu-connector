@@ -139,7 +139,7 @@ $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
         if(isset($request->getQueryParams()['machineName']) && isset($request->getQueryParams()['majorVersion']) && isset($request->getQueryParams()['minorVersion'])) {
             $lib = $h5p->H5PEditor->ajax->action(H5PEditorEndpoints::SINGLE_LIBRARY, $request->getQueryParams()['machineName'],
                 $request->getQueryParams()['majorVersion'], $request->getQueryParams()['minorVersion'], 'de', '',
-                $h5p->H5PFramework->get_h5p_path()
+                $h5p->H5PFramework->get_h5p_path(),''
             );
             return $response->withStatus(200)
                 ->withHeader('Content-type', 'application/json')
