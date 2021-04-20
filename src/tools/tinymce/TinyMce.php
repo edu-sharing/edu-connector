@@ -2,6 +2,8 @@
 
 namespace connector\tools\tinymce;
 
+use connector\lib\EduRestClient;
+
 class TinyMce extends \connector\lib\Tool {
 
     public function run()
@@ -24,7 +26,15 @@ class TinyMce extends \connector\lib\Tool {
                 $curlHeader = array('Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId']);
                 $url = $contentUrl . '&params=display%3Ddownload';
             } else {
-                $contentUrl = $node->node->contentUrl;
+                if ($node->node->contentUrl){
+                    $contentUrl = $node->node->contentUrl; //repo-version 5.0 or older
+                }else{
+                    $contentUrl = $node->node->downloadUrl;  //repo-version 5.1 or newer
+                    // 5.1 and newer use signature based client
+                    $client = new EduRestClient($this->connectorId);
+                    $data = $client->getContent($node);
+                    $_SESSION[$this->connectorId]['content'] = $data;
+                }
                 $curlHeader = array();
                 $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
             }
