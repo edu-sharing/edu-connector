@@ -1,6 +1,8 @@
 <?php
 namespace connector\tools\h5p;
 
+use connector\lib\EduRestClient;
+
 define('MODE_NEW', 'mode_new');
 
 class H5P extends \connector\lib\Tool {
@@ -144,7 +146,7 @@ class H5P extends \connector\lib\Tool {
         $integration['ajax'] = array();
         $integration['saveFreq'] = false;
         $integration['l10n'] = array('H5P' => $this->H5PCore->getLocalization());
-        $integration['hubIsEnabled'] = false;
+        $integration['hubIsEnabled'] = true;
         $integration['user'] = array();
         $integration['core'] = array('style'=>\H5PCore::$styles, 'scripts'=>\H5PCore::$scripts);
         $integration['loadedJs'] = '';
@@ -172,7 +174,6 @@ class H5P extends \connector\lib\Tool {
         $integration['editor']['apiVersion'] = \H5PCore::$coreApi;
         $integration['editor']['nodeVersionId'] = $this->H5PStorage->contentId;
         $integration['editor']['metadataSemantics'] = $this->H5PContentValidator->getMetadataSemantics();
-        $integration['hubIsEnabled'] = true;
 
         //set visibility of lib selector here!
         if(isset($_SESSION[$this->connectorId]['defaultCreateElement']) && $this->mode !== MODE_NEW) {
@@ -226,37 +227,13 @@ class H5P extends \connector\lib\Tool {
                $this->mode = MODE_NEW;
             }
         } else {
-            if(defined('FORCE_INTERN_COM') && FORCE_INTERN_COM) {
-                $arrApiUrl = parse_url($_SESSION[$this->connectorId]['api_url']);
-                $arrContentUrl = parse_url($node->node->contentUrl);
-                $contentUrl = $arrApiUrl['scheme'].'://'.$arrApiUrl['host'].':'.$arrApiUrl['port'].$arrContentUrl['path'].'?'.$arrContentUrl['query'] . '&com=internal';
-                $curlHeader = array('Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId']);
-                $url = $contentUrl . '&params=display%3Ddownload';
-            } else {
-                if ($node->node->contentUrl){
-                    $contentUrl = $node->node->contentUrl; //repo-version 5.0 or older
-                }else{
-                    $contentUrl = $node->node->downloadUrl;  //repo-version 5.1 or newer
-                }
-
-                $curlHeader = array();
-                $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
-            }
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $curlHeader);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-            $data = curl_exec($curl);
-            curl_close($curl);
+            $client = new EduRestClient($this->connectorId);
+            $data = $client->getContent($node);
 
             $fp = fopen($this->H5PFramework->getUploadedH5pPath(), 'w');
             fwrite($fp, $data);
             fclose($fp);
         }
-        $node = $this->getNode();
         $_SESSION[$this->connectorId]['node'] = $node;
     }
 }

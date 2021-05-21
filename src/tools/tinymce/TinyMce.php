@@ -19,48 +19,9 @@ class TinyMce extends \connector\lib\Tool {
         if ($node->node->size === NULL) {
             $_SESSION[$this->connectorId]['content'] = '';
         } else {
-            if(defined('FORCE_INTERN_COM') && FORCE_INTERN_COM) {
-                $apiUrlStr = $_SESSION[$this->connectorId]['api_url'];
-                if(defined('FORCED_APIURL') && FORCED_APIURL){
-                    $apiUrlStr = FORCED_APIURL;
-                }
-                $arrApiUrl = parse_url($apiUrlStr);
-                $arrContentUrl = parse_url($node->node->contentUrl);
-                $contentUrl = $arrApiUrl['scheme'].'://'.$arrApiUrl['host'].':'.$arrApiUrl['port'].$arrContentUrl['path'].'?'.$arrContentUrl['query'] . '&com=internal';
-                $curlHeader = array('Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId']);
-                $url = $contentUrl . '&params=display%3Ddownload';
-                $url = $url . '&ticket=' . $_SESSION[$this->connectorId]['ticket'];
-            } else {
-                if ($node->node->contentUrl){
-                    $contentUrl = $node->node->contentUrl; //repo-version 5.0 or older
-                }else{
-                    $contentUrl = $node->node->downloadUrl;  //repo-version 5.1 or newer
-                    // 5.1 and newer use signature based client
-                    $client = new EduRestClient($this->connectorId);
-                    $data = $client->getContent($node);
-                    $_SESSION[$this->connectorId]['content'] = $data;
-                }
-                $curlHeader = array();
-                $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
-            }
-            if(!$data) {
-                $curl = curl_init();
-                curl_setopt($curl, CURLOPT_URL, $url);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, $curlHeader);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-                $data = curl_exec($curl);
-                $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-                curl_close($curl);
-                if ($httpcode >= 200 && $httpcode < 308) {
-                    $_SESSION[$this->connectorId]['content'] = $data;
-                } else {
-                    $this->log->info('Curl error! (httpcode: ' . $httpcode . ')');
-                }
-            }
-
+            $client = new EduRestClient($this->connectorId);
+            $data = $client->getContent($node);
+            $_SESSION[$this->connectorId]['content'] = $data;
         }
 
         if (in_array('Write', $node->node->access)) {

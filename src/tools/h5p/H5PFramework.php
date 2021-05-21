@@ -2,6 +2,8 @@
 
 namespace connector\tools\h5p;
 
+use JsonSerializable;
+
 class H5PFramework implements \H5PFrameworkInterface {
 
     private $messages = array('error' => array(), 'info' => array());
@@ -52,8 +54,7 @@ class H5PFramework implements \H5PFrameworkInterface {
      * @param string $stream Path to where the file should be saved.
      * @return string The content (response body). NULL if something went wrong
      */
-    public function fetchExternalData($url, $data = NULL, $blocking = TRUE, $stream = NULL)
-    {
+    public function fetchExternalData($url, $data = NULL, $blocking = TRUE, $stream = NULL, $fullData = FALSE, $headers = array(), $files = array(), $method = 'POST'){
         @set_time_limit(0);
         if ($data !== NULL) {
             // Post
@@ -1591,6 +1592,26 @@ class H5PFramework implements \H5PFrameworkInterface {
         }
 
         return $semantics;
+    }
+
+    public function replaceContentHubMetadataCache($metadata, $lang)
+    {
+        // TODO: Implement replaceContentHubMetadataCache() method.
+    }
+
+    public function getContentHubMetadataCache($lang = 'en')
+    {
+        // TODO: Implement getContentHubMetadataCache() method.
+    }
+
+    public function getContentHubMetadataChecked($lang = 'en')
+    {
+        // TODO: Implement getContentHubMetadataChecked() method.
+    }
+
+    public function setContentHubMetadataChecked($time, $lang = 'en')
+    {
+        // TODO: Implement setContentHubMetadataChecked() method.
     }
 }
 
