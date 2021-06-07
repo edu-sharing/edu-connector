@@ -188,8 +188,7 @@ class EduRestClient
         }
     }
 
-    public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '')
-    {
+    public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '') {
         $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/content?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
         $headers = $this->getHeaders();
         $headers[] = 'Content-Type: multipart/form-data';
@@ -243,8 +242,7 @@ class EduRestClient
         return false;
     }*/
 
-    public function getNode($nodeId)
-    {
+    public function getNode($nodeId) {
         $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/metadata?propertyFilter=-all-');
         $headers = $this->getHeaders();
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
