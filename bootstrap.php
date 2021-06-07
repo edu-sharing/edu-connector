@@ -1,7 +1,11 @@
 <?php
 
+use connector\lib\Connector;
+use connector\lib\Logger;
+use connector\lib\MetadataGenerator;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+use Slim\Views\Twig;
 
 error_reporting(0); //do not change, can cause ajax problems
 
@@ -14,11 +18,11 @@ $app = new \Slim\App([$container, 'settings' => [
 
 $container = $app->getContainer();
 $container['log'] = function ($container) {
-    $log = new \connector\lib\Logger();
+    $log = new Logger();
     return $log->getLog();
 };
 $container['view'] = function ($container) {
-    $view = new \Slim\Views\Twig('templates', [
+    $view = new Twig('templates', [
         'cache' => false
     ]);
     $basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
@@ -28,7 +32,7 @@ $container['view'] = function ($container) {
 
 $app->get('/', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
-    $connector = new \connector\lib\Connector($this->get('log'));
+    $connector = new Connector($this->get('log'));
 });
 
 $app->get('/error/{errorid}[/{language}]', function (Request $request, Response $response, $args) {
@@ -50,7 +54,7 @@ $app->get('/error/{errorid}[/{language}]', function (Request $request, Response 
 
 $app->get('/metadata', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
-    $metadataGenerator = new \connector\lib\MetadataGenerator();
+    $metadataGenerator = new MetadataGenerator();
     $metadataGenerator -> serve();
 });
 
@@ -65,8 +69,8 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
     global $db;
     $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $contentHandler = new connector\tools\h5p\H5PContentHandler();
-    $h5p = connector\tools\h5p\H5P::getInstance();
+    $contentHandler = new \connector\tools\h5p\H5PContentHandler();
+    $h5p = \connector\tools\h5p\H5P::getInstance();
 
      if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_files') {
          $token = '';//$_GET['token'];
@@ -130,12 +134,12 @@ $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
     try {
         $db = new \PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
         $db->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
-        $h5p = connector\tools\h5p\H5P::getInstance();
+        $h5p = \connector\tools\h5p\H5P::getInstance();
 
         if(isset($request->getQueryParams()['machineName']) && isset($request->getQueryParams()['majorVersion']) && isset($request->getQueryParams()['minorVersion'])) {
             $lib = $h5p->H5PEditor->ajax->action(H5PEditorEndpoints::SINGLE_LIBRARY, $request->getQueryParams()['machineName'],
-                $request->getQueryParams()['majorVersion'], $request->getQueryParams()['minorVersion'], LANG, '',
-                $h5p->H5PFramework->get_h5p_path()
+                $request->getQueryParams()['majorVersion'], $request->getQueryParams()['minorVersion'], 'de', '',
+                $h5p->H5PFramework->get_h5p_path(),''
             );
             return $response->withStatus(200)
                 ->withHeader('Content-type', 'application/json')
@@ -152,7 +156,7 @@ $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
     }
 });
 
-$app->get('/ajax/unlockNode', function (Request $request, Response $response) {
+$app->post('/ajax/unlockNode', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     $id = $request->getHeaderLine('X-CSRF-Token');
     try {

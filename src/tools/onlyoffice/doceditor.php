@@ -54,13 +54,22 @@ $fileuri = FileUri($filename);
 
 //setcookie('EDUCONNECTOR', getDocEditorKey(), 0, '/', '.metaventis.com');
 
-function getDocEditorKey($id)
-{   
-    return GenerateRevisionId(md5($_SESSION[$id]['node']->node->ref->id . $_SESSION[$id]['node']->node->contentVersion));
+function getDocEditorKey($id) {
+    $node = $_SESSION[$id]['node']->node;
+    // use the unique id (which is the original id in case of a collection) to make sure everyone edits the real content
+    $nodeId = $node->originalId ? $node->originalId : $node->ref->id;
+    if (!empty($_SESSION[$id]['node']->node->contentVersion)){
+        $contentVersion = $node->contentVersion;
+    }else{
+        // since  repo 6.0
+        $contentVersion = $node->content->version;
+    }
+    //$revisionId = GenerateRevisionId(md5($nodeId));
+    $revisionId = GenerateRevisionId(md5($contentVersion . $nodeId));
+    return $revisionId;
 }
 
-function getCallbackUrl($id)
-{
+function getCallbackUrl($id) {
     return rtrim(WEB_ROOT_URL, '/') . '/'
         . "webeditor-ajax.php?type=track"
         . "&key=" . getDocEditorKey($id);
@@ -171,8 +180,9 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
 
                         user: {
                             id: "<?php echo session_id()?>",
-                            firstname: "<?php echo addslashes($_SESSION[$id]['user']->profile->firstName) ?>",
-                            lastname: "<?php echo addslashes($_SESSION[$id]['user']->profile->lastName) ?>",
+                            name: "<?php echo addslashes($_SESSION[$id]['user']->profile->firstName) . ' ' . addslashes($_SESSION[$id]['user']->profile->lastName) ?>",
+                            //firstname: "<?php echo addslashes($_SESSION[$id]['user']->profile->firstName) ?>",
+                            //lastname: "<?php echo addslashes($_SESSION[$id]['user']->profile->lastName) ?>",
                         },
 
                         embedded: {
@@ -186,10 +196,10 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                             about: false,
                             feedback: false,
                             comments: true,
-                           // forcesave: true, //check concept, some integrity issues with versions
+                            forcesave: false, //check concept, some integrity issues with versions
                             chat: true
                             //  goback: {
-                            //   url: "<?php echo serverPath() ?>/index.php",
+                            //   url: "<?php //echo serverPath() ?>/index.php",
                             // },
                         }
                     },
@@ -198,6 +208,11 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                         'onDocumentStateChange': onDocumentStateChange,
                         'onRequestEditRights': onRequestEditRights,
                         'onError': onError,
+                        'onInfo': function ( data ) {
+                            if ( data && data.data && data.data.getConfig ) {
+                                docEditor.serviceCommand ( 'getConfig', '<?php echo $_SESSION[$id]['ticket']; ?>' );
+                            }
+                        }
                     }
                 });
         };

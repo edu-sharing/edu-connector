@@ -46,7 +46,18 @@ To use the H5P editor you need to install and configure a database. At this time
 See https://drive.google.com/open?id=1lbkVAzqRh72zoqR0S_Gffvs6CCwl4Kot
 
 # Troubleshooting
-The error logs can be found in the `log` folder.
+The error logs can be found in the `log` folder in the __DATA__ directory.
+
+If you'll get 404 errors check for active `mod_rewrite` in Apache. You can activate it in the default vhost (`000-default`) like this: 
+
+```
+<Directory /var/www/html>
+ Options indexes FollowSymLinks MultiViews
+ AllowOverride All
+ Require all granted
+</Directory>
+```
+
 
 # Hints & ToDos
 ## etherpad

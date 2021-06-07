@@ -2,9 +2,9 @@
 
 namespace connector\tools\h5p;
 
+use JsonSerializable;
+
 class H5PFramework implements \H5PFrameworkInterface {
-
-
 
     private $messages = array('error' => array(), 'info' => array());
     public $id;
@@ -21,7 +21,7 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function getPlatformInfo()
     {
-        return array('name' => 'edu-sharing', 'version' => '1.0', 'h5pVersion' => '1.17');
+        return array('name' => 'edu-sharing', 'version' => '1.0', 'h5pVersion' => '1.24');
     }
 
 
@@ -39,7 +39,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      * @param string $datetime
      * @return int unix timestamp
      */
-    public static function dateTimeToTime($datetime) {
+    public static function dateTimeToTime($datetime)
+    {
         $dt = new \DateTime($datetime);
         return $dt->getTimestamp();
     }
@@ -53,22 +54,20 @@ class H5PFramework implements \H5PFrameworkInterface {
      * @param string $stream Path to where the file should be saved.
      * @return string The content (response body). NULL if something went wrong
      */
-    public function fetchExternalData($url, $data = NULL, $blocking = TRUE, $stream = NULL)
-    {
+    public function fetchExternalData($url, $data = NULL, $blocking = TRUE, $stream = NULL, $fullData = FALSE, $headers = array(), $files = array(), $method = 'POST'){
         @set_time_limit(0);
         if ($data !== NULL) {
             // Post
             $options = array(
                 'http' => array(
-                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                    'method'  => 'POST',
+                    'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+                    'method' => 'POST',
                     'content' => http_build_query($data)
                 )
             );
-            $context  = stream_context_create($options);
+            $context = stream_context_create($options);
             $response['body'] = file_get_contents($url, false, $context);
-        }
-        else {
+        } else {
             $response['body'] = file_get_contents($url, false);
             file_put_contents($stream, $response['body']);
         }
@@ -81,7 +80,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      * @param array $libraries
      * @return array
      */
-    public function getLibraryConfig($libraries = NULL) {
+    public function getLibraryConfig($libraries = NULL)
+    {
         return [];
     }
 
@@ -90,7 +90,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      *
      * @return array
      */
-    public function loadAddons() {
+    public function loadAddons()
+    {
         return [];
     }
 
@@ -185,7 +186,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      * @return string
      *   Path to the folder where the last uploaded h5p for this session is located.
      */
-    public function getUploadedH5pFolderPath() {
+    public function getUploadedH5pFolderPath()
+    {
         static $dir;
 
         if (is_null($dir)) {
@@ -193,6 +195,7 @@ class H5PFramework implements \H5PFrameworkInterface {
             $dir = $h5p->H5PCore->fs->getTmpPath();
         }
         return $dir;
+
     }
 
     /**
@@ -201,7 +204,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      * @return string
      *   Path to the last uploaded h5p
      */
-    public function getUploadedH5pPath() {
+    public function getUploadedH5pPath()
+    {
         static $dir;
 
         if (is_null($dir)) {
@@ -209,6 +213,7 @@ class H5PFramework implements \H5PFrameworkInterface {
             $dir = $h5p->H5PCore->fs->getTmpPath() . '.h5p';
         }
         return $dir;
+
     }
 
 
@@ -227,12 +232,12 @@ class H5PFramework implements \H5PFrameworkInterface {
           FROM h5p_libraries
           ORDER BY title ASC, major_version ASC, minor_version ASC";
 
-        $statement = $db -> query($query);
+        $statement = $db->query($query);
 
         $results = $statement->fetchAll(\PDO::FETCH_OBJ);
 
         $libraries = array();
-        if(empty($results))
+        if (empty($results))
             return $libraries;
 
         foreach ($results as $library) {
@@ -271,7 +276,7 @@ class H5PFramework implements \H5PFrameworkInterface {
         global $db;
 
         // Look for specific library
-        $sql_where = 'WHERE name = \''. $machineName . '\'';
+        $sql_where = 'WHERE name = \'' . $machineName . '\'';
 
         if ($majorVersion !== NULL) {
             // Look for major version
@@ -283,8 +288,8 @@ class H5PFramework implements \H5PFrameworkInterface {
         }
 
         // Get the lastest version which matches the input parameters
-        $statement = $db -> query('SELECT id FROM h5p_libraries ' . $sql_where . ' ORDER BY major_version DESC, minor_version DESC, patch_version DESC LIMIT 1');
-        $row= $statement->fetch();
+        $statement = $db->query('SELECT id FROM h5p_libraries ' . $sql_where . ' ORDER BY major_version DESC, minor_version DESC, patch_version DESC LIMIT 1');
+        $row = $statement->fetch();
         return $row['id'] === NULL ? FALSE : $row['id'];
     }
 
@@ -303,7 +308,11 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function getWhitelist($isLibrary, $defaultContentWhitelist, $defaultLibraryWhitelist)
     {
-        return '';
+        if ($isLibrary){
+            return $defaultLibraryWhitelist;
+        }else{
+            return $defaultContentWhitelist;
+        }
     }
 
     /**
@@ -326,11 +335,11 @@ class H5PFramework implements \H5PFrameworkInterface {
         $query = 'SELECT id 
           FROM h5p_libraries
           WHERE name = \'' . $library['machineName'] . '\'
-          AND major_version = '. $library['majorVersion'] .'
-          AND minor_version = '. $library['minorVersion'] .'
-          AND patch_version < ' . $library['patchVersion'] ;
+          AND major_version = ' . $library['majorVersion'] . '
+          AND minor_version = ' . $library['minorVersion'] . '
+          AND patch_version < ' . $library['patchVersion'];
 
-        $statement = $db -> query($query);
+        $statement = $db->query($query);
         return $statement->fetch() !== FALSE;
     }
 
@@ -344,6 +353,7 @@ class H5PFramework implements \H5PFrameworkInterface {
     public function isInDevMode()
     {
         // TODO: Implement isInDevMode() method.
+        return false;
     }
 
     /**
@@ -391,7 +401,7 @@ class H5PFramework implements \H5PFrameworkInterface {
         global $db;
 
         $preloadedJs = $this->pathsToCsv($library, 'preloadedJs');
-        $preloadedCss =  $this->pathsToCsv($library, 'preloadedCss');
+        $preloadedCss = $this->pathsToCsv($library, 'preloadedCss');
         $dropLibraryCss = '';
 
         if (isset($library['dropLibraryCss'])) {
@@ -417,37 +427,39 @@ class H5PFramework implements \H5PFrameworkInterface {
         }
         $library['hasIcon'] ? $hasIcon = 1 : $hasIcon = 0;
 
+
+
         if ($new) {
-            $db->query('INSERT INTO h5p_libraries '.
-                '(name,title,major_version,minor_version,patch_version,runnable,fullscreen,embed_types,preloaded_js,'.
-                    'preloaded_css,drop_library_css,semantics,has_icon) '.
-                'values ('. $db->quote($library['machineName']) .','
-                .$db->quote($library['title']).','
-                .$library['majorVersion'].','.$library['minorVersion'].','.$library['patchVersion'].','.$library['runnable'].','
-                .$library['fullscreen'].','
-                .$db->quote($embedTypes).','
-                .$db->quote($preloadedJs).','
-                .$db->quote($preloadedCss).','
-                .$db->quote($dropLibraryCss).','
-                .$db->quote($library['semantics']).','
-                .$hasIcon .')');
+
+            $db->query('INSERT INTO h5p_libraries ' .
+                '(name,title,major_version,minor_version,patch_version,runnable,fullscreen,embed_types,preloaded_js,' .
+                'preloaded_css,drop_library_css,semantics,tutorial_url,has_icon) ' .
+                'values (' . $db->quote($library['machineName']) . ','
+                . $db->quote($library['title']) . ','
+                . $library['majorVersion'] . ',' . $library['minorVersion'] . ',' . $library['patchVersion'] . ',' . $library['runnable'] . ','
+                . $library['fullscreen'] . ','
+                . $db->quote($embedTypes) . ','
+                . $db->quote($preloadedJs) . ','
+                . $db->quote($preloadedCss) . ','
+                . $db->quote($dropLibraryCss) . ','
+                . $db->quote($library['semantics']) . ','
+                . $db->quote($library['tutorial_url']) . ','
+                . $hasIcon . ')');
             $library['libraryId'] = $db->lastInsertId();
 
         } else {
 
-
-
-            $db->query('UPDATE h5p_libraries SET '.
-                    'title = '. $db->quote($library['title']) .','.
-                    'patch_version = '.$library['patchVersion'].','.
-                'runnable = '.$library['runnable'].','.
-                'fullscreen = '.$library['fullscreen'].','.
-                'embed_types = '. $db->quote($embedTypes).','.
-                'preloaded_js = '.$db->quote($preloadedJs).','.
-                'preloaded_css= '. $db->quote($preloadedCss).','.
-                'drop_library_css = '. $db->quote($dropLibraryCss).','.
-                'semantics = ' . $db->quote($library['semantics']).','.
-                'has_icon= '. $hasIcon.
+            $db->query('UPDATE h5p_libraries SET ' .
+                'title = ' . $db->quote($library['title']) . ',' .
+                'patch_version = ' . $library['patchVersion'] . ',' .
+                'runnable = ' . $library['runnable'] . ',' .
+                'fullscreen = ' . $library['fullscreen'] . ',' .
+                'embed_types = ' . $db->quote($embedTypes) . ',' .
+                'preloaded_js = ' . $db->quote($preloadedJs) . ',' .
+                'preloaded_css= ' . $db->quote($preloadedCss) . ',' .
+                'drop_library_css = ' . $db->quote($dropLibraryCss) . ',' .
+                'semantics = ' . $db->quote($library['semantics']) . ',' .
+                'has_icon= ' . $hasIcon .
                 ' WHERE id = ' . $library['libraryId']);
             $this->deleteLibraryDependencies($library['libraryId']);
         }
@@ -458,14 +470,15 @@ class H5PFramework implements \H5PFrameworkInterface {
 
         if (isset($library['language'])) {
             foreach ($library['language'] as $languageCode => $translation) {
-               $db -> query('INSERT INTO h5p_libraries_languages (library_id,language_code,translation)'.
-                   'values('.$library['libraryId'].','.$db->quote($languageCode).','.$db->quote($translation).')');
+                $db->query('INSERT INTO h5p_libraries_languages (library_id,language_code,translation)' .
+                    'values(' . $library['libraryId'] . ',' . $db->quote($languageCode) . ',' . $db->quote($translation) . ')');
             }
         }
     }
 
 
-    private function pathsToCsv($library, $key) {
+    private function pathsToCsv($library, $key)
+    {
         if (isset($library[$key])) {
             $paths = array();
             foreach ($library[$key] as $file) {
@@ -510,14 +523,13 @@ class H5PFramework implements \H5PFrameworkInterface {
         global $db;
 
         if (!isset($content['id'])) {
-            $db -> query('INSERT INTO h5p_contents (updated_at,title,parameters,embed_type,library_id,disable)'.
-                'values ('.time().','.$db->quote($content['title']).','.$db->quote($content['params']).',\'iframe\','.$content['library']['libraryId'].','.$db->quote($content['disable']).')');
+            $db->query('INSERT INTO h5p_contents (updated_at,title,parameters,embed_type,library_id,user_id,slug,filtered,disable)' .
+                'values (NOW(),' . $db->quote($content['title']) . ',' . $db->quote($content['params']) . ', \'iframe\' ,' . $db->quote($content['library']['libraryId']) . ',' . $db->quote('0') . ',' . $db->quote('') . ',' . $db->quote('') . ',' . $db->quote($content['disable']) . ')');
 
-            $content['id'] = $this->id =  $db->lastInsertId();
+            $content['id'] = $this->id = $db->lastInsertId();
 
-        }
-        else {
-            $db -> query('UPDATE h5p_contents set updated_at='.time().' , title='.$db->quote($content['title']).', parameters='.$db->quote($content['params']).' ,embed_type=\'iframe\' ,library_id='.$content['library']['libraryId'].' ,filtered=\'\' ,disable='.$db->quote($content['disable']).' WHERE id='.$content['id']);
+        } else {
+            $db->query('UPDATE h5p_contents set updated_at=NOW() , title=' . $db->quote($content['title']) . ', parameters=' . $db->quote($content['params']) . ' ,embed_type=\'iframe\' ,library_id=' . $content['library']['libraryId'] . ' ,filtered=\'\' ,disable=' . $db->quote($content['disable']) . ' WHERE id=' . $content['id']);
         }
 
         return $content['id'];
@@ -552,17 +564,16 @@ class H5PFramework implements \H5PFrameworkInterface {
     public function saveLibraryDependencies($libraryId, $dependencies, $dependency_type)
     {
         global $db;
-
+        $db->beginTransaction();
         foreach ($dependencies as $dependency) {
             $db->query('INSERT INTO h5p_libraries_libraries (library_id, required_library_id, dependency_type)
-            SELECT '.$libraryId.', hl.id, '.$db->quote($dependency_type).'
+            SELECT ' . $libraryId . ', hl.id, ' . $db->quote($dependency_type) . '
             FROM h5p_libraries hl
-            WHERE name = '.$db->quote($dependency['machineName']).'
-                AND major_version = '.$dependency['majorVersion'].'
-                AND minor_version = '.$dependency['minorVersion'].'
-            ON DUPLICATE KEY UPDATE dependency_type ='.$db->quote($dependency_type));
-            
+            WHERE name = ' . $db->quote($dependency['machineName']) . '
+                AND major_version = ' . $dependency['majorVersion'] . '
+                AND minor_version = ' . $dependency['minorVersion']);// ON CONFLICT(library_id) REPLACE SET dependency_type ='.$db->quote($dependency_type));
         }
+        $db->commit();
     }
 
     /**
@@ -579,11 +590,11 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function copyLibraryUsage($contentId, $copyFromId, $contentMainId = NULL)
     {
-      global $db;
+        global $db;
         $db->query('INSERT INTO h5p_contents_libraries (content_id, library_id, dependency_type, weight, drop_css)
-        SELECT '.$contentId.', hcl.library_id, hcl.dependency_type, hcl.weight, hcl.drop_css
+        SELECT ' . $contentId . ', hcl.library_id, hcl.dependency_type, hcl.weight, hcl.drop_css
           FROM h5p_contents_libraries hcl
-          WHERE hcl.content_id ='.$copyFromId);
+          WHERE hcl.content_id =' . $copyFromId);
     }
 
     /**
@@ -593,7 +604,8 @@ class H5PFramework implements \H5PFrameworkInterface {
      *   Id identifying the content
      */
     public function deleteContentData($contentId)
-    {      global $db;
+    {
+        global $db;
         $db->query('DELETE FROM h5p_contents WHERE id = ' . $contentId);
     }
 
@@ -635,14 +647,13 @@ class H5PFramework implements \H5PFrameworkInterface {
             }
         }
 
+        $db->beginTransaction();
         foreach ($librariesInUse as $dependency) {
-
             $dropCss = in_array($dependency['library']['machineName'], $dropLibraryCssList) ? 1 : 0;
-            $db ->query('INSERT INTO h5p_contents_libraries (content_id, library_id, dependency_type, drop_css, weight) '.
-                'values('.$contentId.',\''.$dependency['library']['libraryId'].'\',\''.$dependency['type'].'\',\''.$dropCss.'\',\''.$dependency['weight'].'\')');
-
-
+            $db->query('INSERT INTO h5p_contents_libraries (content_id, library_id, dependency_type, drop_css, weight) ' .
+                'values(' . $contentId . ',\'' . $dependency['library']['libraryId'] . '\',\'' . $dependency['type'] . '\',\'' . $dropCss . '\',\'' . $dependency['weight'] . '\')');
         }
+        $db->commit();
     }
 
     /**
@@ -702,22 +713,22 @@ class H5PFramework implements \H5PFrameworkInterface {
      *     - majorVersion: Major version for a library this library is depending on
      *     - minorVersion: Minor for a library this library is depending on
      */
-    public function loadLibrary($machineName, $majorVersion, $minorVersion)
-    {
+    public function loadLibrary($machineName, $majorVersion, $minorVersion){
         global $db;
-        $statement = $db->query ('SELECT id as libraryId, name as machineName, title, major_version as majorVersion, minor_version as minorVersion, patch_version as patchVersion,
+
+        $statement = $db->query('SELECT id as libraryId, name as machineName, title, major_version as majorVersion, minor_version as minorVersion, patch_version as patchVersion,
           embed_types as embedTypes, preloaded_js as preloadedJs, preloaded_css as preloadedCss, drop_library_css as dropLibraryCss, fullscreen, runnable,
           semantics, has_icon as hasIcon
         FROM h5p_libraries
-        WHERE name = '.$db->quote($machineName).'
-        AND major_version = '.$majorVersion.'
-        AND minor_version ='.$minorVersion);
+        WHERE name = ' . $db->quote($machineName) . '
+        AND major_version = ' . $majorVersion . '
+        AND minor_version =' . $minorVersion);
         $library = $statement->fetch();
 
-        $result = $db -> query ('SELECT hl.name as machineName, hl.major_version as majorVersion, hl.minor_version as minorVersion, hll.dependency_type as dependencyType
+        $result = $db->query('SELECT hl.name as machineName, hl.major_version as majorVersion, hl.minor_version as minorVersion, hll.dependency_type as dependencyType
         FROM h5p_libraries_libraries hll
         JOIN h5p_libraries hl ON hll.required_library_id = hl.id
-        WHERE hll.library_id = '.$library['libraryId']);
+        WHERE hll.library_id = ' . $library['libraryId']);
 
         $dependencies = $result->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -746,7 +757,7 @@ class H5PFramework implements \H5PFrameworkInterface {
     public function loadLibrarySemantics($machineName, $majorVersion, $minorVersion)
     {
         global $db;
-        $prep = $db->prepare('SELECT semantics FROM h5p_libraries WHERE name = \'' .$machineName . '\' AND major_version='.$majorVersion.' AND minor_version='.$minorVersion);
+        $prep = $db->prepare('SELECT semantics FROM h5p_libraries WHERE name = \'' . $machineName . '\' AND major_version=' . $majorVersion . ' AND minor_version=' . $minorVersion);
         $prep->execute();
         $semantics = $prep->fetchColumn();
         return ($semantics === FALSE ? NULL : $semantics);
@@ -848,11 +859,29 @@ class H5PFramework implements \H5PFrameworkInterface {
               , hl.fullscreen AS libraryFullscreen
         FROM h5p_contents hc
         JOIN h5p_libraries hl ON hl.id = hc.library_id
-        WHERE hc.id =".$id);
+        WHERE hc.id =" . $id);
 
         $prep->execute();
         $content = $prep->fetch();
-        $content['metadata'] = []; // @todo fetch this from content lib?
+
+        if ($content !== NULL) {
+            $content['metadata'] = array();
+            $metadata_structure = array('title', 'authors', 'source', 'yearFrom', 'yearTo', 'license', 'licenseVersion', 'licenseExtras', 'authorComments', 'changes', 'defaultLanguage', 'a11yTitle');
+            foreach ($metadata_structure as $property) {
+                if (!empty($content[$property])) {
+                    if ($property === 'authors' || $property === 'changes') {
+                        $content['metadata'][$property] = json_decode($content[$property]);
+                    }
+                    else {
+                        $content['metadata'][$property] = $content[$property];
+                    }
+                    if ($property !== 'title') {
+                        unset($content[$property]); // Unset all except title
+                    }
+                }
+            }
+        }
+
         return $content;
     }
 
@@ -878,7 +907,7 @@ class H5PFramework implements \H5PFrameworkInterface {
      *   - dropCss(optional): csv of machine names
      */
     public function loadContentDependencies($id, $type = NULL)
-    {//echo $id;
+    {
         global $db;
         $query = 'SELECT hl.id
               , hl.name AS machineName
@@ -891,19 +920,19 @@ class H5PFramework implements \H5PFrameworkInterface {
               , hcl.dependency_type AS dependencyType
         FROM h5p_contents_libraries hcl
         JOIN h5p_libraries hl ON hcl.library_id = hl.id
-        WHERE hcl.content_id ='. $id;
+        WHERE hcl.content_id =' . $id;
 
         if ($type !== NULL) {
-            $query .= ' AND hcl.dependency_type = \''. $type . '\'';
+            $query .= ' AND hcl.dependency_type = \'' . $type . '\'';
         }
 
         $query .= " ORDER BY hcl.weight";
 
         return $db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
-        $results = $db -> query($query);
+        $results = $db->query($query);
         $ret = array();
         while ($row = $results->fetchArray()) {
-            $ret[]= $row;
+            $ret[] = $row;
         }
         return $ret;
     }
@@ -978,24 +1007,42 @@ class H5PFramework implements \H5PFrameworkInterface {
      * @param int $libraryId
      * @return int
      */
-    public function getNumContent($libraryId)
+    public function getNumContent($libraryId, $skip = NULL)
     {
         // TODO: Implement getNumContent() method.
     }
 
     /**
      * Determines if content slug is used.
-     *
-     * @param string $slug
+     *     * @param string $slug
      * @return boolean
      */
     public function isContentSlugAvailable($slug)
     {
         global $db;
         $st = $db->prepare('SELECT slug FROM h5p_contents WHERE slug = \'' . $slug . '\'');
-        $st -> execute();
+        $st->execute();
         return !$st->fetchColumn();
     }
+
+    public function libraryHasUpgrade($library)
+    {
+        global $db;
+
+        return $db->get_var($db->prepare(
+                "SELECT id
+          FROM h5p_libraries
+          WHERE name = '%s'
+          AND (major_version > %d
+           OR (major_version = %d AND minor_version > %d))
+        LIMIT 1",
+                $library['machineName'],
+                $library['majorVersion'],
+                $library['majorVersion'],
+                $library['minorVersion']
+            )) !== NULL;
+    }
+
 
     /**
      * Generates statistics from the event log per library
@@ -1107,39 +1154,464 @@ class H5PFramework implements \H5PFrameworkInterface {
         $db->query("TRUNCATE TABLE h5p_libraries_hub_cache");
         foreach ($contentTypeCache->contentTypes as $ct) {
             // Insert into db
-              $quArr = array(
-                'machine_name'      => $ct->id,
-                'major_version'     => $ct->version->major,
-                'minor_version'     => $ct->version->minor,
-                'patch_version'     => $ct->version->patch,
+            $quArr = array(
+                'machine_name' => $ct->id,
+                'major_version' => $ct->version->major,
+                'minor_version' => $ct->version->minor,
+                'patch_version' => $ct->version->patch,
                 'h5p_major_version' => $ct->coreApiVersionNeeded->major,
                 'h5p_minor_version' => $ct->coreApiVersionNeeded->minor,
-                'title'             => $ct->title,
-                'summary'           => $ct->summary,
-                'description'       => $ct->description,
-                'icon'              => $ct->icon,
-                'created_at'        => self::dateTimeToTime($ct->createdAt),
-                'updated_at'        => self::dateTimeToTime($ct->updatedAt),
-                'is_recommended'    => $ct->isRecommended === TRUE ? 1 : 0,
-                'popularity'        => $ct->popularity,
-                'screenshots'       => json_encode($ct->screenshots),
-                'license'           => json_encode(isset($ct->license) ? $ct->license : array()),
-                'example'           => $ct->example,
-                'tutorial'          => isset($ct->tutorial) ? $ct->tutorial : '',
-                'keywords'          => json_encode(isset($ct->keywords) ? $ct->keywords : array()),
-                'categories'        => json_encode(isset($ct->categories) ? $ct->categories : array()),
-                'owner'             => $ct->owner
+                'title' => $ct->title,
+                'summary' => $ct->summary,
+                'description' => $ct->description,
+                'icon' => $ct->icon,
+                'created_at' => self::dateTimeToTime($ct->createdAt),
+                'updated_at' => self::dateTimeToTime($ct->updatedAt),
+                'is_recommended' => $ct->isRecommended === TRUE ? 1 : 0,
+                'popularity' => $ct->popularity,
+                'screenshots' => json_encode($ct->screenshots),
+                'license' => json_encode(isset($ct->license) ? $ct->license : array()),
+                'example' => $ct->example,
+                'tutorial' => isset($ct->tutorial) ? $ct->tutorial : '',
+                'keywords' => json_encode(isset($ct->keywords) ? $ct->keywords : array()),
+                'categories' => json_encode(isset($ct->categories) ? $ct->categories : array()),
+                'owner' => $ct->owner
             );
 
-            $query  = 'INSERT INTO h5p_libraries_hub_cache ';
+            $query = 'INSERT INTO h5p_libraries_hub_cache ';
             $ks = array();
             $vs = array();
             foreach ($quArr as $k => $v) {
                 $ks[] = $k;
                 $vs[] = $db->quote($v);
             }
-            $query .= '('.implode(',', $ks).') values ('.implode(',', $vs).')';
-            $db -> query($query);
+            $query .= '(' . implode(',', $ks) . ') values (' . implode(',', $vs) . ')';
+            $db->query($query);
         }
     }
+
+    public function getMetadataSemantics() {
+        static $semantics;
+
+        $cc_versions = array(
+            (object) array(
+                'value' => '4.0',
+                'label' => $this->h5pF->t('4.0 International')
+            ),
+            (object) array(
+                'value' => '3.0',
+                'label' => $this->h5pF->t('3.0 Unported')
+            ),
+            (object) array(
+                'value' => '2.5',
+                'label' => $this->h5pF->t('2.5 Generic')
+            ),
+            (object) array(
+                'value' => '2.0',
+                'label' => $this->h5pF->t('2.0 Generic')
+            ),
+            (object) array(
+                'value' => '1.0',
+                'label' => $this->h5pF->t('1.0 Generic')
+            )
+        );
+
+        $semantics = array(
+            (object) array(
+                'name' => 'title',
+                'type' => 'text',
+                'label' => $this->h5pF->t('Title'),
+                'placeholder' => 'La Gioconda'
+            ),
+            (object) array(
+                'name' => 'a11yTitle',
+                'type' => 'text',
+                'label' => $this->h5pF->t('Assistive Technologies label'),
+                'optional' => TRUE,
+            ),
+            (object) array(
+                'name' => 'license',
+                'type' => 'select',
+                'label' => $this->h5pF->t('License'),
+                'default' => 'U',
+                'options' => array(
+                    (object) array(
+                        'value' => 'U',
+                        'label' => $this->h5pF->t('Undisclosed')
+                    ),
+                    (object) array(
+                        'type' => 'optgroup',
+                        'label' => $this->h5pF->t('Creative Commons'),
+                        'options' => array(
+                            (object) array(
+                                'value' => 'CC BY',
+                                'label' => $this->h5pF->t('Attribution (CC BY)'),
+                                'versions' => $cc_versions
+                            ),
+                            (object) array(
+                                'value' => 'CC BY-SA',
+                                'label' => $this->h5pF->t('Attribution-ShareAlike (CC BY-SA)'),
+                                'versions' => $cc_versions
+                            ),
+                            (object) array(
+                                'value' => 'CC BY-ND',
+                                'label' => $this->h5pF->t('Attribution-NoDerivs (CC BY-ND)'),
+                                'versions' => $cc_versions
+                            ),
+                            (object) array(
+                                'value' => 'CC BY-NC',
+                                'label' => $this->h5pF->t('Attribution-NonCommercial (CC BY-NC)'),
+                                'versions' => $cc_versions
+                            ),
+                            (object) array(
+                                'value' => 'CC BY-NC-SA',
+                                'label' => $this->h5pF->t('Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)'),
+                                'versions' => $cc_versions
+                            ),
+                            (object) array(
+                                'value' => 'CC BY-NC-ND',
+                                'label' => $this->h5pF->t('Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)'),
+                                'versions' => $cc_versions
+                            ),
+                            (object) array(
+                                'value' => 'CC0 1.0',
+                                'label' => $this->h5pF->t('Public Domain Dedication (CC0)')
+                            ),
+                            (object) array(
+                                'value' => 'CC PDM',
+                                'label' => $this->h5pF->t('Public Domain Mark (PDM)')
+                            ),
+                        )
+                    ),
+                    (object) array(
+                        'value' => 'GNU GPL',
+                        'label' => $this->h5pF->t('General Public License v3')
+                    ),
+                    (object) array(
+                        'value' => 'PD',
+                        'label' => $this->h5pF->t('Public Domain')
+                    ),
+                    (object) array(
+                        'value' => 'ODC PDDL',
+                        'label' => $this->h5pF->t('Public Domain Dedication and Licence')
+                    ),
+                    (object) array(
+                        'value' => 'C',
+                        'label' => $this->h5pF->t('Copyright')
+                    )
+                )
+            ),
+            (object) array(
+                'name' => 'licenseVersion',
+                'type' => 'select',
+                'label' => $this->h5pF->t('License Version'),
+                'options' => $cc_versions,
+                'optional' => TRUE
+            ),
+            (object) array(
+                'name' => 'yearFrom',
+                'type' => 'number',
+                'label' => $this->h5pF->t('Years (from)'),
+                'placeholder' => '1991',
+                'min' => '-9999',
+                'max' => '9999',
+                'optional' => TRUE
+            ),
+            (object) array(
+                'name' => 'yearTo',
+                'type' => 'number',
+                'label' => $this->h5pF->t('Years (to)'),
+                'placeholder' => '1992',
+                'min' => '-9999',
+                'max' => '9999',
+                'optional' => TRUE
+            ),
+            (object) array(
+                'name' => 'source',
+                'type' => 'text',
+                'label' => $this->h5pF->t('Source'),
+                'placeholder' => 'https://',
+                'optional' => TRUE
+            ),
+            (object) array(
+                'name' => 'authors',
+                'type' => 'list',
+                'field' => (object) array (
+                    'name' => 'author',
+                    'type' => 'group',
+                    'fields'=> array(
+                        (object) array(
+                            'label' => $this->h5pF->t("Author's name"),
+                            'name' => 'name',
+                            'optional' => TRUE,
+                            'type' => 'text'
+                        ),
+                        (object) array(
+                            'name' => 'role',
+                            'type' => 'select',
+                            'label' => $this->h5pF->t("Author's role"),
+                            'default' => 'Author',
+                            'options' => array(
+                                (object) array(
+                                    'value' => 'Author',
+                                    'label' => $this->h5pF->t('Author')
+                                ),
+                                (object) array(
+                                    'value' => 'Editor',
+                                    'label' => $this->h5pF->t('Editor')
+                                ),
+                                (object) array(
+                                    'value' => 'Licensee',
+                                    'label' => $this->h5pF->t('Licensee')
+                                ),
+                                (object) array(
+                                    'value' => 'Originator',
+                                    'label' => $this->h5pF->t('Originator')
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            (object) array(
+                'name' => 'licenseExtras',
+                'type' => 'text',
+                'widget' => 'textarea',
+                'label' => $this->h5pF->t('License Extras'),
+                'optional' => TRUE,
+                'description' => $this->h5pF->t('Any additional information about the license')
+            ),
+            (object) array(
+                'name' => 'changes',
+                'type' => 'list',
+                'field' => (object) array(
+                    'name' => 'change',
+                    'type' => 'group',
+                    'label' => $this->h5pF->t('Changelog'),
+                    'fields' => array(
+                        (object) array(
+                            'name' => 'date',
+                            'type' => 'text',
+                            'label' => $this->h5pF->t('Date'),
+                            'optional' => TRUE
+                        ),
+                        (object) array(
+                            'name' => 'author',
+                            'type' => 'text',
+                            'label' => $this->h5pF->t('Changed by'),
+                            'optional' => TRUE
+                        ),
+                        (object) array(
+                            'name' => 'log',
+                            'type' => 'text',
+                            'widget' => 'textarea',
+                            'label' => $this->h5pF->t('Description of change'),
+                            'placeholder' => $this->h5pF->t('Photo cropped, text changed, etc.'),
+                            'optional' => TRUE
+                        )
+                    )
+                )
+            ),
+            (object) array (
+                'name' => 'authorComments',
+                'type' => 'text',
+                'widget' => 'textarea',
+                'label' => $this->h5pF->t('Author comments'),
+                'description' => $this->h5pF->t('Comments for the editor of the content (This text will not be published as a part of copyright info)'),
+                'optional' => TRUE
+            ),
+            (object) array(
+                'name' => 'contentType',
+                'type' => 'text',
+                'widget' => 'none'
+            ),
+            (object) array(
+                'name' => 'defaultLanguage',
+                'type' => 'text',
+                'widget' => 'none'
+            )
+        );
+
+        return $semantics;
+    }
+
+    public function getCopyrightSemantics() {
+        static $semantics;
+
+        if ($semantics === NULL) {
+            $cc_versions = array(
+                (object) array(
+                    'value' => '4.0',
+                    'label' => $this->h5pF->t('4.0 International')
+                ),
+                (object) array(
+                    'value' => '3.0',
+                    'label' => $this->h5pF->t('3.0 Unported')
+                ),
+                (object) array(
+                    'value' => '2.5',
+                    'label' => $this->h5pF->t('2.5 Generic')
+                ),
+                (object) array(
+                    'value' => '2.0',
+                    'label' => $this->h5pF->t('2.0 Generic')
+                ),
+                (object) array(
+                    'value' => '1.0',
+                    'label' => $this->h5pF->t('1.0 Generic')
+                )
+            );
+
+            $semantics = (object) array(
+                'name' => 'copyright',
+                'type' => 'group',
+                'label' => $this->h5pF->t('Copyright information'),
+                'fields' => array(
+                    (object) array(
+                        'name' => 'title',
+                        'type' => 'text',
+                        'label' => $this->h5pF->t('Title'),
+                        'placeholder' => 'La Gioconda',
+                        'optional' => TRUE
+                    ),
+                    (object) array(
+                        'name' => 'author',
+                        'type' => 'text',
+                        'label' => $this->h5pF->t('Author'),
+                        'placeholder' => 'Leonardo da Vinci',
+                        'optional' => TRUE
+                    ),
+                    (object) array(
+                        'name' => 'year',
+                        'type' => 'text',
+                        'label' => $this->h5pF->t('Year(s)'),
+                        'placeholder' => '1503 - 1517',
+                        'optional' => TRUE
+                    ),
+                    (object) array(
+                        'name' => 'source',
+                        'type' => 'text',
+                        'label' => $this->h5pF->t('Source'),
+                        'placeholder' => 'http://en.wikipedia.org/wiki/Mona_Lisa',
+                        'optional' => true,
+                        'regexp' => (object) array(
+                            'pattern' => '^http[s]?://.+',
+                            'modifiers' => 'i'
+                        )
+                    ),
+                    (object) array(
+                        'name' => 'license',
+                        'type' => 'select',
+                        'label' => $this->h5pF->t('License'),
+                        'default' => 'U',
+                        'options' => array(
+                            (object) array(
+                                'value' => 'U',
+                                'label' => $this->h5pF->t('Undisclosed')
+                            ),
+                            (object) array(
+                                'value' => 'CC BY',
+                                'label' => $this->h5pF->t('Attribution'),
+                                'versions' => $cc_versions
+                            ),
+                            (object) array(
+                                'value' => 'CC BY-SA',
+                                'label' => $this->h5pF->t('Attribution-ShareAlike'),
+                                'versions' => $cc_versions
+                            ),
+                            (object) array(
+                                'value' => 'CC BY-ND',
+                                'label' => $this->h5pF->t('Attribution-NoDerivs'),
+                                'versions' => $cc_versions
+                            ),
+                            (object) array(
+                                'value' => 'CC BY-NC',
+                                'label' => $this->h5pF->t('Attribution-NonCommercial'),
+                                'versions' => $cc_versions
+                            ),
+                            (object) array(
+                                'value' => 'CC BY-NC-SA',
+                                'label' => $this->h5pF->t('Attribution-NonCommercial-ShareAlike'),
+                                'versions' => $cc_versions
+                            ),
+                            (object) array(
+                                'value' => 'CC BY-NC-ND',
+                                'label' => $this->h5pF->t('Attribution-NonCommercial-NoDerivs'),
+                                'versions' => $cc_versions
+                            ),
+                            (object) array(
+                                'value' => 'GNU GPL',
+                                'label' => $this->h5pF->t('General Public License'),
+                                'versions' => array(
+                                    (object) array(
+                                        'value' => 'v3',
+                                        'label' => $this->h5pF->t('Version 3')
+                                    ),
+                                    (object) array(
+                                        'value' => 'v2',
+                                        'label' => $this->h5pF->t('Version 2')
+                                    ),
+                                    (object) array(
+                                        'value' => 'v1',
+                                        'label' => $this->h5pF->t('Version 1')
+                                    )
+                                )
+                            ),
+                            (object) array(
+                                'value' => 'PD',
+                                'label' => $this->h5pF->t('Public Domain'),
+                                'versions' => array(
+                                    (object) array(
+                                        'value' => '-',
+                                        'label' => '-'
+                                    ),
+                                    (object) array(
+                                        'value' => 'CC0 1.0',
+                                        'label' => $this->h5pF->t('CC0 1.0 Universal')
+                                    ),
+                                    (object) array(
+                                        'value' => 'CC PDM',
+                                        'label' => $this->h5pF->t('Public Domain Mark')
+                                    )
+                                )
+                            ),
+                            (object) array(
+                                'value' => 'C',
+                                'label' => $this->h5pF->t('Copyright')
+                            )
+                        )
+                    ),
+                    (object) array(
+                        'name' => 'version',
+                        'type' => 'select',
+                        'label' => $this->h5pF->t('License Version'),
+                        'options' => array()
+                    )
+                )
+            );
+        }
+
+        return $semantics;
+    }
+
+    public function replaceContentHubMetadataCache($metadata, $lang)
+    {
+        // TODO: Implement replaceContentHubMetadataCache() method.
+    }
+
+    public function getContentHubMetadataCache($lang = 'en')
+    {
+        // TODO: Implement getContentHubMetadataCache() method.
+    }
+
+    public function getContentHubMetadataChecked($lang = 'en')
+    {
+        // TODO: Implement getContentHubMetadataChecked() method.
+    }
+
+    public function setContentHubMetadataChecked($time, $lang = 'en')
+    {
+        // TODO: Implement setContentHubMetadataChecked() method.
+    }
 }
+

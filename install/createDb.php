@@ -5,6 +5,9 @@ require_once __DIR__ . '/../config.php';
 $pdo = new PDO("mysql:host=" . DBHOST, DBUSER, DBPASSWORD);
 $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
+
+// refer to https://h5p.org/sites/default/files/class-h5p-plugin.txt
+
 $pdo -> query("CREATE DATABASE IF NOT EXISTS `".DBNAME."`");
 $pdo -> query("USE `".DBNAME."`");
 
@@ -12,7 +15,7 @@ $pdo -> query("CREATE TABLE `h5p_contents` (
   `id` int(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `user_id` int(10) UNSIGNED NOT NULL DEFAULT '',
+  `user_id` int(10) UNSIGNED NOT NULL,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `library_id` int(10) UNSIGNED NOT NULL,
   `parameters` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -70,28 +73,30 @@ $pdo -> query("CREATE TABLE `h5p_libraries_languages` (
 
 
 $pdo-> query("CREATE TABLE `h5p_libraries_hub_cache` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `machine_name` varchar(127) NOT NULL,
-  `major_version` int(10) UNSIGNED NOT NULL,
-  `minor_version` int(10) UNSIGNED NOT NULL,
-  `patch_version` int(10) UNSIGNED NOT NULL,
-  `h5p_major_version` int(10) UNSIGNED DEFAULT NULL,
-  `h5p_minor_version` int(10) UNSIGNED DEFAULT NULL,
-  `title` varchar(255) NOT NULL,
-  `summary` text NOT NULL,
-  `description` text NOT NULL,
-  `icon` varchar(511) NOT NULL,
-  `created_at` int(10) UNSIGNED NOT NULL,
-  `updated_at` int(10) UNSIGNED NOT NULL,
-  `is_recommended` int(10) UNSIGNED NOT NULL,
-  `popularity` int(10) UNSIGNED NOT NULL,
-  `screenshots` text,
-  `license` text,
-  `example` varchar(511) NOT NULL,
-  `tutorial` varchar(511) DEFAULT NULL,
-  `keywords` text,
-  `categories` text,
-  `owner` varchar(511) DEFAULT NULL
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    machine_name VARCHAR(127) NOT NULL,
+    major_version INT UNSIGNED NOT NULL,
+    minor_version INT UNSIGNED NOT NULL,
+    patch_version INT UNSIGNED NOT NULL,
+    h5p_major_version INT UNSIGNED,
+    h5p_minor_version INT UNSIGNED,
+    title VARCHAR(255) NOT NULL,
+    summary TEXT NOT NULL,
+    description TEXT NOT NULL,
+    icon VARCHAR(511) NOT NULL,
+    created_at INT UNSIGNED NOT NULL,
+    updated_at INT UNSIGNED NOT NULL,
+    is_recommended INT UNSIGNED NOT NULL,
+    popularity INT UNSIGNED NOT NULL,
+    screenshots TEXT,
+    license TEXT,
+    example VARCHAR(511) NOT NULL,
+    tutorial VARCHAR(511),
+    keywords TEXT,
+    categories TEXT,
+    owner VARCHAR(511),
+    PRIMARY KEY  (id),
+    KEY name_version (machine_name,major_version,minor_version,patch_version)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
 
 echo 'Success';

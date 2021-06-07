@@ -31,6 +31,38 @@ class H5peditorStorageImpl implements \H5peditorStorage {
         return $result->fetchColumn();
     }
 
+
+    /**
+     * Load a list of available language codes from the database.
+     *
+     * @param string $machineName The machine readable name of the library(content type)
+     * @param int $majorVersion Major part of version number
+     * @param int $minorVersion Minor part of version number
+     * @return array List of possible language codes
+     */
+    public function getAvailableLanguages($machineName, $majorVersion, $minorVersion) {
+        global $db;
+
+        try{
+            $query = "SELECT hll.language_code FROM h5p_libraries_languages hll 
+                        JOIN h5p_libraries hl ON hll.library_id = hl.id 
+                        WHERE hl.name = '". $machineName ."' 
+                        AND hl.major_version = ". $majorVersion ." 
+                        AND hl.minor_version = ". $minorVersion;
+            $statement = $db -> query($query);
+            $results = $statement->fetchAll(\PDO::FETCH_OBJ);
+        }catch(Exception $e) {
+            error_log('eduConnector-ERROR: getAvailableLanguages');
+            error_log(print_r($e, true));
+        }
+        $codes = array('en'); // Semantics is 'en' by default.
+        foreach ($results as $result) {
+            $codes[] = $result->language_code;
+        }
+
+        return $codes;
+    }
+
     /**
      * "Callback" for mark the given file as a permanent file.
      * Used when saving content that has new uploaded files.
@@ -189,6 +221,5 @@ class H5peditorStorageImpl implements \H5peditorStorage {
      * @param string $filePath Path to file or directory
      */
     public static function removeTemporarilySavedFiles($filePath) {}
-
 
 }

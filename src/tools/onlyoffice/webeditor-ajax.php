@@ -1,4 +1,7 @@
 <?php
+
+use connector\tools\onlyoffice\OnlyOffice;
+
 require __DIR__ . '/../../../vendor/autoload.php';
 $lang = 'de';
 $logger = new connector\lib\Logger();
@@ -29,10 +32,10 @@ $log = $logger->getLog();
  *
 */
 
-require_once( dirname(__FILE__) . '/config.php' );
-require_once( dirname(__FILE__) . '/ajax.php' );
-require_once( dirname(__FILE__) . '/common.php' );
-require_once( dirname(__FILE__) . '/functions.php' );
+require_once(dirname(__FILE__) . '/config.php');
+require_once(dirname(__FILE__) . '/ajax.php');
+require_once(dirname(__FILE__) . '/common.php');
+require_once(dirname(__FILE__) . '/functions.php');
 
 $_trackerStatus = array(
     0 => 'NotFound',
@@ -45,36 +48,38 @@ $_trackerStatus = array(
 
 
 if (isset($_GET["type"]) && !empty($_GET["type"])) { //Checks if type value exists
-    $response_array;
-    @header( 'Content-Type: application/json; charset==utf-8');
-    @header( 'X-Robots-Tag: noindex' );
-    @header( 'X-Content-Type-Options: nosniff' );
+    $response_array = '';
+    @header('Content-Type: application/json; charset==utf-8');
+    @header('X-Robots-Tag: noindex');
+    @header('X-Content-Type-Options: nosniff');
 
     nocache_headers();
 
     $log->info(json_encode($_GET));
 
     $type = $_GET["type"];
-    switch($type) { //Switch case for value of type
+    switch ($type) { //Switch case for value of type
         case "track":
             $response_array = track($log);
             $response_array['status'] = 'success';
+            http_response_code($response_array['error'] ? 500 : 200);
             die (json_encode($response_array));
         default:
             $response_array['status'] = 'error';
             $response_array['error'] = '404 Method not found';
+            http_response_code(404);
             die(json_encode($response_array));
     }
 }
 
-function track($log) {
-
+function track($log)
+{
     global $_trackerStatus;
 
     $log->info('Track START');
     $result["error"] = 0;
 
-    if (($body_stream = file_get_contents('php://input'))===FALSE){
+    if (($body_stream = file_get_contents('php://input')) === FALSE) {
         $log->error('Bad Request');
         $result["error"] = "Bad Request";
         return $result;
@@ -88,17 +93,17 @@ function track($log) {
 
     $id = $_SESSION['id_' . $data['key']];
 
-    if ($data === NULL){
+    if ($data === NULL) {
         $log->error('Bad Response');
         $result["error"] = "Bad Response";
         return $result;
     }
 
-    $log->info("InputStream data: " . json_encode($data));
+    //$log->info("InputStream data: " . json_encode($data));
 
     $status = $_trackerStatus[$data["status"]];
 
-    switch ($status){
+    switch ($status) {
         case "MustSave":
         case "Corrupted":
         case "ForcedSave":
@@ -106,35 +111,48 @@ function track($log) {
             $downloadUri = $data["url"];
             $saved = 1;
             $tmpSavePath = DATA . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
-            //if($status == 'ForcedSave')
-            //    $comment = 'Manually_saved';
-            //else
+            if ($status == 'ForcedSave') {
+                $comment = 'EDITOR_UPLOAD_USER,ONLY_OFFICE';
+            } else {
                 $comment = 'EDITOR_UPLOAD,ONLY_OFFICE';
+            }
 
-	    $arrContextOptions=array(
-		"ssl"=>array(
-    		    "verify_peer"=>false,
-    		    "verify_peer_name"=>false
-		)
-	    ); 
+            $arrContextOptions = array(
+                "ssl" => array(
+                    "verify_peer" => false,
+                    "verify_peer_name" => false
+                )
+            );
 
-	    $new_data = file_get_contents($downloadUri, false, stream_context_create($arrContextOptions));
+            $new_data = file_get_contents($downloadUri, false, stream_context_create($arrContextOptions));
             if ($new_data === FALSE) {
                 $saved = 0;
-		$log->error('ERROR fetching file from docserver, see webserver log');
-            } else {
-                file_put_contents($tmpSavePath, $new_data, LOCK_EX);
-                    try {
-                        $apiClient = new connector\lib\EduRestClient($id);
-                        if ($aa = $apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $tmpSavePath, \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$id]['filetype']), $comment)) {
-                            unlink($tmpSavePath);
-                            $log->info('SAVED - ' . json_encode(array($_SESSION[$id]['node']->node->ref->id, $tmpSavePath)));
-                        }
-                    } catch (Exception $e) {
-                        $result["c"] = "not saved";
-                        $result["error"] = "error: " . json_encode($e -> __toString());
-                        break;
+                $log->error('ERROR fetching file from docserver, see webserver log');
+            } else if (file_put_contents($tmpSavePath, $new_data, LOCK_EX) !== false) {
+                try {
+                    $apiClient = new connector\lib\EduRestClient($id);
+                    if ($aa = $apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $tmpSavePath, OnlyOffice::getMimetype($_SESSION[$id]['filetype']), $comment)) {
+                        unlink($tmpSavePath);
+                        $log->info('SAVED - ' . json_encode(array($_SESSION[$id]['node']->node->ref->id, $tmpSavePath)));
                     }
+                } catch (Exception $e) {
+                    $result["c"] = "not saved";
+                    $result["error"] = "error: " . json_encode($e->__toString());
+                    break;
+                }
+            }else{
+                //try to save local an return error
+                $log->error('ERROR saving file to cache. Check path and permissions: ' . $tmpSavePath);
+                $localPath = DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
+                if(file_put_contents($localPath, $new_data, LOCK_EX) === false) {
+                    $log->error('FATAL ERROR: saving to fallback folder failed (' . $localPath . ')! The document may be lost! Check the configuration!');
+                } else {
+                    $log->error('SUCCESS: Stored file to backup path ' . $localPath);
+                }
+
+                $result["c"] = "not saved";
+                $result["error"] = "error: could not save file to cache";
+                break;
             }
 
             $result["c"] = "saved";

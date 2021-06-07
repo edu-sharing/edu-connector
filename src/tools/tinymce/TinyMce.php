@@ -2,6 +2,8 @@
 
 namespace connector\tools\tinymce;
 
+use connector\lib\EduRestClient;
+
 class TinyMce extends \connector\lib\Tool {
 
     public function run()
@@ -17,27 +19,8 @@ class TinyMce extends \connector\lib\Tool {
         if ($node->node->size === NULL) {
             $_SESSION[$this->connectorId]['content'] = '';
         } else {
-            if(defined('FORCE_INTERN_COM') && FORCE_INTERN_COM) {
-                $arrApiUrl = parse_url($_SESSION[$this->connectorId]['api_url']);
-                $arrContentUrl = parse_url($node->node->contentUrl);
-                $contentUrl = $arrApiUrl['scheme'].'://'.$arrApiUrl['host'].':'.$arrApiUrl['port'].$arrContentUrl['path'].'?'.$arrContentUrl['query'] . '&com=internal';
-                $curlHeader = array('Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId']);
-                $url = $contentUrl . '&params=display%3Ddownload';
-            } else {
-                $contentUrl = $node->node->contentUrl;
-                $curlHeader = array();
-                $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
-            }
-
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $curlHeader);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-            $data = curl_exec($curl);
-            curl_close($curl);
+            $client = new EduRestClient($this->connectorId);
+            $data = $client->getContent($node);
             $_SESSION[$this->connectorId]['content'] = $data;
         }
 
