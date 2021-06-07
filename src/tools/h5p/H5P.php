@@ -72,13 +72,14 @@ class H5P extends \connector\lib\Tool {
                 $this->H5PStorage->savePackage(array('title' => $titleShow, 'disable' => 0));
                 $content = $this->H5PCore->loadContent($this->H5PStorage->contentId);
                 $this->library = $this->H5PCore->libraryToString($content['library']);
-                $this->parameters = $this->H5PCore->filterParameters($this->content) . ',"metadata":' . ($content['metadata'] ? json_encode((object)$content['metadata']) : '{}');
-                //$this->parameters = htmlentities($content['params']); // metadata missing !!!!!!!!!!!!!!!!!!!!!! check if needed => //htmlentities($this->H5PCore->filterParameters($content));
+                //$this->parameters = $this->H5PCore->filterParameters($this->content) . ',"metadata":' . ($content['metadata'] ? json_encode((object)$content['metadata']) : '{}');
+                $this->parameters = htmlentities($content['params']); // metadata missing !!!!!!!!!!!!!!!!!!!!!! check if needed => //htmlentities($this->H5PCore->filterParameters($content));
                 //copy media to editor
                 $this->copyr($this->H5PFramework->get_h5p_path().'/content/'.$content['id'], $this->H5PFramework->get_h5p_path().'/editor/');
                 $_SESSION[$this->connectorId]['viewContentId'] = $content['id'];
             }else{
-                $h5p_error = end(array_values($this->H5PFramework->getMessages('error')));
+                $h5p_error_array = array_values($this->H5PFramework->getMessages('error'));
+                $h5p_error = end($h5p_error_array);
                 error_log('eduConnector: There was a problem with the H5P-file: '.$h5p_error->code);
             }
         }
