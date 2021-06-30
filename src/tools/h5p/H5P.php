@@ -1,6 +1,8 @@
 <?php
 namespace connector\tools\h5p;
 
+use connector\lib\EduRestClient;
+
 define('MODE_NEW', 'mode_new');
 
 class H5P extends \connector\lib\Tool {
@@ -56,22 +58,30 @@ class H5P extends \connector\lib\Tool {
     }
 
     public function run() {
+
         $this->H5PCore->disableFileCheck = true;
-        $this->H5PValidator->isValidPackage();
-        $content['language'] = $this -> h5pLang;
         if($this->mode === MODE_NEW) {
             $content['id'] = '';
         } else {
-            $titleShow = $_SESSION[$this->connectorId]['node']->node->title;
-            if(empty($titleShow))
-                $titleShow = $_SESSION[$this->connectorId]['node']->node->name;
-             $this->H5PStorage->savePackage(array('title' => $titleShow, 'disable' => 0));
-             $content = $this->H5PCore->loadContent($this->H5PStorage->contentId);
-             $this->library = \H5PCore::libraryToString($content['library']);
-             $this->parameters = htmlentities($content['params']); // metadata missing !!!!!!!!!!!!!!!!!!!!!! check if needed => //htmlentities($this->H5PCore->filterParameters($content));
-            //copy media to editor
-            $this->copyr($this->H5PFramework->get_h5p_path().'/content/'.$content['id'], $this->H5PFramework->get_h5p_path().'/editor/');
-            $_SESSION[$this->connectorId]['viewContentId'] = $content['id'];
+            if($this->H5PValidator->isValidPackage()){
+                $content['language'] = $this -> h5pLang;
+                $titleShow = $_SESSION[$this->connectorId]['node']->node->title;
+                if(empty($titleShow)){
+                    $titleShow = $_SESSION[$this->connectorId]['node']->node->name;
+                }
+                $this->H5PStorage->savePackage(array('title' => $titleShow, 'disable' => 0));
+                $content = $this->H5PCore->loadContent($this->H5PStorage->contentId);
+                $this->library = $this->H5PCore->libraryToString($content['library']);
+                //$this->parameters = $this->H5PCore->filterParameters($this->content) . ',"metadata":' . ($content['metadata'] ? json_encode((object)$content['metadata']) : '{}');
+                $this->parameters = htmlentities($content['params']); // metadata missing !!!!!!!!!!!!!!!!!!!!!! check if needed => //htmlentities($this->H5PCore->filterParameters($content));
+                //copy media to editor
+                $this->copyr($this->H5PFramework->get_h5p_path().'/content/'.$content['id'], $this->H5PFramework->get_h5p_path().'/editor/');
+                $_SESSION[$this->connectorId]['viewContentId'] = $content['id'];
+            }else{
+                $h5p_error_array = array_values($this->H5PFramework->getMessages('error'));
+                $h5p_error = end($h5p_error_array);
+                error_log('eduConnector: There was a problem with the H5P-file: '.$h5p_error->code);
+            }
         }
         $this->showEditor();
     }
@@ -161,7 +171,7 @@ class H5P extends \connector\lib\Tool {
         }
         $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-editor/language/'.$this -> h5pLang.'.js';
 
-        $integration['editor']['deleteMessage'] = 'soll das echt geloescht werden?';
+        $integration['editor']['deleteMessage'] = 'Soll das wirklich geloescht werden?';
         $integration['editor']['apiVersion'] = \H5PCore::$coreApi;
         $integration['editor']['nodeVersionId'] = $this->H5PStorage->contentId;
         $integration['editor']['metadataSemantics'] = $this->H5PContentValidator->getMetadataSemantics();
@@ -210,39 +220,21 @@ class H5P extends \connector\lib\Tool {
         $node = $this->getNode();
         if ($node->node->size === NULL) {
             try {
-                if(!isset($_SESSION[$this->connectorId]['defaultCreateElement']) || !file_exists(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p'))
+                if(!isset($_SESSION[$this->connectorId]['defaultCreateElement']) || !file_exists(__DIR__ . '/templates/' . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p')){
                     throw new \Exception('Template not specified or found');
+                }
                 copy(__DIR__ . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . $_SESSION[$this->connectorId]['defaultCreateElement'] . '.h5p', $this->H5PFramework->getUploadedH5pPath());
 	    } catch (\Exception $e) {
                $this->mode = MODE_NEW;
             }
         } else {
-            if(defined('FORCE_INTERN_COM') && FORCE_INTERN_COM) {
-                $arrApiUrl = parse_url($_SESSION[$this->connectorId]['api_url']);
-                $arrContentUrl = parse_url($node->node->contentUrl);
-                $contentUrl = $arrApiUrl['scheme'].'://'.$arrApiUrl['host'].':'.$arrApiUrl['port'].$arrContentUrl['path'].'?'.$arrContentUrl['query'] . '&com=internal';
-                $curlHeader = array('Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId']);
-                $url = $contentUrl . '&params=display%3Ddownload';
-            } else {
-                $contentUrl = $node->node->contentUrl;
-                $curlHeader = array();
-                $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
-            }
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $curlHeader);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-            $data = curl_exec($curl);
-            curl_close($curl);
+            $client = new EduRestClient($this->connectorId);
+            $data = $client->getContent($node);
 
             $fp = fopen($this->H5PFramework->getUploadedH5pPath(), 'w');
             fwrite($fp, $data);
             fclose($fp);
         }
-        $node = $this->getNode();
         $_SESSION[$this->connectorId]['node'] = $node;
     }
 }

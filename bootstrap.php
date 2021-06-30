@@ -138,8 +138,8 @@ $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
 
         if(isset($request->getQueryParams()['machineName']) && isset($request->getQueryParams()['majorVersion']) && isset($request->getQueryParams()['minorVersion'])) {
             $lib = $h5p->H5PEditor->ajax->action(H5PEditorEndpoints::SINGLE_LIBRARY, $request->getQueryParams()['machineName'],
-                $request->getQueryParams()['majorVersion'], $request->getQueryParams()['minorVersion'], LANG, '',
-                $h5p->H5PFramework->get_h5p_path()
+                $request->getQueryParams()['majorVersion'], $request->getQueryParams()['minorVersion'], 'de', '',
+                $h5p->H5PFramework->get_h5p_path(),''
             );
             return $response->withStatus(200)
                 ->withHeader('Content-type', 'application/json')
@@ -156,7 +156,7 @@ $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
     }
 });
 
-$app->get('/ajax/unlockNode', function (Request $request, Response $response) {
+$app->post('/ajax/unlockNode', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     $id = $request->getHeaderLine('X-CSRF-Token');
     try {

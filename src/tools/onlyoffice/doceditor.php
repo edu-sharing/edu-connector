@@ -55,8 +55,7 @@ $fileuri = FileUri($filename);
 
 //setcookie('EDUCONNECTOR', getDocEditorKey(), 0, '/', '.metaventis.com');
 
-function getDocEditorKey($id)
-{
+function getDocEditorKey($id) {
     $node = $_SESSION[$id]['node']->node;
     // use the unique id (which is the original id in case of a collection) to make sure everyone edits the real content
     $nodeId = $node->originalId ? $node->originalId : $node->ref->id;
@@ -66,12 +65,12 @@ function getDocEditorKey($id)
         // since  repo 6.0
         $contentVersion = $node->content->version;
     }
-    $revisionId = GenerateRevisionId(md5($nodeId . $contentVersion));
+    //$revisionId = GenerateRevisionId(md5($nodeId));
+    $revisionId = GenerateRevisionId(md5($contentVersion . $nodeId));
     return $revisionId;
 }
 
-function getCallbackUrl($id)
-{
+function getCallbackUrl($id) {
     return rtrim(WEB_ROOT_URL, '/') . '/'
         . "webeditor-ajax.php?type=track"
         . "&key=" . getDocEditorKey($id);
@@ -194,8 +193,9 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                     "callbackUrl" => $payload_callback,
                     "user" => [
                         "id" => $payload_user,
-                        "firstname" => $payload_fname,
-                        "lastname" => $payload_lname,
+                        name => $payload_fname . ' ' . $payload_lname
+                        //"firstname" => $payload_fname,
+                        //"lastname" => $payload_lname,
                     ],
                     "embedded" => [
                         "saveUrl" => "",

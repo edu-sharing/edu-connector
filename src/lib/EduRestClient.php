@@ -92,6 +92,43 @@ class EduRestClient
         }
         throw new \Exception('Error unlocking node ' . $nodeId, $httpcode);
     }
+    public function getContent($node){
+        if ($node->node->contentUrl){
+            $contentUrl = $node->node->contentUrl; //repo-version 5.0 or older
+        }else{
+            $contentUrl = $node->node->downloadUrl;  //repo-version 5.1 or newer
+        }
+
+        $curlHeader = $this->getHeaders();
+
+        if(defined('FORCE_INTERN_COM') && FORCE_INTERN_COM) {
+            $apiUrlStr = $_SESSION[$this->connectorId]['api_url'];
+            if(defined('FORCED_APIURL') && FORCED_APIURL){
+                $apiUrlStr = FORCED_APIURL;
+            }
+            $arrApiUrl = parse_url($apiUrlStr);
+            $arrContentUrl = parse_url($contentUrl);
+            $contentUrl = $arrApiUrl['scheme'].'://'.$arrApiUrl['host'].':'.$arrApiUrl['port'].$arrContentUrl['path'].'?'.$arrContentUrl['query'] . '&com=internal';
+            $curlHeader = array('Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId']);
+        }
+
+        $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $curlHeader);
+        $data = curl_exec($curl);
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+        if ($httpcode >= 200 && $httpcode < 308) {
+            return $data;
+        }else{
+            throw new \Exception("curl error " . $httpcode);
+        }
+    }
 
     private function getTicketHeader() {
         $paramstrusted = array("applicationId"  => APPID,
@@ -151,8 +188,7 @@ class EduRestClient
         }
     }
 
-    public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '')
-    {
+    public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '') {
         $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/content?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
         $headers = $this->getHeaders();
         $headers[] = 'Content-Type: multipart/form-data';
@@ -206,8 +242,7 @@ class EduRestClient
         return false;
     }*/
 
-    public function getNode($nodeId)
-    {
+    public function getNode($nodeId) {
         $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/metadata?propertyFilter=-all-');
         $headers = $this->getHeaders();
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);

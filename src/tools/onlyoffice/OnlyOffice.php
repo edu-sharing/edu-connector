@@ -19,7 +19,7 @@ class OnlyOffice extends \connector\lib\Tool {
      */
     public function getNode() {
         $node = $this->apiClient->getNode($_SESSION[$this->connectorId]['node']);
-        /*Deprecated because repository always sends orig. node id from now on (11.04.2019)*/
+        /*Starting with repo 5.1 repository sends real node id, check is required */
         if(in_array('ccm:collection_io_reference', $node->node->aspects)) {
             try {
                 $originalId = $node->node->properties->{'ccm:original'}[0];

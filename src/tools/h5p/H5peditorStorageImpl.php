@@ -28,8 +28,6 @@ class H5peditorStorageImpl implements \H5peditorStorage {
             AND hl.minor_version = '.$minorVersion.'
             AND hlt.language_code ='.$db->quote($language));
 
-
-
         return $result->fetchColumn();
     }
 
@@ -54,7 +52,7 @@ class H5peditorStorageImpl implements \H5peditorStorage {
             $statement = $db -> query($query);
             $results = $statement->fetchAll(\PDO::FETCH_OBJ);
         }catch(Exception $e) {
-            error_log('ERROR: getAvailableLanguages');
+            error_log('eduConnector-ERROR: getAvailableLanguages');
             error_log(print_r($e, true));
         }
         $codes = array('en'); // Semantics is 'en' by default.
