@@ -152,11 +152,11 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
         };
         var config = JSON.parse(
             <?php
-            $payload_title = addslashes(empty($_SESSION[$id]['node']->node->title) ? $_SESSION[$id]['node']->node->name : $_SESSION[$id]['node']->node->title);
+            $payload_title = empty($_SESSION[$id]['node']->node->title) ? $_SESSION[$id]['node']->node->name : $_SESSION[$id]['node']->node->title;
             $payload_fileType = $_SESSION[$id]['filetype'];
             $payload_key = getDocEditorKey($id);
             $payload_created = date_format(date_create($_SESSION[$id]['node']->node->createdAt), 'd.m.Y');
-            $payload_author = addslashes($_SESSION[$id]['node']->node->createdBy->firstName . ' ' . $_SESSION[$id]['node']->node->createdBy->lastName);
+            $payload_author = $_SESSION[$id]['node']->node->createdBy->firstName . ' ' . $_SESSION[$id]['node']->node->createdBy->lastName;
             $payload_download = false;
             //$payload_print = $get_array["embed"] == "true" ? "false" : "true";
             $payload_edit = $_SESSION[$id]['edit'] ? 'true' : 'false';
@@ -166,8 +166,8 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
             $payload_mode = 'edit';
             $payload_callback = getCallbackUrl($id);
             $payload_user = session_id();
-            $payload_fname = addslashes($_SESSION[$id]['user']->profile->firstName);
-            $payload_lname = addslashes($_SESSION[$id]['user']->profile->lastName);
+            $payload_fname = $_SESSION[$id]['user']->profile->firstName;
+            $payload_lname = $_SESSION[$id]['user']->profile->lastName;
             //$payload_save = $get_array["path"];
             $payload = [
                 "width" => "100%",
@@ -207,7 +207,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                         "about" => false,
                         "feedback" => false,
                         "comments" => true,
-                        "forcesave" => true, //check concept, some integrity issues with versions
+                        "forcesave" => false, //check concept, some integrity issues with versions
                         "chat" => true
                         //  goback: {
                         /*   url: "<?php echo serverPath() ?>/index.php",*/
@@ -230,7 +230,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                 }
             }
         };
-        <?php if (defined('ONLYOFFICE_JWT_SECRET')): ?>
+        <?php if (defined('ONLYOFFICE_JWT_SECRET') && !empty(ONLYOFFICE_JWT_SECRET)): ?>
         config.token = "<?php
             $token = ["payload" => $payload];
             echo JWT::encode($token, ONLYOFFICE_JWT_SECRET);
