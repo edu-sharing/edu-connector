@@ -38,7 +38,7 @@ require_once(__DIR__ . '/common.php');
 require_once(__DIR__ . '/functions.php');
 require_once(__DIR__ . '/jwt_helper.php');
 
-if (false === filter_var($id, FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => "/^[a-z0-9]*$/"))) || empty($_GET['id'])) {
+if(false === filter_var($id, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))) || empty($_GET['id'])) {
     header('Location: ' . '../../../error/' . ERROR_DEFAULT);
     exit;
 }
@@ -57,7 +57,17 @@ $fileuri = FileUri($filename);
 
 function getDocEditorKey($id)
 {
-    return GenerateRevisionId(md5($_SESSION[$id]['node']->node->ref->id . $_SESSION[$id]['node']->node->contentVersion));
+    $node = $_SESSION[$id]['node']->node;
+    // use the unique id (which is the original id in case of a collection) to make sure everyone edits the real content
+    $nodeId = $node->originalId ? $node->originalId : $node->ref->id;
+    if (!empty($_SESSION[$id]['node']->node->contentVersion)){
+        $contentVersion = $node->contentVersion;
+    }else{
+        // since  repo 6.0
+        $contentVersion = $node->content->version;
+    }
+    $revisionId = GenerateRevisionId(md5($nodeId . $contentVersion));
+    return $revisionId;
 }
 
 function getCallbackUrl($id)
@@ -68,7 +78,7 @@ function getCallbackUrl($id)
 }
 
 //additional entry for callback
-$_SESSION['id_' . getDocEditorKey($id)] = $id;
+$_SESSION['id_'.getDocEditorKey($id)] = $id;
 
 ?>
 
@@ -111,8 +121,8 @@ $_SESSION['id_' . getDocEditorKey($id)] = $id;
     </style>
 
     <script type="text/javascript" src="<?php echo $GLOBALS["DOC_SERV_API_URL"] ?>"></script>
-    <script src="<?php echo $_SESSION[$id]['WWWURL'] ?>/js/lang/<?php echo $lang ?>.js"></script>
-    <script src="<?php echo $_SESSION[$id]['WWWURL'] ?>/js/jquery-3.2.1.min.js"></script>
+    <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/lang/<?php echo $lang ?>.js"></script>
+    <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/jquery-3.2.1.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
     <script type="text/javascript">
 
@@ -140,174 +150,119 @@ $_SESSION['id_' . getDocEditorKey($id)] = $id;
             if (event)
                 innerAlert(event.data);
         };
+        var config = JSON.parse(
+            <?php
+            $payload_title = addslashes(empty($_SESSION[$id]['node']->node->title) ? $_SESSION[$id]['node']->node->name : $_SESSION[$id]['node']->node->title);
+            $payload_fileType = $_SESSION[$id]['filetype'];
+            $payload_key = getDocEditorKey($id);
+            $payload_created = date_format(date_create($_SESSION[$id]['node']->node->createdAt), 'd.m.Y');
+            $payload_author = addslashes($_SESSION[$id]['node']->node->createdBy->firstName . ' ' . $_SESSION[$id]['node']->node->createdBy->lastName);
+            $payload_download = false;
+            //$payload_print = $get_array["embed"] == "true" ? "false" : "true";
+            $payload_edit = $_SESSION[$id]['edit'] ? 'true' : 'false';
+            //$payload_comment = $get_array["comment"] == "true" ? "true" : "false";
+            //$payload_review = $get_array["review"] == "true" ? "true" : "false";
+            $payload_form = "false";
+            $payload_mode = 'edit';
+            $payload_callback = getCallbackUrl($id);
+            $payload_user = session_id();
+            $payload_fname = addslashes($_SESSION[$id]['user']->profile->firstName);
+            $payload_lname = addslashes($_SESSION[$id]['user']->profile->lastName);
+            //$payload_save = $get_array["path"];
+            $payload = [
+                "width" => "100%",
+                "height" => "100%",
+                "type" => "desktop", // embedded
+                "documentType" => getDocumentType('dummy.' . $_SESSION[$id]['filetype']),
+                "document" => [
+                    "title" => $payload_title,
+                    "url" => $fileuri,
+                    "fileType" => $payload_fileType,
+                    "key" => $payload_key,
+                    "info" => [
+                        "author" => $payload_author,
+                        "created" => $payload_created,
+                    ],
+                    "permissions" => [
+                        "download" => false,
+                        "edit" => $payload_edit
+                    ]
+                ],
+                "editorConfig" => [
+                    "mode" => $payload_mode,
+                    "lang" => $lang,
+                    "callbackUrl" => $payload_callback,
+                    "user" => [
+                        "id" => $payload_user,
+                        "firstname" => $payload_fname,
+                        "lastname" => $payload_lname,
+                    ],
+                    "embedded" => [
+                        "saveUrl" => "",
+                        "embedUrl" => "",
+                        "shareUrl" => "",
+                        "toolbarDocked" => "top"
+                    ],
+                    "customization" => [
+                        "about" => false,
+                        "feedback" => false,
+                        "comments" => true,
+                        "forcesave" => true, //check concept, some integrity issues with versions
+                        "chat" => true
+                        //  goback: {
+                        /*   url: "<?php echo serverPath() ?>/index.php",*/
+                        // },
+                    ]
+                ]
+            ];
+            echo json_encode(json_encode($payload));
+            ?>
+        );
 
+        config.events = {
+            'onReady': onReady,
+            'onDocumentStateChange': onDocumentStateChange,
+            'onRequestEditRights': onRequestEditRights,
+            'onError': onError,
+            'onInfo': function ( data ) {
+                if ( data && data.data && data.data.getConfig ) {
+                    docEditor.serviceCommand ( 'getConfig', '<?php echo $_SESSION[$id]['ticket']; ?>' );
+                }
+            }
+        };
+        <?php if (defined('ONLYOFFICE_JWT_SECRET')): ?>
+        config.token = "<?php
+            $token = ["payload" => $payload];
+            echo JWT::encode($token, ONLYOFFICE_JWT_SECRET);
+            ?>"
+        <?php endif; ?>;
         var сonnectEditor = function () {
-            docEditor = new DocsAPI.DocEditor("iframeEditor",
-                {
-                    //            width: "100%",
-                    //            height: "100%",
-                    //
-                    //            type: "desktop", // embedded
-                    //            documentType: "<?php //echo getDocumentType('dummy.' . $_SESSION[$id]['filetype']) ?>//",
-                    //            document: {
-                    //                title: "<?php //echo addslashes(empty($_SESSION[$id]['node']->node->title)?$_SESSION[$id]['node']->node->name:$_SESSION[$id]['node']->node->title) ?>//",
-                    //                url: "<?php //echo $fileuri ?>//",
-                    //                fileType: "<?php //echo $_SESSION[$id]['filetype'] ?>//",
-                    //                key: "<?php //echo getDocEditorKey($id) ?>//",
-                    //
-                    //                info: {
-                    //                    author: "<?php //echo addslashes($_SESSION[$id]['node']->node->createdBy->firstName . ' ' . $_SESSION[$id]['node']->node->createdBy->lastName) ?>//",
-                    //                    created: "<?php //echo date_format(date_create($_SESSION[$id]['node']->node->createdAt), 'd.m.Y'); ?>//",
-                    //                },
-                    //
-                    //                permissions: {
-                    //                    edit: <?php //echo $_SESSION[$id]['edit'] ? 'true' : 'false'; ?>//,
-                    //                    download: false,
-                    //                }
-                    //            },
-                    //            editorConfig: {
-                    //                mode: 'edit',
-                    //                lang: "<?php //echo $lang?>//",
-                    //                callbackUrl: "<?php //echo getCallbackUrl($id) ?>//",
-                    //
-                    //                user: {
-                    //                    id: "<?php //echo session_id()?>//",
-                    //                    firstname: "<?php //echo addslashes($_SESSION[$id]['user']->profile->firstName) ?>//",
-                    //                    lastname: "<?php //echo addslashes($_SESSION[$id]['user']->profile->lastName) ?>//",
-                    //                },
-                    //
-                    //                embedded: {
-                    //                    saveUrl: "",
-                    //                    embedUrl: "",
-                    //                    shareUrl: "",
-                    //                    toolbarDocked: "top",
-                    //                },
-                    //
-                    //                customization: {
-                    //                    about: false,
-                    //                    feedback: false,
-                    //                    comments: true,
-                    //                    forcesave: true, //check concept, some integrity issues with versions
-                    //                    chat: true
-                    //                    //  goback: {
-                    //                    //   url: "<?php //echo serverPath() ?>///index.php",
-                    //                    // },
-                    //                }
-                    //            },
-                    //            events: {
-                    //                'onReady': onReady,
-                    //                'onDocumentStateChange': onDocumentStateChange,
-                    //                'onRequestEditRights': onRequestEditRights,
-                    //                'onError': onError,
-                    //            }
-                    //        });
-                    //};
-                    width: "100%",
-                    height: "100%",
-
-                    type: "desktop", // embedded
-                    documentType: "<?php echo getDocumentType('dummy.' . $_SESSION[$id]['filetype']) ?>",
-                    <?php
-                    $payload_title = addslashes(empty($_SESSION[$id]['node']->node->title) ? $_SESSION[$id]['node']->node->name : $_SESSION[$id]['node']->node->title);
-                    $payload_fileType = $_SESSION[$id]['filetype'];
-                    $payload_key = getDocEditorKey($id);
-                    $payload_created = date_format(date_create($_SESSION[$id]['node']->node->createdAt), 'd.m.Y');
-                    $payload_author = addslashes($_SESSION[$id]['node']->node->createdBy->firstName . ' ' . $_SESSION[$id]['node']->node->createdBy->lastName);
-                    $payload_download = false;
-                    //$payload_print = $get_array["embed"] == "true" ? "false" : "true";
-                    $payload_edit = $_SESSION[$id]['edit'] ? 'true' : 'false';
-                    //$payload_comment = $get_array["comment"] == "true" ? "true" : "false";
-                    //$payload_review = $get_array["review"] == "true" ? "true" : "false";
-                    $payload_form = "false";
-                    $payload_mode = 'edit';
-                    $payload_callback = getCallbackUrl($id);
-                    $payload_user = session_id();
-                    $payload_fname = addslashes($_SESSION[$id]['user']->profile->firstName);
-                    $payload_lname = addslashes($_SESSION[$id]['user']->profile->lastName);
-                    //$payload_save = $get_array["path"];
-
-                    $payload = <<<PAYLOAD
-			document: {
-				"title": "$payload_title",
-				"url": "$fileuri",
-				"fileType": "$payload_fileType",
-				"key": "$payload_key",
-				"info": {
-					"author": "$payload_author",
-					"created": "$payload_created",
-				},
-				"permissions": {
-					"download": false,
-					"edit": $payload_edit,
-				}
-			},
-			"editorConfig": {
-				"mode": "$payload_mode",
-				"lang": "$lang",
-				"callbackUrl": "$payload_callback",
-				"user": {
-					id: "$payload_user",
-					firstname: "$payload_fname",
-					lastname: "$payload_lname",
-					},
-				"embedded": {
-					saveUrl: "",
-					embedUrl: "",
-					shareUrl: "",
-					toolbarDocked: "top",
-				},
-				customization: {
-					"about": false,
-					feedback: false,
-					comments: true,
-					chat: true,
-				}
-			},
-
-PAYLOAD;
-
-                    echo $payload;
-                    ?>
-
-                    events: {
-                        'onReady': onReady,
-                        'onDocumentStateChange': onDocumentStateChange,
-                        'onRequestEditRights': onRequestEditRights,
-                        'onError': onError,
-                    },
-                    <?php if (!empty(DOC_SERV_JWT_SECRET)): ?>
-                    token: "<?php
-                        $token = array();
-                        $token['payload'] = $payload;
-                        echo JWT::encode($token, DOC_SERV_JWT_SECRET);
-                        ?>"
-                    <?php endif; ?>
-
-                    if(window.addEventListener)
-            {
-                window.addEventListener("load", сonnectEditor);
-            }
+            docEditor = new DocsAPI.DocEditor("iframeEditor", config);
+        }
+        if(window.addEventListener)
+        {
+            window.addEventListener("load", сonnectEditor);
+        }
         else
-            if (window.attachEvent) {
-                window.attachEvent("load", сonnectEditor);
-            }
-
-            function getXmlHttp() {
-                var xmlhttp;
+        if (window.attachEvent) {
+            window.attachEvent("load", сonnectEditor);
+        }
+        function getXmlHttp() {
+            var xmlhttp;
+            try {
+                xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
                 try {
-                    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-                } catch (e) {
-                    try {
-                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-                    } catch (ex) {
-                        xmlhttp = false;
-                    }
+                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                } catch (ex) {
+                    xmlhttp = false;
                 }
-                if (!xmlhttp && typeof XMLHttpRequest != 'undefined') {
-                    xmlhttp = new XMLHttpRequest();
-                }
-                return xmlhttp;
             }
+            if (!xmlhttp && typeof XMLHttpRequest != 'undefined') {
+                xmlhttp = new XMLHttpRequest();
+            }
+            return xmlhttp;
+        }
 
         /*  function destroy(text) {
               $('#theTextarea').html('');
