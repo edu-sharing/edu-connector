@@ -193,7 +193,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                     "callbackUrl" => $payload_callback,
                     "user" => [
                         "id" => $payload_user,
-                        name => $payload_fname . ' ' . $payload_lname
+                        "name" => $payload_fname . ' ' . $payload_lname
                         //"firstname" => $payload_fname,
                         //"lastname" => $payload_lname,
                     ],
