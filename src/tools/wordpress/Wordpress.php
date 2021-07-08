@@ -11,7 +11,14 @@ class Wordpress extends \connector\lib\Tool {
     private $createdPage = '';
 
     public function run() {
-        $this->displayIframe( $this->createPage() );
+        $this->redirectToWp( $this->createPage() );
+        //$this->displayIframe( $this->createPage() );
+    }
+
+    private function redirectToWp($wp_page_id){
+        $url = WP_URL.'wp-login.php?user='.WP_USER.'&pw='.WP_PW.'&page='.$wp_page_id;
+        header("Location: ".$url);
+        exit();
     }
 
     private function displayIframe($wp_page_id){
@@ -30,6 +37,7 @@ class Wordpress extends \connector\lib\Tool {
                     </div>
                 
                     <div class="wrap">
+                        <pre>'.WP_URL.'wp-login.php?user='.WP_USER.'&pw='.WP_PW.'&page='.$wp_page_id.'</pre>
                         <iframe src="'.WP_URL.'wp-login.php?user='.WP_USER.'&pw='.WP_PW.'&page='.$wp_page_id.'" width="100%" height="100%" frameBorder="0"></iframe>
                     </div>
                 </body>
@@ -44,7 +52,7 @@ class Wordpress extends \connector\lib\Tool {
             return false;
         }
 
-        $url = WP_URL . 'wp-json/wp/v2/pages/'.$id;
+        $url = WP_URL . 'wp-json/wp/v2/uploadathon/'.$id;
         $auth = WP_USER.':'.WP_PW;
         $response = '';
         try {
@@ -80,11 +88,15 @@ class Wordpress extends \connector\lib\Tool {
     }
 
     private function createPage(){
-        $node = $_SESSION[$this->connectorId]['node']->node;
-        $nodeId = $node->ref->id;
+        $node = $_SESSION[$this->connectorId]['node'];
+        $nodeId = $node->node->ref->id;
         $ticket = $_SESSION[$this->connectorId]['ticket'];
 
-        $fileContent = $this->downloadContent($nodeId, $ticket);
+        $client = new EduRestClient($this->connectorId);
+        $fileContent = json_decode($client->getContent($node));
+
+        //$this->log->info('$fileContent->id: '.$fileContent->id);
+        //$this->log->info(print_r($fileContent, true));
 
         if ($this->checkWpPage($fileContent->id)){
             //Page found, no need to create one.
@@ -98,7 +110,7 @@ class Wordpress extends \connector\lib\Tool {
         }
 
         $data = array(
-            "title" => $node->name,
+            "title" => $node->node->name,
             "content" => $wpContent,
             "status" => 'publish',
             "meta" => array(
@@ -106,12 +118,12 @@ class Wordpress extends \connector\lib\Tool {
                     'nodeID' => $nodeId,
                     'ticket' => $ticket,
                     'repoUrl' => $_SESSION[$this->connectorId]['api_url']
-                )
+                ),
             )
         );
         $data_string = json_encode($data);
 
-        $url = WP_URL.'wp-json/wp/v2/pages/';
+        $url = WP_URL.'wp-json/wp/v2/uploadathon/';
         $auth = WP_USER.':'.WP_PW;
 
         $response = '';
@@ -133,69 +145,15 @@ class Wordpress extends \connector\lib\Tool {
         } catch (Exception $e) {
             trigger_error($e->getMessage(), E_USER_WARNING);
         }
+
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        //$this->log->info('$httpcode: '.$httpcode);
+
         curl_close($curl);
 
         $this->createdPage = json_decode($response);
         $this->log->info('Created wordpress-page with ID: '.$this->createdPage->id);
         return $this->createdPage->id;
-    }
-
-    protected function downloadContent($nodeId, $ticket){
-
-        $downloadUrl = 'http://localhost:8080/edu-sharing/eduservlet/download?nodeId='.$nodeId.'&ticket='.$ticket;
-        $content = '';
-        try {
-            $ch = curl_init($downloadUrl);
-            $headers = array(
-                'Accept: application/json',
-                'Content-Type: multipart/form-data'
-            );
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            $res = curl_exec($ch);
-            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            if ($httpcode >= 200 && $httpcode < 308) {
-                curl_close($ch);
-                $content = json_decode($res);
-            }
-        } catch (Exception $e) {
-            $this->log->error('Could not load textContent: '.$e->getMessage());
-        }
-
-        return $content;
-    }
-
-    protected function loadTextContent($nodeId, $ticket){
-        $currentFileUrl = $_SESSION[$this->connectorId]['api_url'].'node/v1/nodes/-home-/'.$nodeId.'/textContent';
-        $currentFile = '';
-        try {
-            $ch = curl_init($currentFileUrl);
-            $headers = array(
-                'Authorization: EDU-TICKET '.$ticket,
-                'Accept: application/json',
-                'Content-Type: multipart/form-data'
-            );
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            $res = curl_exec($ch);
-            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            var_dump('$httpcode: '.$httpcode);
-            var_dump('$res: '.$res);
-            if ($httpcode >= 200 && $httpcode < 308) {
-                $currentFile = json_decode($res);
-                curl_close($ch);
-            }
-        } catch (Exception $e) {
-            $this->log->error('Could not load textContent: '.$e->getMessage());
-        }
-
-        return json_decode($currentFile->raw);
     }
 
 }
