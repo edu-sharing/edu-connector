@@ -59,7 +59,7 @@ function getDocEditorKey($id) {
     $node = $_SESSION[$id]['node']->node;
     // use the unique id (which is the original id in case of a collection) to make sure everyone edits the real content
     $nodeId = $node->originalId ? $node->originalId : $node->ref->id;
-    if (!empty($_SESSION[$id]['node']->node->contentVersion)){
+    if (!empty($node->contentVersion)){
         $contentVersion = $node->contentVersion;
     }else{
         // since  repo 6.0
@@ -87,7 +87,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+    <link rel="stylesheet" href="<?php echo $_SESSION[$id]['WWWURL']?>/css/materialize.min.css">
     <title>edu-sharing ONLYOFFICE</title>
 
     <style>
@@ -120,9 +120,9 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
     </style>
 
     <script type="text/javascript" src="<?php echo $GLOBALS["DOC_SERV_API_URL"] ?>"></script>
-    <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/lang/<?php echo $lang ?>.js"></script>
+    <script src="<?php echo $_SESSION[$id]['WWWURL']?>/lang/<?php echo $lang ?>.js"></script>
     <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/jquery-3.2.1.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+    <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/materialize.min.js"></script>
     <script type="text/javascript">
 
         var docEditor;
