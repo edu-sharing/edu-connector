@@ -32,6 +32,8 @@ class OnlyOffice extends \connector\lib\Tool {
                 return $originalNode;
             } catch (\Exception $e) {
                 $this->log->info('No accesss to original object ('.$e->getCode().')');
+                $_SESSION[$this->connectorId]['edit'] = false;
+                return $node;
             }
         }
         if (in_array('Write', $node->node->access)) {
