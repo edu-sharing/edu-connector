@@ -1,6 +1,6 @@
 <?php
 
-/*general*/
+/*general (without trailing slashes)*/
 define('VERSION', '');
 define('WWWURL', '');
 define('DOCROOT', '');

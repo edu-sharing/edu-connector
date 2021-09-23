@@ -92,6 +92,7 @@ class EduRestClient
         }
         throw new \Exception('Error unlocking node ' . $nodeId, $httpcode);
     }
+
     public function getContent($node){
         if ($node->node->contentUrl){
             $contentUrl = $node->node->contentUrl; //repo-version 5.0 or older

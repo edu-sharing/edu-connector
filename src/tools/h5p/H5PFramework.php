@@ -4,6 +4,8 @@ namespace connector\tools\h5p;
 
 use JsonSerializable;
 
+require_once __DIR__ . '/../../../config.php';
+
 class H5PFramework implements \H5PFrameworkInterface {
 
     private $messages = array('error' => array(), 'info' => array());
@@ -26,11 +28,12 @@ class H5PFramework implements \H5PFrameworkInterface {
 
 
     public function get_h5p_path() {
-        return DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'h5p';
+        return DATA . DIRECTORY_SEPARATOR . 'h5p';
     }
 
     public function get_h5p_url() {
-        return WWWURL . '/src/tools/h5p';
+        //return WWWURL . '/src/tools/h5p';
+        return WWWURL . '/src/tools/h5p/cache';
     }
 
     /**
@@ -177,7 +180,9 @@ class H5PFramework implements \H5PFrameworkInterface {
      */
     public function getLibraryFileUrl($libraryFolderName, $fileName)
     {
-        return WWWURL . '/' . 'src' . '/' . 'tools' . '/' . 'h5p' . '/' . 'libraries' . '/' . $libraryFolderName . '/' . $fileName;
+        //return WWWURL . '/' . 'src' . '/' . 'tools' . '/' . 'h5p' . '/' . 'libraries' . '/' . $libraryFolderName . '/' . $fileName;
+        return WWWURL . '/src/tools/h5p/cache/libraries/' . $libraryFolderName . '/' . $fileName;
+        //return DATA . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'libraries' . DIRECTORY_SEPARATOR . $libraryFolderName . DIRECTORY_SEPARATOR . $fileName;
     }
 
     /**

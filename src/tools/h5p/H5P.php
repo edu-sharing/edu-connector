@@ -21,12 +21,16 @@ class H5P extends \connector\lib\Tool {
     private $parameters;
     private $h5pLang;
     private $language;
+    private $logger;
 
     public function __construct($apiClient = NULL, $log = NULL, $connectorId = NULL) {
 
-        if($apiClient && $log && $connectorId)
+        if($apiClient && $log && $connectorId){
             parent::__construct($apiClient, $log, $connectorId);
+        }
         global $db;
+
+        $this->logger = new \connector\lib\Logger();
 
         $this -> h5pLang = isset($_SESSION[$connectorId]['language'])? $_SESSION[$connectorId]['language'] : 'de';
 	    $this -> language = str_replace('/', DIRECTORY_SEPARATOR, include __DIR__ . '/../../../lang/' . $this -> h5pLang . '.php');
@@ -48,8 +52,7 @@ class H5P extends \connector\lib\Tool {
         self::$instance = $this;
     }
 
-    public static function getInstance()
-    {
+    public static function getInstance() {
         if (null === self::$instance)
         {
             self::$instance = new self;
@@ -58,11 +61,14 @@ class H5P extends \connector\lib\Tool {
     }
 
     public function run() {
-
+        $log = $this->logger->getLog();
         $this->H5PCore->disableFileCheck = true;
+
         if($this->mode === MODE_NEW) {
+            //$log->info('new H5P');
             $content['id'] = '';
-        } else {
+        }else {
+
             if($this->H5PValidator->isValidPackage()){
                 $content['language'] = $this -> h5pLang;
                 $titleShow = $_SESSION[$this->connectorId]['node']->node->title;
@@ -80,14 +86,14 @@ class H5P extends \connector\lib\Tool {
             }else{
                 $h5p_error_array = array_values($this->H5PFramework->getMessages('error'));
                 $h5p_error = end($h5p_error_array);
-                error_log('eduConnector: There was a problem with the H5P-file: '.$h5p_error->code);
+                $log->error('eduConnector: There was a problem with the H5P-file: '.$h5p_error->code);
             }
+
         }
         $this->showEditor();
     }
 
-    private function copyr($source, $dest)
-    {
+    private function copyr($source, $dest) {
         if(is_file($source) && basename($source) == 'content.json')
             return true;
 
@@ -141,7 +147,8 @@ class H5P extends \connector\lib\Tool {
         echo '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">';
         $integration = array();
         $integration['baseUrl'] = WWWURL;
-        $integration['url'] = '/eduConnector/src/tools/h5p';
+        //$integration['url'] = '/eduConnector/src/tools/h5p';
+        $integration['url'] = '/eduConnector/src/tools/h5p/cache';
         $integration['siteUrl'] = WWWURL;
         $integration['postUserStatistics'] = '';
         $integration['ajax'] = array();
@@ -152,7 +159,8 @@ class H5P extends \connector\lib\Tool {
         $integration['core'] = array('style'=>\H5PCore::$styles, 'scripts'=>\H5PCore::$scripts);
         $integration['loadedJs'] = '';
         $integration['loadedCss'] = '';
-        $integration['editor']['filesPath'] = WWWURL . '/src/tools/h5p/editor';
+        //$integration['editor']['filesPath'] = WWWURL . '/src/tools/h5p/editor';
+        $integration['editor']['filesPath'] = WWWURL . '/src/tools/h5p/cache/editor';
         $integration['editor']['fileIcon'] = '';
         $integration['editor']['ajaxPath'] = WWWURL . '/ajax/ajax.php?action=h5p_';
         $integration['editor']['libraryUrl'] = WWWURL . '/vendor/h5p/h5p-editor/';
