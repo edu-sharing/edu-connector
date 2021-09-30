@@ -103,7 +103,6 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
             $cid = $contentHandler->process_new_content();
             if ($cid) {
                 $apiClient = new \connector\lib\EduRestClient($id);
-                //$contentPath = DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'exports' . DIRECTORY_SEPARATOR . $_SESSION[$id]['node']->node->ref->id.'-'.$cid.'.h5p';
                 $contentPath = DATA . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'exports' . DIRECTORY_SEPARATOR . $_SESSION[$id]['node']->node->ref->id.'-'.$cid.'.h5p';
                 $res = $apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $contentPath, 'application/zip', 'EDITOR_UPLOAD,H5P');
                 if($res) {
