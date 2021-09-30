@@ -103,7 +103,7 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
             $cid = $contentHandler->process_new_content();
             if ($cid) {
                 $apiClient = new \connector\lib\EduRestClient($id);
-                $contentPath = DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'exports' . DIRECTORY_SEPARATOR . $_SESSION[$id]['node']->node->ref->id.'-'.$cid.'.h5p';
+                $contentPath = DATA . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'exports' . DIRECTORY_SEPARATOR . $_SESSION[$id]['node']->node->ref->id.'-'.$cid.'.h5p';
                 $res = $apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $contentPath, 'application/zip', 'EDITOR_UPLOAD,H5P');
                 if($res) {
                     //cleanup filesystem and db
@@ -111,12 +111,15 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
                     $h5p->H5PFramework -> deleteLibraryUsage($cid);
                     unlink($contentPath);
                     $h5p -> rrmdir($h5p -> H5PFramework -> get_h5p_path() . '/content/' . $cid);
-                    if(isset($_SESSION[$id]['viewContentId']))
+                    if(isset($_SESSION[$id]['viewContentId'])){
                         $h5p -> rrmdir($h5p -> H5PFramework -> get_h5p_path() . '/content/' . $_SESSION[$id]['viewContentId']);
+                    }
+                    $h5p -> rrmdir(DATA . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'editor');
+                    $h5p -> rrmdir(DATA . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'temp');
 
-		    //cordova
-		    echo '<script>window.shouldClose=true;</script>';
-		    echo '<script>setInterval(function(){if(window.opener){window.opener.postMessage({event:"REFRESH"},"*"); window.opener.postMessage({event:"CLOSE"},"*");}},100);</script>';
+                    //cordova
+                    echo '<script>window.shouldClose=true;</script>';
+                    echo '<script>setInterval(function(){if(window.opener){window.opener.postMessage({event:"REFRESH"},"*"); window.opener.postMessage({event:"CLOSE"},"*");}},100);</script>';
                     exit(0);
                 }
             }
