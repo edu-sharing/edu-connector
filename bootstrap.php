@@ -161,7 +161,7 @@ $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
 
 $app->post('/ajax/unlockNode', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
-    $id = $request->getHeaderLine('X-CSRF-Token');
+    $id = $request->getQueryParams()['X-CSRF-Token'];
     try {
         $apiClient = new \connector\lib\EduRestClient($id);
         $apiClient->unlockNode($_SESSION[$id]['node']->node->ref->id);

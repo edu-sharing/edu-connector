@@ -57,23 +57,23 @@ $(document).ready(function() {
     }
 
     unlockNode = function() {
-        $.ajax({
-            type: 'POST',
-            //async: false, // will not work if changed
-            url: wwwurl + '/ajax/unlockNode',
-            beforeSend: function(request) {
-                request.setRequestHeader("X-CSRF-Token", id);
-            },
-            crossDomain: true
-        })
-        .done(function() {
-            console.log('unlockNode done');
-        })
-        .fail(function(jqXHR) {
-            console.log('unlockNode failed. status: '+jqXHR.status);
-        });
+        if(navigator.sendBeacon) {
+            navigator.sendBeacon(wwwurl + '/ajax/unlockNode?X-CSRF-Token=' + encodeURIComponent(id));
+        } else {
+            $.ajax({
+                type: 'POST',
+                //async: false, // will not work if changed
+                url: wwwurl + '/ajax/unlockNode?X-CSRF-Token=' + encodeURIComponent(id),
+                crossDomain: true
+            })
+                .done(function () {
+                    console.log('unlockNode done');
+                })
+                .fail(function (jqXHR) {
+                    console.log('unlockNode failed. status: ' + jqXHR.status);
+                });
+        }
     }
-
     setInterval(function(){
         if (tinyMCE.activeEditor.isDirty()) {
             tinyMCE.activeEditor.save(); // to reset isDirty
@@ -89,6 +89,9 @@ $(document).ready(function() {
         if (tinyMCE.activeEditor.isDirty()) {
             return language.leavesiteunsaved;
         }
+    }
+
+    window.onunload = function () {
         unlockNode();
     }
 
