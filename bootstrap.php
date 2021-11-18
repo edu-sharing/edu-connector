@@ -100,10 +100,14 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
     if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_create') {
     try {
             $id = $_REQUEST['id']; // apiClient id
-            $cid = $contentHandler->process_new_content();
+            $newContent = $contentHandler->process_new_content();
+            $cid = $newContent['id'];
+            $ctitle = $newContent['title'];
+
             if ($cid) {
                 $apiClient = new \connector\lib\EduRestClient($id);
-                $contentPath = DATA . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'exports' . DIRECTORY_SEPARATOR . $_SESSION[$id]['node']->node->ref->id.'-'.$cid.'.h5p';
+                //$contentPath = DATA . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'exports' . DIRECTORY_SEPARATOR . $_SESSION[$id]['node']->node->ref->id.'-'.$cid.'.h5p';
+                $contentPath = DATA . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'exports' . DIRECTORY_SEPARATOR . $ctitle.'-'.$cid.'.h5p';
                 $res = $apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $contentPath, 'application/zip', 'EDITOR_UPLOAD,H5P');
                 if($res) {
                     //cleanup filesystem and db

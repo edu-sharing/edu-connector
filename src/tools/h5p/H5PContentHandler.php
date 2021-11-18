@@ -75,10 +75,8 @@ private $content = NULL;
                 $result = $plugin_admin->handle_upload($content);
             }*/
             if ($result) {
-                $content['id'] = $result;
-           //     $this->set_content_tags($content['id'], filter_input(INPUT_POST, 'tags'));
-            //    wp_safe_redirect(admin_url('admin.php?page=h5p&task=show&id=' . $result));
-            return $content['id'];            }
+                return $result;
+            }
         }
     }
     #
@@ -90,7 +88,6 @@ private $content = NULL;
      * @return mixed
      */
     private function handle_content_creation($content) {
-
 
         // Keep track of the old library and params
         $oldLibrary = NULL;
@@ -152,7 +149,11 @@ private $content = NULL;
         $this->H5PEditor->processParameters($content['id'], $content['library'], $params->params, $oldLibrary, $oldParams);
         $this->H5PCore->filterParameters($content);
 
-        return $content['id'];
+        //return $content['id'];
+        return array(
+            'id' => $content['id'],
+            'title' => $content['title'],
+        );
     }
 
 

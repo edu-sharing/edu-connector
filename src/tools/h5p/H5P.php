@@ -19,6 +19,7 @@ class H5P extends \connector\lib\Tool {
     private $mode;
     private $library;
     private $parameters;
+    private $metadata;
     private $h5pLang;
     private $language;
     private $logger;
@@ -71,15 +72,23 @@ class H5P extends \connector\lib\Tool {
 
             if($this->H5PValidator->isValidPackage()){
                 $content['language'] = $this -> h5pLang;
+
                 $titleShow = $_SESSION[$this->connectorId]['node']->node->title;
+                if (!empty($this->H5PValidator->h5pC->mainJsonData['title'])) {
+                    $titleShow = $this->H5PValidator->h5pC->mainJsonData['title'];
+                }
                 if(empty($titleShow)){
                     $titleShow = $_SESSION[$this->connectorId]['node']->node->name;
                 }
+
                 $this->H5PStorage->savePackage(array('title' => $titleShow, 'disable' => 0));
                 $content = $this->H5PCore->loadContent($this->H5PStorage->contentId);
                 $this->library = $this->H5PCore->libraryToString($content['library']);
-                //$this->parameters = $this->H5PCore->filterParameters($this->content) . ',"metadata":' . ($content['metadata'] ? json_encode((object)$content['metadata']) : '{}');
-                $this->parameters = htmlentities($content['params']); // metadata missing !!!!!!!!!!!!!!!!!!!!!! check if needed => //htmlentities($this->H5PCore->filterParameters($content));
+
+                $this->parameters = htmlentities($content['params']);
+                $this->metadata = htmlentities(json_encode($content['metadata']));
+
+                htmlentities($this->H5PCore->filterParameters($content));
                 //copy media to editor
                 $this->copyr($this->H5PFramework->get_h5p_path().'/content/'.$content['id'], $this->H5PFramework->get_h5p_path().'/editor/');
                 $_SESSION[$this->connectorId]['viewContentId'] = $content['id'];
@@ -90,7 +99,7 @@ class H5P extends \connector\lib\Tool {
             }
 
         }
-        $this->showEditor();
+        $this->showEditor($content);
     }
 
     private function copyr($source, $dest) {
@@ -143,7 +152,7 @@ class H5P extends \connector\lib\Tool {
     }
 
 
-    public function showEditor() {
+    public function showEditor($content) {
         echo '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">';
         $integration = array();
         $integration['baseUrl'] = WWWURL;
@@ -194,6 +203,7 @@ class H5P extends \connector\lib\Tool {
         echo '<script>'.
             'window.H5PIntegration='. json_encode($integration).
             '</script>';
+
         foreach(\H5PCore::$styles as $style) {
             echo '<link rel="stylesheet" href="' . WWWURL . '/vendor/h5p/h5p-core/' . $style . '"> ';
         }
@@ -207,18 +217,23 @@ class H5P extends \connector\lib\Tool {
             echo '<script src="' . WWWURL . '/vendor/h5p/h5p-editor/' . $script . '"></script> ';
         }
 
-                echo '<script src="'.WWWURL.'/src/tools/h5p/js/editor.js"></script>';
+        echo '<script src="'.WWWURL.'/vendor/h5p/h5p-editor/scripts/h5peditor-editor.js"></script>';
+        echo '<script src="'.WWWURL.'/src/tools/h5p/js/h5peditor-init.js"></script>';
+
         echo '</head><body>';
 
         $titleShow = $_SESSION[$this->connectorId]['node']->node->title;
-        if(empty($titleShow))
+        if(empty($titleShow)){
             $titleShow = $_SESSION[$this->connectorId]['node']->node->name;
+        }
 
         echo '<form method="post" enctype="multipart/form-data" id="h5p-content-form" action="'.WWWURL.'/ajax/ajax.php?title='.$_SESSION[$this->connectorId]['node']->node->ref->id.'&action=h5p_create&id='.$this->connectorId.'">';
         echo '<div class="h5pSaveBtnWrapper"><h1 class="h5pTitle">'.$titleShow.'</h1><input type="submit" name="submit" value="' . $this -> language['save'] . '" class="h5pSaveBtn btn button button-primary button-large"/></div>';
         echo '<div class="h5p-create"><div class="h5p-editor"></div></div>';
+        echo '<input type="hidden" name="title" value="'.$content['title'].'">';
         echo '<input type="hidden" name="library" value="'.$this->library.'">';
         echo '<input type="hidden" name="parameters" value="'.$this->parameters.'">';
+        echo '<input type="hidden" name="metadata" value="'.$this->metadata.'">';
         echo '<div class="h5pSaveBtnWrapper"><input type="submit" name="submit" value="' . $this -> language['save'] . '" class="h5pSaveBtn btn button button-primary button-large"/></div>';
         echo '</form>';
         echo '</body></html>';
