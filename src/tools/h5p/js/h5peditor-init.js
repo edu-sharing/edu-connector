@@ -40,9 +40,17 @@
         //h5peditor = new ns.Editor($library.val(), $params.val(), $editor[0]);
         //create
         if (h5peditor === undefined) {
-            let params = JSON.parse($params.val());
-            let metadata = JSON.parse($metadata.val());
-            params.metadata = metadata;
+            let params;
+            if($params.val()){
+                params = JSON.parse($params.val());
+            }else {
+                params = '{}'
+            }
+            if ($metadata.val()){
+                let metadata = JSON.parse($metadata.val());
+                params.metadata = metadata;
+            }
+
             h5peditor = new ns.Editor(library, JSON.stringify(params), $editor[0]);
         }
 
