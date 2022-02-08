@@ -1,4 +1,6 @@
 <?php
+require __DIR__ . '/../../../vendor/autoload.php';
+
 session_start();
 
 error_reporting(0);
@@ -163,6 +165,8 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
             //$payload_review = $get_array["review"] == "true" ? "true" : "false";
             $payload_form = false;
             $payload_mode = 'edit';
+            $detector = new Mobile_Detect();
+            $type = $detector->isMobile() ? 'mobile' : 'desktop';
             $payload_callback = getCallbackUrl($id);
             $payload_user = session_id();
             $payload_fname = $_SESSION[$id]['user']->profile->firstName;
@@ -171,7 +175,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
             $payload = [
                 "width" => "100%",
                 "height" => "100%",
-                "type" => "desktop", // embedded
+                "type" => $type, // embedded
                 "documentType" => getDocumentType('dummy.' . $_SESSION[$id]['filetype']),
                 "document" => [
                     "title" => $payload_title,
