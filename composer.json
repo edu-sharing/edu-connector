@@ -22,6 +22,7 @@
     "slim/slim": "3.8.1",
     "twig/twig": "^1.0",
     "slim/twig-view": "2.3",
+    "tinymce/tinymce": "5.10.3",
     "h5p/h5p-core": "1.24.0",
     "h5p/h5p-editor": "1.24.1",
     "mobiledetect/mobiledetectlib": "^2.8"
