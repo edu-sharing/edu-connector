@@ -14,7 +14,7 @@ $(document).ready(function() {
         height: 600,
         readonly: readonly,
         language : lang,
-        language_url: 'js/tinymce/langs/' + lang + '.js',
+        language_url: 'js/langs/' + lang + '.js',
         removed_menuitems: 'newdocument',
         save_onsavecallback: function () { save() } //save button
     });

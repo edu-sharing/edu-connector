@@ -56,7 +56,7 @@ select {
   <script src="<?php echo $_SESSION[$id]['WWWURL']?>/lang/<?php echo (isset($_SESSION[$id]['language'])? $_SESSION[$id]['language'] : 'de') ?>.js"></script>
   <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/jquery-3.2.1.min.js"></script>
   <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/materialize.min.js"></script>
-  <script src='js/tinymce/tinymce.min.js'></script>
+  <script src='<?php echo $_SESSION[$id]['WWWURL'] ; ?>/vendor/tinymce/tinymce/tinymce.js'></script>
   <script src="<?php echo $_SESSION[$id]['WWWURL']?>/src/tools/tinymce/js/tool.js"></script>
 </head>
 <body>
