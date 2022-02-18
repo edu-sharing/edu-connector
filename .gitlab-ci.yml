@@ -3,9 +3,9 @@
 image: php:latest
 
 # Select what we should cache between builds
-cache:
-  paths:
-    - vendor/
+#cache:
+#  paths:
+#    - vendor/
     
 stages:
   - deploy
@@ -28,6 +28,6 @@ deploy_release:
     paths:
       - ./
   script:
-      # - rm -rf .git/
-      # - find ./vendor/ -name ".git" -exec rm -rf {} \; || true
+      - rm -rf .git/
+      - find ./vendor/ -name ".git" -exec rm -rf {} \; || true
       - ls ./
