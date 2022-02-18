@@ -20,9 +20,6 @@ before_script:
   - sed -i "s/#BUILD_DATE/$date/g" install/version_info.php
   - sed -i "s/#BUILD_COMMIT/$CI_COMMIT_SHORT_SHA/g" install/version_info.php
   - sed -i "s/#BUILD_BRANCH/$CI_COMMIT_REF_NAME/g" install/version_info.php
-  - rm -rf .git/
-  - find ./vendor/ -name ".git" -exec rm -rf {} \; || true
-
 
 deploy_release:
   stage: deploy
@@ -31,4 +28,6 @@ deploy_release:
     paths:
       - ./
   script:
+      - rm -rf .git/
+      - find ./vendor/ -name ".git" -exec rm -rf {} \; || true
       - ls ./
