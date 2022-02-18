@@ -28,6 +28,6 @@ deploy_release:
     paths:
       - ./
   script:
-      - rm -rf .git/
-      - find ./vendor/ -name ".git" -exec rm -rf {} \; || true
+      # - rm -rf .git/
+      # - find ./vendor/ -name ".git" -exec rm -rf {} \; || true
       - ls ./
