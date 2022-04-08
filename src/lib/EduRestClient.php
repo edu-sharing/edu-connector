@@ -93,12 +93,13 @@ class EduRestClient
         throw new \Exception('Error unlocking node ' . $nodeId, $httpcode);
     }
 
-    public function getContent($node){
+    public function getContent($node, $downloadUrl=NULL){
         if ($node->node->contentUrl){
             $contentUrl = $node->node->contentUrl; //repo-version 5.0 or older
         }else{
             $contentUrl = $node->node->downloadUrl;  //repo-version 5.1 or newer
         }
+
 
         $curlHeader = $this->getHeaders();
 
@@ -111,6 +112,11 @@ class EduRestClient
             $arrContentUrl = parse_url($contentUrl);
             $contentUrl = $arrApiUrl['scheme'].'://'.$arrApiUrl['host'].':'.$arrApiUrl['port'].$arrContentUrl['path'].'?'.$arrContentUrl['query'] . '&com=internal';
             $curlHeader = array('Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId']);
+        }
+
+        if (!empty($downloadUrl)){
+            $contentUrl = $downloadUrl;
+            $curlHeader = array('Cookie:JSESSIONID=' . $this->connectorId);
         }
 
         $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
@@ -127,6 +133,7 @@ class EduRestClient
         if ($httpcode >= 200 && $httpcode < 308) {
             return $data;
         }else{
+            error_log("eduConnector: curl error " . $httpcode);
             throw new \Exception("curl error " . $httpcode);
         }
     }

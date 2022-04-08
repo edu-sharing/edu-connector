@@ -1,6 +1,7 @@
 <?php
 
 use connector\lib\Connector;
+use connector\lib\EduRestClient;
 use connector\lib\Logger;
 use connector\lib\MetadataGenerator;
 use \Psr\Http\Message\ServerRequestInterface as Request;
@@ -56,6 +57,16 @@ $app->get('/metadata', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     $metadataGenerator = new MetadataGenerator();
     $metadataGenerator -> serve();
+});
+
+$app->get('/oo-content', function (Request $request, Response $response) {
+    $this->get('log')->info('oo-content: '.$request->getUri());
+
+    $client = new EduRestClient($_GET['sessionId']);
+    $data = $client->getContent('node', $_GET['downloadUrl']);
+
+    header('Content-Disposition: attachment; filename="onlyoffice"');
+    echo $data;
 });
 
 $app->get('/install', function (Request $request, Response $response) {
