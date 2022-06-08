@@ -6,7 +6,7 @@ $(document).ready(function() {
             'advlist autolink lists link charmap hr anchor pagebreak',
             'searchreplace wordcount visualblocks visualchars fullscreen',
             'insertdatetime nonbreaking save table directionality',
-            'emoticons paste help print'
+            'emoticons paste help print image'
         ],
         toolbar: 'save | print | undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link',
         image_advtab: true,
