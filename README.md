@@ -80,7 +80,7 @@ Each editing request from edu-sharing will include at least:
 
 **The API's/Interfaces of a tool you want to interconnect should at least offer:**
 - Options to provide and fetch the content data of your object
-  - Providing a file format it can store and read again based on a binary) - so the data get's pushed back to edu-sharing and stored after the user finished editing
+  - Providing a file format it can store and read again based on a binary - so the data get's pushed back to edu-sharing and stored after the user finished editing
   - Having a back channel which provides the data after all users have finished editing
 - Handling multi-users in one sessions
   - Either by allowing multiple users to work collaborative OR
