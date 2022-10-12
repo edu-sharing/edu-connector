@@ -2,7 +2,7 @@
   "name": "edu-sharing/edu-connector",
   "description": "Connect edu-sharing repository with editing tools",
   "minimum-stability": "alpha",
-  "license": "proprietary",
+  "license": "GPL-3.0-or-later",
   "authors": [
     {
       "name": "hippeli",
