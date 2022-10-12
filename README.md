@@ -64,3 +64,28 @@ If you'll get 404 errors check for active `mod_rewrite` in Apache. You can activ
 New pads will be created but the reference is not saved to repository at this time. See `Etherpad.php` for details.
 ## H5P
 As all required metadata is handled in edu-sharing itself, it will be ignored in editor. uploading of content is disabled as it should be done in edu-sharing workspace.
+
+# Adding new tools
+Individual connectors are located at `lib/tools`.
+
+There the functionality to redirect editing requests from edu-sharing to the individual tools api should be implemented.
+
+Each editing request from edu-sharing will include at least:
+- A connector id (i.e. which tool should be used)
+- A node id (the object where the data should be fetched and stored to)
+  - The content can be retrieved and stored via api endpoints at edu-sharing
+- A mimetype (the sub type of the connectors type, i.e. in case of office files to switch between doc or spreadsheet)
+- Information about the current user (to handle multi-user sessions or locking on tool side)
+- Some additional attributes, check `ConnectorServlet` in the edu-sharing repository for further information
+
+*The API's/Interfaces of a tool you want to interconnect should at least offer:*
+- Options to provide and fetch the content data of your object
+  - Providing a file format it can store and read again based on a binary) - so the data get's pushed back to edu-sharing and stored after the user finished editing
+  - Having a back channel which provides the data after all users have finished editing
+- Handling multi-users in one sessions
+  - Either by allowing multiple users to work collaborative OR
+  - Locking the object while it is edited by an other user
+    (edu-sharing also provides a rudimentary locking mechanism, but it must be also implemented in the `ConnectorServlet` in this case)
+- Providing a webapp/webeditor which can be included either via frame, web component or be accessed by url-navigation (i.e. with special parameters)
+
+
