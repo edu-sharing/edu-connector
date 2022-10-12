@@ -87,5 +87,5 @@ Each editing request from edu-sharing will include at least:
   - Locking the object while it is edited by an other user
     (edu-sharing also provides a rudimentary locking mechanism, but it must be also implemented in the `ConnectorServlet` in this case)
 - Providing a webapp/webeditor which can be included either via frame, web component or be accessed by url-navigation (i.e. with special parameters)
-
+  - Certain connectors (like tinyMCE or h5p) may also contain their runtime in this connector app itself.
 
