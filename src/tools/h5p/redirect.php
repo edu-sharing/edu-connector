@@ -5,7 +5,13 @@ set_time_limit(0);
 require_once __DIR__ . '/../../../config.php';
 
 $connector_name = basename(WWWURL);
-$src_file = str_replace('/'.$connector_name.'/src/tools/h5p/cache', DATA.'/h5p', $_REQUEST['ID']);
+$base = DATA.'/h5p';
+$src_file = str_replace('/'.$connector_name.'/src/tools/h5p/cache', $base, $_REQUEST['ID']);
+$realPath = realpath($src_file);
+if($realPath === false || strpos($realPath, $base) !== 0) {
+    http_response_code(404);
+    return;
+}
 
 $filesize = filesize($src_file);
 
