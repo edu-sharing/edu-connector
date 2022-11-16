@@ -34,7 +34,9 @@ class H5P extends \connector\lib\Tool {
         $this->logger = new \connector\lib\Logger();
 
         $this -> h5pLang = isset($_SESSION[$connectorId]['language'])? $_SESSION[$connectorId]['language'] : 'de';
-	    $this -> language = str_replace('/', DIRECTORY_SEPARATOR, include __DIR__ . '/../../../lang/' . $this -> h5pLang . '.php');
+        $langPathBase = __DIR__ . '/../../../lang/' . $this -> h5pLang;
+        // PHP Code Sniffer can only handle two concatenated strings and wants to see a file extension.
+	    $this -> language = include $langPathBase . '.php';
         $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
         $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->H5PFramework = new H5PFramework();

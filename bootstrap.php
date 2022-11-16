@@ -38,9 +38,12 @@ $app->get('/', function (Request $request, Response $response) {
 
 $app->get('/error/{errorid}[/{language}]', function (Request $request, Response $response, $args) {
     $this->get('log')->info($request->getUri());
-    if(!isset($args['language']))
-	$args['language'] = 'en';
-    $language = include __DIR__ . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $args['language'] . '.php';
+    if (!isset($args['language'])) {
+        $args['language'] = 'en';
+    }
+    // PHP Code Sniffer can only handle two concatenated strings and wants to see a file extension.
+    $langPathBase = __DIR__ . '/' . 'lang' . '/' . $args['language'];
+    $language = include $langPathBase . '.php';
     switch($args['errorid']) {
         case ERROR_INVALID_ID:
             return $this->view->render($response, 'error/invalidid.html', array('title' => $language['error'], 'message' => $language['errorInvalidId'], 'wwwurl' => WWWURL));

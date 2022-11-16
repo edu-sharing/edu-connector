@@ -31,7 +31,7 @@ if(!isset($_POST['formSubmitted'])) {
 		$groupID = strip_tags($_GET['groupID']);
 
 ?>
-<form name="etherpadLti" method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>">
+<form name="etherpadLti" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">
 	<input type="hidden" name="formSubmitted" value="true" />
 	<input type="hidden" name="fname" value="<?php echo $fname ?>" />
 	<input type="hidden" name="user_id" value="<?php echo $user_id ?>" />
