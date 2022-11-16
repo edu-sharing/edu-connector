@@ -89,3 +89,14 @@ Each editing request from edu-sharing will include at least:
 - Providing a webapp/webeditor which can be included either via frame, web component or be accessed by url-navigation (i.e. with special parameters)
   - Certain connectors (like tinyMCE or h5p) may also contain their runtime in this connector app itself.
 
+# Code Quality
+
+## PHP Code Sniffer With Security Audit
+
+Run the following command to perform a check with [PHP Code Sniffer](https://github.com/squizlabs/PHP_CodeSniffer) with [Security Audit](https://github.com/FloeDesignTechnologies/phpcs-security-audit):
+```sh
+# Show warnings and errors
+docker run --rm -it --init -v "$PWD:$PWD" -w "$PWD" tophfr/phpcs-security-audit -p .
+# Show only errors
+docker run --rm -it --init -v "$PWD:$PWD" -w "$PWD" tophfr/phpcs-security-audit -p -n .
+```
