@@ -20,7 +20,7 @@ services:
     environment:
       WWWURL: http://localhost:8082/eduConnector
       DBHOST: db
-      DBPORT: 9200
+      DBPORT: 3306
       DBUSER: connector
       DBNAME: connector
       DBPASSWORD: connector
