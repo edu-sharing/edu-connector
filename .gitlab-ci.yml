@@ -48,7 +48,7 @@ deploy_release:
 
 build-docker:
   image: docker:20-dind
-  stage: build
+  stage: deploy
   services:
     - name: docker:20-dind
       alias: docker
