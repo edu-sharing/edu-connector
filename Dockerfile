@@ -1,6 +1,6 @@
 FROM php:8.0-apache
 
-RUN  apt-get update -yqq && apt-get install -yqq git && a2enmod rewrite && \
+RUN  apt-get update -yqq && apt-get install -yqq git wait-for-it && a2enmod rewrite && \
      ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 RUN curl -sS https://getcomposer.org/installer | php -- \
 --install-dir=/usr/bin --filename=composer
@@ -9,6 +9,7 @@ WORKDIR /var/www/html
 COPY css/ css/
 COPY fonts/ fonts/
 COPY img/ img/
+COPY install/ install/
 COPY js/ js/
 COPY lang/ lang/
 COPY src/ src/
