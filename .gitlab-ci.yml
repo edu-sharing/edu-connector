@@ -59,6 +59,7 @@ build-docker:
     DOCKER_TLS_CERTDIR: ""
 
   script:
+    - cd .legacy
     - docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
     - docker build -t $DOCKER_REGISTRY/projects/community/edu_sharing-projects-community-deploy-docker-services-connector:$([[ $CI_COMMIT_REF_NAME = "main" ]] && echo "main" || echo "dev") .
     - docker push $DOCKER_REGISTRY/projects/community/edu_sharing-projects-community-deploy-docker-services-connector:$([[ $CI_COMMIT_REF_NAME = "main" ]] && echo "main" || echo "dev")
