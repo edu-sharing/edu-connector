@@ -25,6 +25,7 @@ COPY config.dist.php .
 COPY defines.php .
 COPY index.php .
 COPY version.php .
+COPY .htaccess .
 
 # COPY ../config.dist.php config.php
 RUN mkdir /log && chmod -R 777 /log
@@ -32,5 +33,6 @@ RUN mkdir /log && chmod -R 777 /log
 RUN composer install
 
 COPY entrypoint.sh /entrypoint.sh
+RUN chown -R www-data:www-data ./
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["bash", "/entrypoint.sh"]

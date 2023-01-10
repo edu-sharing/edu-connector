@@ -18,7 +18,7 @@ services:
       context: ../
       dockerfile: Dockerfile
     environment:
-      WWWURL: http://localhost:8082/eduConnector
+      WWWURL: http://localhost:8082
       DBHOST: db
       DBPORT: 3306
       DBUSER: connector

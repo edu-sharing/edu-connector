@@ -4,12 +4,20 @@ require_once __DIR__ . '/../config.php';
 
 $pdo = new PDO("mysql:host=" . DBHOST, DBUSER, DBPASSWORD);
 $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+$pdo->exec("SET sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';");
 
 
 // refer to https://h5p.org/sites/default/files/class-h5p-plugin.txt
 
 $pdo -> query("CREATE DATABASE IF NOT EXISTS `".DBNAME."`");
 $pdo -> query("USE `".DBNAME."`");
+
+try {
+    $result = $pdo->query("SELECT 1 FROM h5p_contents LIMIT 1");
+    echo "Tables already exists";
+    exit();
+} catch (Exception $e) {
+}
 
 $pdo -> query("CREATE TABLE `h5p_contents` (
   `id` int(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -70,7 +78,6 @@ $pdo -> query("CREATE TABLE `h5p_libraries_languages` (
   `language_code` varchar(31) COLLATE utf8mb4_unicode_ci NOT NULL,
   `translation` text COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
-
 
 $pdo-> query("CREATE TABLE `h5p_libraries_hub_cache` (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
