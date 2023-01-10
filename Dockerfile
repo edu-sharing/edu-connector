@@ -1,7 +1,11 @@
-FROM php:8.0-apache
+FROM php:8.1-apache
 
-RUN  apt-get update -yqq && apt-get install -yqq git wait-for-it && a2enmod rewrite && \
-     ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
+RUN  set -eux \
+         && apt-get update \
+         && apt-get install -yqq git wait-for-it  \
+         && a2enmod rewrite \
+         && ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini \
+         && docker-php-ext-install pdo pdo_mysql
 RUN curl -sS https://getcomposer.org/installer | php -- \
 --install-dir=/usr/bin --filename=composer
 
