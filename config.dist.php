@@ -6,6 +6,9 @@ define('WWWURL', '');
 define('DOCROOT', '');
 define('DATA', '');
 
+// supported values: file, stdout
+define('LOG_MODE', 'file');
+
 /*h5p*/
 define('DBHOST', '');
 define('DBUSER', '');
