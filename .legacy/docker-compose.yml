@@ -16,10 +16,15 @@ services:
     image: connector:latest
     build:
       context: ../
-      dockerfile: .legacy/Dockerfile
-
+      dockerfile: Dockerfile
+    environment:
+      WWWURL: http://localhost:8082/eduConnector
+      DBHOST: http://db:9200
+      DBUSER: connector
+      DBNAME: connector
+      DBPASSWORD: connector
     volumes:
-      - ../:/var/www/html
+      - data:/var/www/html/data
     networks:
       - connector
     ports:
@@ -30,3 +35,4 @@ networks:
 
 volumes:
   db:
+  data:
