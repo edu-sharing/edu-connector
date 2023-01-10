@@ -22,7 +22,7 @@ until wait-for-it "${DBHOST}:${DBPORT}" -t 3
 do
   sleep 5
 done
-php eduConnector/install/createDb.php
+php install/createDb.php
 
 echo "Connector is ready. Please register it at your repository (Admin Tools -> Remote-Systems) with the following url:"
 echo "${WWWURL}/metadata"
