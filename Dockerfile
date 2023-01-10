@@ -7,7 +7,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 
 WORKDIR /var/www/html
 COPY css/ css/
-COPY data/ data/
 COPY fonts/ fonts/
 COPY img/ img/
 COPY js/ js/
