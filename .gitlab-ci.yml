@@ -44,3 +44,22 @@ deploy_release:
     - rm -rf .git/
     - find ./vendor/ -name ".git" -exec rm -rf {} \; || true
     - ls ./
+
+
+build-docker:
+  image: docker:20-dind
+  stage: build
+  services:
+    - name: docker:20-dind
+      alias: docker
+      command: [ "--tls=false" ]
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+
+  script:
+    - docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker build -t $DOCKER_REGISTRY/projects/community/edu_sharing-projects-community-deploy-docker-services-connector:$([[ $CI_COMMIT_REF_NAME = "main" ]] && echo "main" || echo "dev") .
+    - docker push $DOCKER_REGISTRY/projects/community/edu_sharing-projects-community-deploy-docker-services-connector:$([[ $CI_COMMIT_REF_NAME = "main" ]] && echo "main" || echo "dev")
+
