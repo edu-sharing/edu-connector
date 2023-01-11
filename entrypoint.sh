@@ -14,6 +14,8 @@ ONLYOFFICE_DOCUMENT_SERVER_ESCAPED=$(printf '%s\n' "$ONLYOFFICE_DOCUMENT_SERVER"
 ONLYOFFICE_PLUGIN_URL_ESCAPED=$(printf '%s\n' "$ONLYOFFICE_PLUGIN_URL" | sed -e 's/[\/&]/\\&/g')
 ONLYOFFICE_JWT_SECRET_ESCAPED=$(printf '%s\n' "$ONLYOFFICE_JWT_SECRET" | sed -e 's/[\/&]/\\&/g')
 
+MOODLE_BASE_DIR_ESCAPED=$(printf '%s\n' "$MOODLE_BASE_DIR" | sed -e 's/[\/&]/\\&/g')
+MOODLE_TOKEN_ESCAPED=$(printf '%s\n' "$MOODLE_TOKEN" | sed -e 's/[\/&]/\\&/g')
 
 sed -i "s/define('WWWURL', '')/define('WWWURL', '${WWWURL_ESCAPED}')/g" config.php
 sed -i "s/define('DOCROOT', '')/define('DOCROOT', '\/var\/www\/html')/g" config.php
@@ -27,7 +29,10 @@ sed -i "s/define('DBNAME', '')/define('DBNAME', '${DBNAME_ESCAPED}')/g" config.p
 sed -i "s/define('ONLYOFFICE_DOCUMENT_SERVER', '')/define('ONLYOFFICE_DOCUMENT_SERVER', '${ONLYOFFICE_DOCUMENT_SERVER_ESCAPED}')/g" config.php
 sed -i "s/define('ONLYOFFICE_PLUGIN_URL', '')/define('ONLYOFFICE_PLUGIN_URL', '${ONLYOFFICE_PLUGIN_URL_ESCAPED}')/g" config.php
 sed -i "s/define('ONLYOFFICE_JWT_SECRET', '')/define('ONLYOFFICE_JWT_SECRET', '${ONLYOFFICE_JWT_SECRET_ESCAPED}')/g" config.php
-cat config.php
+
+sed -i "s/define('MOODLE_BASE_DIR', '')/define('MOODLE_BASE_DIR', '${MOODLE_BASE_DIR_ESCAPED}')/g" config.php
+sed -i "s/define('MOODLE_TOKEN', '')/define('MOODLE_TOKEN', '${MOODLE_TOKEN_ESCAPED}')/g" config.php
+
 
 echo "Installing..."
 php install/install.php
