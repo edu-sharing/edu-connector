@@ -16,6 +16,7 @@ ONLYOFFICE_JWT_SECRET_ESCAPED=$(printf '%s\n' "$ONLYOFFICE_JWT_SECRET" | sed -e 
 
 
 sed -i "s/define('WWWURL', '')/define('WWWURL', '${WWWURL_ESCAPED}')/g" config.php
+sed -i "s/define('DOCROOT', '')/define('DATA', '\/var\/www\/html')/g" config.php
 sed -i "s/define('DATA', '')/define('DATA', '\/var\/www\/html\/data')/g" config.php
 sed -i "s/define('LOG_MODE', 'file')/define('LOG_MODE', 'stdout')/g" config.php
 sed -i "s/define('DBHOST', '')/define('DBHOST', '${DBPATH_ESCAPED}')/g" config.php
