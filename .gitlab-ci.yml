@@ -27,7 +27,7 @@ deploy_release:
   image: php:latest
   stage: deploy
   artifacts:
-    name: "educonnector_release-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
+    name: "educonnector_release-$CI_PIPELINE_CREATED_AT-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
     paths:
       - ./
   before_script:
