@@ -1,12 +1,21 @@
-# This file is a template, and might need editing before it works on your project.
-# Select image from https://hub.docker.com/_/php/
+variables:
+  COMMON_BIND_HOST: "0.0.0.0"
+  DEPLOY_DOCKER_HELM: "true"
+  DEPLOY_TIMESTAMP: "false"
+  DOCKER_DRIVER: "$DIND_DRIVER"
+  DOCKER_HOST: "$DIND_HOST"
+  DOCKER_TLS_CERTDIR: "$DIND_TLS_CERTDIR"
+  MAVEN_HOME: "/builds/$CI_PROJECT_PATH/mnt/.m2"
+  MAVEN_CLI: "-Ddocker.registry=$DOCKER_REGISTRY -Dhelm.deploy.url=$HELM_REGISTRY -Dhelm.deploy.type=$HELM_TYPE -Dmaven.deploy.releases=$MAVEN_DEPLOY_RELEASES -Dmaven.deploy.snapshots=$MAVEN_DEPLOY_SNAPSHOTS --batch-mode --errors --fail-fast --show-version"
+  MAVEN_OPTS: "-Dmaven.repo.local=/builds/$CI_PROJECT_PATH/mnt/.m2/repository"
+  REPOSITORY_ANTIVIRUS_ENABLED: "true"
+  REPOSITORY_CLUSTER_ENABLED: "true"
+  REPOSITORY_ELASTIC_ENABLED: "true"
+  REPOSITORY_MONGO_ENABLED: "false"
+  REPOSITORY_REMOTE_ENABLED: "true"
+  REPOSITORY_TRANSFORM_ENABLED: "true"
 
-# Select what we should cache between builds
-#cache:
-#  paths:
-#    - vendor/
-
-stages:
+tages:
   - test
   - deploy
 
@@ -14,12 +23,14 @@ php security audit errors:
   image:
     name: tophfr/phpcs-security-audit
     entrypoint: [""]
+  stage: test
   script: /usr/local/bin/phpcs --standard=/usr/local/lib/composer/vendor/pheromone/phpcs-security-audit/example_base_ruleset.xml -n .
 
 php security audit warnings:
   image:
     name: tophfr/phpcs-security-audit
     entrypoint: [""]
+  stage: test
   script: /usr/local/bin/phpcs --standard=/usr/local/lib/composer/vendor/pheromone/phpcs-security-audit/example_base_ruleset.xml .
   allow_failure: true
 
@@ -45,21 +56,14 @@ deploy_release:
     - find ./vendor/ -name ".git" -exec rm -rf {} \; || true
     - ls ./
 
-
-build-docker:
-  image: docker:20-dind
+deploy:
   stage: deploy
-  services:
-    - name: docker:20-dind
-      alias: docker
-      command: [ "--tls=false" ]
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
-
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /^maven\/release\/.*/ && $CI_PIPELINE_SOURCE == "pipeline"
+    - if: $CI_COMMIT_TAG && $CI_PIPELINE_SOURCE == "pipeline"
+    - if: $CI_COMMIT_BRANCH !~ /^maven\/release\/.*/ && $CI_COMMIT_TAG == null
+  before_script:
+    - apt-get update -y
+    - apt-get install -y php php-curl php-dom php-gd php-mbstring php-xml php-zip
   script:
-    - docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-    - docker build -t $DOCKER_REGISTRY/projects/community/edu_sharing-projects-community-deploy-docker-services-connector:$CI_COMMIT_REF_SLUG .
-    - docker push $DOCKER_REGISTRY/projects/community/edu_sharing-projects-community-deploy-docker-services-connector:$CI_COMMIT_REF_SLUG
-
+    - mvn $MAVEN_CLI -s .mvn/settings.xml deploy

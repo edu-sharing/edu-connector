@@ -42,7 +42,7 @@ $app->get('/error/{errorid}[/{language}]', function (Request $request, Response 
         $args['language'] = 'en';
     }
     // PHP Code Sniffer can only handle two concatenated strings and wants to see a file extension.
-    $langPathBase = __DIR__ . '/' . 'lang' . '/' . $args['language'];
+    $langPathBase = __DIR__ . '/' . 'lang' . 'bootstrap.php/' . $args['language'];
     $language = include $langPathBase . '.php';
     switch($args['errorid']) {
         case ERROR_INVALID_ID:

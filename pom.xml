@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.edu_sharing</groupId>
+    <artifactId>edu_sharing-super-pom</artifactId>
+    <version>develop-SNAPSHOT</version>
+    <relativePath/>
+  </parent>
+
+  <artifactId>edu_sharing-community-services-connector</artifactId>
+  <packaging>pom</packaging>
+  <version>git</version>
+
+  <name>edu_sharing-community-services-connector</name>
+
+  <scm>
+    <connection>scm:git:https://scm.edu-sharing.com/edu-sharing/community/services/edu-sharing-community-services-connector.git
+    </connection>
+    <developerConnection>
+      scm:git:https://scm.edu-sharing.com/edu-sharing/community/services/edu-sharing-community-services-connector.git
+    </developerConnection>
+    <url>https://scm.edu-sharing.com/edu-sharing/community/services/edu-sharing-community-services-connector.git</url>
+  </scm>
+
+  <profiles>
+
+    <profile>
+
+      <id>dev</id>
+
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>env.DEV</name>
+          <value>true</value>
+        </property>
+      </activation>
+
+      <properties>
+        <bom.repository.version>${project.version}</bom.repository.version>
+      </properties>
+
+    </profile>
+
+  </profiles>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.42.0</version>
+        <executions>
+          <execution>
+            <id>build</id>
+            <goals>
+              <goal>build</goal>
+            </goals>
+            <phase>install</phase>
+          </execution>
+          <execution>
+            <id>push</id>
+            <goals>
+              <goal>push</goal>
+            </goals>
+            <phase>deploy</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <images>
+            <image>
+              <name>community/${project.artifactId}:${docker.tag}</name>
+              <build>
+                <contextDir>${project.basedir}</contextDir>
+                <args>
+                  <git_branch>${git.branch}</git_branch>
+                  <git_closest_tag_fixed>${git.closest.tag.fixed}</git_closest_tag_fixed>
+                  <git_commit_id>${git.commit.id}</git_commit_id>
+                  <git_dirty>${git.dirty}</git_dirty>
+                  <project_artifactId>${project.artifactId}</project_artifactId>
+                  <project_groupId>${project.groupId}</project_groupId>
+                  <project_version>${project.version}</project_version>
+                </args>
+              </build>
+            </image>
+          </images>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+
+
+  <repositories>
+
+    <repository>
+      <id>edusharing-remote</id>
+      <url>https://artifacts.edu-sharing.com/repository/maven-remote/</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <id>edusharing-mirror</id>
+      <url>https://artifacts.edu-sharing.com/repository/maven-mirror/</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+
+  </repositories>
+
+</project>

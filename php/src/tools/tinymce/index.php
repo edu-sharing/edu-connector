@@ -27,8 +27,8 @@ $_SESSION[$id]['first_run'] = false;
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="<?php echo $_SESSION[$id]['WWWURL']?>/css/materialize.min.css">
-  <link rel="stylesheet" href="<?php echo $_SESSION[$id]['WWWURL']?>/css/main.css" rel="stylesheet">
+  <link rel="stylesheet" href="<?php echo $_SESSION[$id]['WWWURL']?>/php/css/css/materialize.min.css">
+  <link rel="stylesheet" href="<?php echo $_SESSION[$id]['WWWURL']?>/php/css/css/main.css" rel="stylesheet">
 <style>
 body {
     background-color: #f6f6f6;
@@ -54,14 +54,14 @@ select {
     var lang = '<?php echo (isset($_SESSION[$id]['language'])? $_SESSION[$id]['language'] : 'de') ?>';
   </script>
   <script src="<?php echo $_SESSION[$id]['WWWURL']?>/lang/<?php echo (isset($_SESSION[$id]['language'])? $_SESSION[$id]['language'] : 'de') ?>.js"></script>
-  <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/jquery-3.2.1.min.js"></script>
-  <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/materialize.min.js"></script>
+  <script src="<?php echo $_SESSION[$id]['WWWURL']?>/php/jsp/js/jquery-3.2.1.min.js"></script>
+  <script src="<?php echo $_SESSION[$id]['WWWURL']?>/php/jsp/js/materialize.min.js"></script>
   <script src='<?php echo $_SESSION[$id]['WWWURL'] ; ?>/vendor/tinymce/tinymce/tinymce.js'></script>
-  <script src="<?php echo $_SESSION[$id]['WWWURL']?>/src/tools/tinymce/js/tool.js"></script>
+  <script src="<?php echo $_SESSION[$id]['WWWURL']?>/php/src/src/tools/tinymce/js/tool.js"></script>
 </head>
 <body>
 <header>
-  <div id="countdown" style="display:none"><img src="<?php echo $_SESSION[$id]['WWWURL']?>/img/ic_av_timer_black_24px.svg"> <span id="countdownvalue"></span></div>
+  <div id="countdown" style="display:none"><img src="<?php echo $_SESSION[$id]['WWWURL']?>/php/img/img/ic_av_timer_black_24px.svg"> <span id="countdownvalue"></span></div>
   <h4><?php echo $_SESSION[$id]['node']->node->name ?></h4>
 </header>
 <section>
