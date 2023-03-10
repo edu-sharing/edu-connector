@@ -18,14 +18,18 @@ php security audit errors:
     name: tophfr/phpcs-security-audit
     entrypoint: [""]
   stage: test
-  script: /usr/local/bin/phpcs --standard=/usr/local/lib/composer/vendor/pheromone/phpcs-security-audit/example_base_ruleset.xml -n .
+  script:
+    - cd service/src/main/php
+    - /usr/local/bin/phpcs --standard=/usr/local/lib/composer/vendor/pheromone/phpcs-security-audit/example_base_ruleset.xml -n .
 
 php security audit warnings:
   image:
     name: tophfr/phpcs-security-audit
     entrypoint: [""]
   stage: test
-  script: /usr/local/bin/phpcs --standard=/usr/local/lib/composer/vendor/pheromone/phpcs-security-audit/example_base_ruleset.xml .
+  script:
+    - cd service/src/main/php
+    - /usr/local/bin/phpcs --standard=/usr/local/lib/composer/vendor/pheromone/phpcs-security-audit/example_base_ruleset.xml .
   allow_failure: true
 
 deploy_release:
@@ -34,12 +38,13 @@ deploy_release:
   artifacts:
     name: 'educonnector_release$(date +"%Y-%m-%d")${CI_COMMIT_SHORT_SHA}'
     paths:
-      - ./
+      - ./service/src/main/php
   before_script:
     - apt-get update -yqq
     - apt-get install -yqq git
     # Install and run Composer
     - curl -sS https://getcomposer.org/installer | php
+    - cd service/src/main/php
     - php composer.phar install
     - date=$(date --iso-8601=seconds)
     - sed -i "s/#BUILD_DATE/$date/g" install/version_info.php
