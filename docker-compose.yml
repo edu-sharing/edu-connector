@@ -17,7 +17,6 @@ services:
   services-edu-connector:
     image: edu_sharing-community-services-connector:dev
     environment:
-      WWW_URL: http://localhost:80
       DATABASE_HOST: services-edu-connector-database
       DATABASE_PORT: 3306
       DATABASE_NAME: connector
@@ -25,6 +24,8 @@ services:
       DATABASE_PASSWORD: connector
     volumes:
       - services-edu-connector-data:/var/www/html/data
+    depends_on:
+      - services-edu-connector-database
     networks:
       - connector
       - edu-sharing
@@ -34,7 +35,7 @@ services:
   services-edu-connector-init:
     image: edu_sharing-community-services-connector:dev
     build:
-      context: src/main
+      context: service/src/main
       dockerfile: Dockerfile
     entrypoint: ["init.sh"]
     environment:
@@ -47,7 +48,7 @@ services:
       REPOSITORY_SERVICE_PATH: "/edu-sharing"
       REPOSITORY_SERVICE_ADMIN_PASS: "${REPOSITORY_SERVICE_ADMIN_PASS:-admin}"
     depends_on:
-      - edu-connector
+      - services-edu-connector
     networks:
       - edu-sharing
 

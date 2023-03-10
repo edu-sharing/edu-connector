@@ -2,9 +2,8 @@ version: "3.9"
 
 services:
   services-edu-connector-database:
-    image: "${docker.registry}/${docker.prefix}-deploy-docker-build-mysql:${docker.tag}"
+    image: "${docker.repository}/${docker.prefix}-deploy-docker-build-mysql:${docker.tag}"
     container_name: "services-edu-connector-database_${COMPOSE_PROJECT_NAME}"
-    restart: always
     environment:
       MYSQL_USER: "${SERVICES_EDU_CONNECTOR_DATABASE_USER:-connector}"
       MYSQL_PASSWORD: "${SERVICES_EDU_CONNECTOR_DATABASE_PASS:-connector}"
@@ -14,10 +13,13 @@ services:
       - services-edu-connector-database-data:/bitnami/mysql/data
 
   services-edu-connector-service:
-    image: "${docker.registry}/${docker.prefix}-service:${docker.tag}"
+    image: "${docker.repository}/${docker.prefix}-service:${docker.tag}"
     container_name: "services-edu-connector-service_${COMPOSE_PROJECT_NAME}"
     environment:
-      WWW_URL: "${SERVICES_EDU_CONNECTOR_WWW_URL:-'http://rendering.services.127.0.0.1.nip.io:80'}"
+      PROT_EXTERNAL: "${SERVICES_EDU_CONNECTOR_PROT_EXTERNAL:-http}"
+      HOST_EXTERNAL: "${SERVICES_EDU_CONNECTOR_HOST_EXTERNAL:-edu.connector.127.0.0.1.nip.io}"
+      PORT_EXTERNAL: "${SERVICES_EDU_CONNECTOR_PORT_EXTERNAL:-9200}"
+      PATH_EXTERNAL: "${SERVICES_EDU_CONNECTOR_PATH_EXTERNAL:-}"
       DATABASE_HOST: services-edu-connector-database
       DATABASE_PORT: "3306"
       DATABASE_NAME: "${SERVICES_EDU_CONNECTOR_DATABASE_NAME:-connector}"
@@ -26,13 +28,12 @@ services:
     volumes:
       - "services-edu-connector-data:/var/www/html/data"
     depends_on:
-      services-edu-connector-database:
-        condition: service_started
+      - services-edu-connector-database
     ports:
-      - "80:80"
+      - "${COMMON_BIND_HOST:-127.0.0.1}:${SERVICES_EDU_CONNECTOR_PORT_HTTP:-9200}:80"
 
   services-edu-connector-service-init:
-    image: "${docker.registry}/${docker.prefix}-service:${docker.tag}"
+    image: "${docker.repository}/${docker.prefix}-service:${docker.tag}"
     container_name: "services-edu-connector-service-init_${COMPOSE_PROJECT_NAME}"
     entrypoint: ["init.sh"]
     environment:
@@ -45,8 +46,7 @@ services:
       REPOSITORY_SERVICE_PATH: "/edu-sharing"
       REPOSITORY_SERVICE_ADMIN_PASS: "${REPOSITORY_SERVICE_ADMIN_PASS:-admin}"
     depends_on:
-      services-edu-connector-service:
-        condition: service_completed_successfully
+      - services-edu-connector-service
 
 volumes:
   services-edu-connector-database-data:

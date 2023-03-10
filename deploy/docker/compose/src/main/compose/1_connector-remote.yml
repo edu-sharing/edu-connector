@@ -2,8 +2,8 @@ version: '3.7'
 
 services:
 
-#  services-edu-connector-database:
-#    image: "${docker.registry}/${docker.repository}/${docker.prefix}-deploy-docker-build-mongo:${docker.tag}"
+  services-edu-connector-database:
+    image: "${docker.registry}/${docker.repository}/${docker.prefix}-deploy-docker-build-mongo:${docker.tag}"
 
   services-edu-connector-service:
     image: "${docker.registry}/community/${docker.prefix}:${docker.tag}"
