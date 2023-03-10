@@ -1,7 +1,4 @@
-.idea/eduConnector.iml
-.idea/modules.xml
-.idea/vcs.xml
-.idea/workspace.xml
+#php
 config.php
 php/src/tools/onlyoffice/storage
 !php/src/tools/onlyoffice/storage/templates
@@ -13,7 +10,27 @@ vendor
 log
 !log/.gitkeep
 test.php
-.idea/php.xml
+
+# IntelliJ Ultimate
 .idea/
-/.env
-/.git-versioned-pom.xml
+*.iml
+overlays/
+
+# Maven
+generated/
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.git-versioned-pom.xml
+
+# 3rd party licenses
+THIRD-PARTY*.txt
+
+# Dotenv
+.env

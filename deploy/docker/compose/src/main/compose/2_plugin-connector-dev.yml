@@ -1,0 +1,27 @@
+version: '3.7'
+
+services:
+
+  services-edu-connector-service:
+    volumes:
+      - "${GIT_ROOT}/services-connector/service/src/main/php/vendor:/var/www/html/vendor"
+      - "${GIT_ROOT}/services-connector/service/src/main/php/:/var/www/html/"
+
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/:/var/www/html/"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/css:/var/www/html/css"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/fonts:/var/www/html/fonts"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/img:/var/www/html/img"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/install:/var/www/html/install"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/js:/var/www/html/js"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/lang:/var/www/html/lang"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/src:/var/www/html/src"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/templates:/var/www/html/templates"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/vendor:/var/www/html/vendor"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/composer.json :/var/www/html/composer.json"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/composer.lock :/var/www/html/composer.lock"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/bootstrap.php :/var/www/html/bootstrap.php"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/config.dist.php :/var/www/html/config.dist.php"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/defines.php :/var/www/html/defines.php"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/index.php :/var/www/html/index.php"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/version.php :/var/www/html/version.php"
+#      - "${GIT_ROOT}/services-connector/service/src/main/php/.htaccess :/var/www/html/.htaccess"

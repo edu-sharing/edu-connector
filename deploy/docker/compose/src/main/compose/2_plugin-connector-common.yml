@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  services-edu-connector-database:
+    image: "${docker.registry}/${docker.prefix}-deploy-docker-build-mysql:${docker.tag}"
+    container_name: "services-edu-connector-database_${COMPOSE_PROJECT_NAME}"
+    restart: always
+    environment:
+      MYSQL_USER: "${SERVICES_EDU_CONNECTOR_DATABASE_USER:-connector}"
+      MYSQL_PASSWORD: "${SERVICES_EDU_CONNECTOR_DATABASE_PASS:-connector}"
+      MYSQL_DATABASE: "${SERVICES_EDU_CONNECTOR_DATABASE_NAME:-connector}"
+      MYSQL_ROOT_PASSWORD: "${SERVICES_EDU_CONNECTOR_DATABASE_ROOT_PASS:-connector}"
+    volumes:
+      - services-edu-connector-database-data:/bitnami/mysql/data
+
+  services-edu-connector-service:
+    image: "${docker.registry}/${docker.prefix}-service:${docker.tag}"
+    container_name: "services-edu-connector-service_${COMPOSE_PROJECT_NAME}"
+    environment:
+      WWW_URL: "${SERVICES_EDU_CONNECTOR_WWW_URL:-'http://rendering.services.127.0.0.1.nip.io:80'}"
+      DATABASE_HOST: services-edu-connector-database
+      DATABASE_PORT: "3306"
+      DATABASE_NAME: "${SERVICES_EDU_CONNECTOR_DATABASE_NAME:-connector}"
+      DATABASE_USER: "${SERVICES_EDU_CONNECTOR_DATABASE_USER:-connector}"
+      DATABASE_PASSWORD: "${SERVICES_EDU_CONNECTOR_DATABASE_PASS:-connector}"
+    volumes:
+      - "services-edu-connector-data:/var/www/html/data"
+    depends_on:
+      services-edu-connector-database:
+        condition: service_started
+    ports:
+      - "80:80"
+
+  services-edu-connector-service-init:
+    image: "${docker.registry}/${docker.prefix}-service:${docker.tag}"
+    container_name: "services-edu-connector-service-init_${COMPOSE_PROJECT_NAME}"
+    entrypoint: ["init.sh"]
+    environment:
+      DEBUG: true
+      CONNECTOR_INTERNAL_HOST: services-edu-connector
+      CONNECTOR_INTERNAL_PORT: "80"
+      REPOSITORY_SERVICE_PROT: "http"
+      REPOSITORY_SERVICE_HOST: repository-service
+      REPOSITORY_SERVICE_PORT: "8080"
+      REPOSITORY_SERVICE_PATH: "/edu-sharing"
+      REPOSITORY_SERVICE_ADMIN_PASS: "${REPOSITORY_SERVICE_ADMIN_PASS:-admin}"
+    depends_on:
+      services-edu-connector-service:
+        condition: service_completed_successfully
+
+volumes:
+  services-edu-connector-database-data:
+  services-edu-connector-data:

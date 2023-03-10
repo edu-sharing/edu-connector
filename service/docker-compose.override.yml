@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  services-edu-connector-database:
+    networks:
+      - connector
+
+  services-edu-connector:
+    networks:
+      - connector
+      - edu-sharing
+
+  services-edu-connector-init:
+    networks:
+      - edu-sharing
+
+networks:
+  edu-connector:
+  edu-sharing:
+    external:
+      name: ${EDU_SHARING_NETWORK:-edu-sharing_default}

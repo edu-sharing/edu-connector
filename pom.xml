@@ -28,6 +28,17 @@
     <url>https://scm.edu-sharing.com/edu-sharing/community/services/edu-sharing-community-services-connector.git</url>
   </scm>
 
+
+  <properties>
+
+    <docker.repository>community</docker.repository>
+    <docker.prefix>edu_sharing-community-services-edu-connector</docker.prefix>
+    <helm.prefix>edu_sharing-community-services-edu-connector</helm.prefix>
+
+  </properties>
+
+
+
   <profiles>
 
     <profile>
@@ -49,54 +60,6 @@
     </profile>
 
   </profiles>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>io.fabric8</groupId>
-        <artifactId>docker-maven-plugin</artifactId>
-        <version>0.42.0</version>
-        <executions>
-          <execution>
-            <id>build</id>
-            <goals>
-              <goal>build</goal>
-            </goals>
-            <phase>install</phase>
-          </execution>
-          <execution>
-            <id>push</id>
-            <goals>
-              <goal>push</goal>
-            </goals>
-            <phase>deploy</phase>
-          </execution>
-        </executions>
-        <configuration>
-          <images>
-            <image>
-              <name>community/${project.artifactId}:${docker.tag}</name>
-              <build>
-                <contextDir>${project.basedir}</contextDir>
-                <args>
-                  <git_branch>${git.branch}</git_branch>
-                  <git_closest_tag_fixed>${git.closest.tag.fixed}</git_closest_tag_fixed>
-                  <git_commit_id>${git.commit.id}</git_commit_id>
-                  <git_dirty>${git.dirty}</git_dirty>
-                  <project_artifactId>${project.artifactId}</project_artifactId>
-                  <project_groupId>${project.groupId}</project_groupId>
-                  <project_version>${project.version}</project_version>
-                </args>
-              </build>
-            </image>
-          </images>
-        </configuration>
-      </plugin>
-
-    </plugins>
-  </build>
-
-
 
   <repositories>
 
@@ -127,5 +90,10 @@
     </repository>
 
   </repositories>
+
+  <modules>
+    <module>service</module>
+    <module>deploy</module>
+  </modules>
 
 </project>

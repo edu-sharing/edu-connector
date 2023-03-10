@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  services-edu-connector-database:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'connector'
+      MYSQL_USER: 'connector'
+      MYSQL_PASSWORD: 'connector'
+      MYSQL_ROOT_PASSWORD: 'connector'
+    volumes:
+      - services-edu-connector-database-data:/var/lib/mysql
+    networks:
+      - connector
+
+  services-edu-connector:
+    image: edu_sharing-community-services-connector:dev
+    environment:
+      WWW_URL: http://localhost:80
+      DATABASE_HOST: services-edu-connector-database
+      DATABASE_PORT: 3306
+      DATABASE_NAME: connector
+      DATABASE_USER: connector
+      DATABASE_PASSWORD: connector
+    volumes:
+      - services-edu-connector-data:/var/www/html/data
+    networks:
+      - connector
+      - edu-sharing
+    ports:
+      - "80:80"
+
+  services-edu-connector-init:
+    image: edu_sharing-community-services-connector:dev
+    build:
+      context: src/main
+      dockerfile: Dockerfile
+    entrypoint: ["init.sh"]
+    environment:
+      DEBUG: true
+      CONNECTOR_INTERNAL_HOST: services-edu-connector
+      CONNECTOR_INTERNAL_PORT: "80"
+      REPOSITORY_SERVICE_PROT: "http"
+      REPOSITORY_SERVICE_HOST: repository-service
+      REPOSITORY_SERVICE_PORT: "8080"
+      REPOSITORY_SERVICE_PATH: "/edu-sharing"
+      REPOSITORY_SERVICE_ADMIN_PASS: "${REPOSITORY_SERVICE_ADMIN_PASS:-admin}"
+    depends_on:
+      - edu-connector
+    networks:
+      - edu-sharing
+
+networks:
+  edu-connector:
+  edu-sharing:
+    external:
+      name: ${EDU_SHARING_NETWORK:-edu-sharing_default}
+
+volumes:
+  services-edu-connector-database-data:
+  services-edu-connector-data:
