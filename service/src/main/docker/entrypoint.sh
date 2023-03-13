@@ -20,8 +20,8 @@ connector_database_port=${DATABASE_PORT//\/&/\\&}
 connector_database_user=${DATABASE_USER//\/&/\\&}
 connector_database_password=${DATABASE_PASSWORD//\/&/\\&}
 connector_database_name=${DATABASE_NAME//\/&/\\&}
-
 connector_database_path=${connector_database_host}:${connector_database_port}
+
 
 # OPTIONALS
 
@@ -35,8 +35,8 @@ moodle_base_dir="${MOODLE_BASE_DIR:-}"
 moodle_token="${MOODLE_TOKEN:-}"
 
 sed -i "s|define('WWWURL', '.*')|define('WWWURL', '${connector_url}')|g" "${conf}"
-sed -i "s|define('DOCROOT', '.*')|define('DOCROOT', '\/var\/www\/html')|g" "${conf}"
-sed -i "s|define('DATA', '.*')|define('DATA', '\/var\/www\/html\/data')|g" "${conf}"
+sed -i "s|define('DOCROOT', '.*')|define('DOCROOT', '${ROOT}')|g" "${conf}"
+sed -i "s|define('DATA', '.*')|define('DATA', '${DATA}')|g" "${conf}"
 sed -i "s|define('LOG_MODE', '.*')|define('LOG_MODE', 'stdout')|g" "${conf}"
 sed -i "s|define('DBHOST', '.*')|define('DBHOST', '${connector_database_path}')|g" "${conf}"
 sed -i "s|define('DBUSER', '.*')|define('DBUSER', '${connector_database_user}')|g" "${conf}"

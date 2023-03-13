@@ -26,7 +26,7 @@ services:
       DATABASE_USER: "${SERVICES_EDU_CONNECTOR_DATABASE_USER:-connector}"
       DATABASE_PASSWORD: "${SERVICES_EDU_CONNECTOR_DATABASE_PASS:-connector}"
     volumes:
-      - "services-edu-connector-data:/var/www/html/data"
+      - "services-edu-connector-data:/var/data"
     depends_on:
       - services-edu-connector-database
     ports:

@@ -4,7 +4,10 @@ services:
 
   services-edu-connector-service:
     volumes:
-      - "${GIT_ROOT}/services-connector/service/src/main/php/vendor:/var/www/html/vendor"
+      - type: bind
+        source: ${GIT_ROOT}/services-connector/service/src/main/php/vendor
+        target: /var/www/html/vendor
+
       - "${GIT_ROOT}/services-connector/service/src/main/php/:/var/www/html/"
 
 #      - "${GIT_ROOT}/services-connector/service/src/main/php/:/var/www/html/"
