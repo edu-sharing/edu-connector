@@ -38,6 +38,8 @@ ARG project_version=dev
 
 ENV PATH /application/bin:$PATH
 ENV ROOT /var/www/html
+ENV DATA /var/data
+
 WORKDIR $ROOT
 
 COPY --from=builder /var/www/html/css/ css/
@@ -64,8 +66,8 @@ RUN set -eux \
 
 
 RUN set -eux \
-    && mkdir data \
-    && chown -R www-data:www-data data
+    && mkdir $DATA \
+    && chown -R www-data:www-data $DATA
 
 ########################################################################################################################
 
@@ -82,7 +84,7 @@ RUN set -eux \
     && adduser www-data appuser
 
 RUN set -eux \
-	&& chown -R appuser:appuser /etc/apache2 $ROOT
+	&& chown -R appuser:appuser /etc/apache2 $ROOT $DATA
 
 USER appuser
 
