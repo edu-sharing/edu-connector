@@ -61,4 +61,41 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>dev</id>
+
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>env.DEV</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>uk.co.codezen</groupId>
+            <artifactId>composer-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>install</goal>
+                </goals>
+                <phase>generate-sources</phase>
+                <configuration>
+                  <phpPath>php</phpPath>
+                  <composerJsonPath>${project.basedir}/src/main/php/composer.json</composerJsonPath>
+                  <buildDirectory>${project.basedir}/src/main/php</buildDirectory>
+                  <withDev>true</withDev>
+                  <withOptimisedAutoloader>false</withOptimisedAutoloader>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
