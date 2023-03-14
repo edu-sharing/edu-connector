@@ -1,12 +1,7 @@
 <?php
 
-namespace php\src\tools\onlyoffice;
-
-use BeforeValidException;
 use \DomainException;
-use ExpiredException;
 use \InvalidArgumentException;
-use SignatureInvalidException;
 use \UnexpectedValueException;
 use \DateTime;
 
@@ -51,10 +46,10 @@ class JWT
     /**
      * Decodes a JWT string into a PHP object.
      *
-     * @param string $jwt The JWT
-     * @param string|array $key The key, or map of keys.
+     * @param string        $jwt            The JWT
+     * @param string|array  $key            The key, or map of keys.
      *                                      If the algorithm used is asymmetric, this is the public key
-     * @param array $allowed_algs List of supported verification algorithms
+     * @param array         $allowed_algs   List of supported verification algorithms
      *                                      Supported algorithms are 'HS256', 'HS384', 'HS512' and 'RS256'
      *
      * @return object The JWT's payload as a PHP object
@@ -141,13 +136,13 @@ class JWT
     /**
      * Converts and signs a PHP object or array into a JWT string.
      *
-     * @param object|array $payload PHP object or array
-     * @param string $key The secret key.
+     * @param object|array  $payload    PHP object or array
+     * @param string        $key        The secret key.
      *                                  If the algorithm used is asymmetric, this is the private key
-     * @param string $alg The signing algorithm.
+     * @param string        $alg        The signing algorithm.
      *                                  Supported algorithms are 'HS256', 'HS384', 'HS512' and 'RS256'
-     * @param mixed $keyId
-     * @param array $head An array with header elements to attach
+     * @param mixed         $keyId
+     * @param array         $head       An array with header elements to attach
      *
      * @return string A signed JWT
      *
@@ -160,7 +155,7 @@ class JWT
         if ($keyId !== null) {
             $header['kid'] = $keyId;
         }
-        if (isset($head) && is_array($head)) {
+        if ( isset($head) && is_array($head) ) {
             $header = array_merge($head, $header);
         }
         $segments = array();
@@ -177,9 +172,9 @@ class JWT
     /**
      * Sign a string with a given key and algorithm.
      *
-     * @param string $msg The message to sign
-     * @param string|resource $key The secret key
-     * @param string $alg The signing algorithm.
+     * @param string            $msg    The message to sign
+     * @param string|resource   $key    The secret key
+     * @param string            $alg    The signing algorithm.
      *                                  Supported algorithms are 'HS256', 'HS384', 'HS512' and 'RS256'
      *
      * @return string An encrypted message
@@ -192,7 +187,7 @@ class JWT
             throw new DomainException('Algorithm not supported');
         }
         list($function, $algorithm) = static::$supported_algs[$alg];
-        switch ($function) {
+        switch($function) {
             case 'hash_hmac':
                 return hash_hmac($algorithm, $msg, $key, true);
             case 'openssl':
@@ -210,10 +205,10 @@ class JWT
      * Verify a signature with the message, key and method. Not all methods
      * are symmetric, so we must have a separate verify and sign method.
      *
-     * @param string $msg The original message (header and body)
-     * @param string $signature The original signature
-     * @param string|resource $key For HS*, a string key works. for RS*, must be a resource of an openssl public key
-     * @param string $alg The algorithm
+     * @param string            $msg        The original message (header and body)
+     * @param string            $signature  The original signature
+     * @param string|resource   $key        For HS*, a string key works. for RS*, must be a resource of an openssl public key
+     * @param string            $alg        The algorithm
      *
      * @return bool
      *
@@ -226,7 +221,7 @@ class JWT
         }
 
         list($function, $algorithm) = static::$supported_algs[$alg];
-        switch ($function) {
+        switch($function) {
             case 'openssl':
                 $success = openssl_verify($msg, $signature, $key, $algorithm);
                 if (!$success) {
@@ -274,8 +269,8 @@ class JWT
              * manually detect large ints in the JSON string and quote them (thus converting
              *them to strings) before decoding, hence the preg_replace() call.
              */
-            $max_int_length = strlen((string)PHP_INT_MAX) - 1;
-            $json_without_bigints = preg_replace('/:\s*(-?\d{' . $max_int_length . ',})/', ': "$1"', $input);
+            $max_int_length = strlen((string) PHP_INT_MAX) - 1;
+            $json_without_bigints = preg_replace('/:\s*(-?\d{'.$max_int_length.',})/', ': "$1"', $input);
             $obj = json_decode($json_without_bigints);
         }
 

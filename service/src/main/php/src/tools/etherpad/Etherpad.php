@@ -1,8 +1,8 @@
 <?php
 
-namespace php\src\tools\etherpad;
+namespace connector\tools\tinymce;
 
-class Etherpad extends \php\src\lib\Tool {
+class Etherpad extends \connector\lib\Tool {
 
 	public function run() {
 

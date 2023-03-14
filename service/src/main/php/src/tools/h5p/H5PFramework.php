@@ -1,8 +1,7 @@
 <?php
 
-namespace php\src\tools\h5p;
+namespace connector\tools\h5p;
 
-use connector\tools\h5p\stdClass;
 use JsonSerializable;
 
 require_once __DIR__ . '/../../../config.php';
@@ -197,7 +196,7 @@ class H5PFramework implements \H5PFrameworkInterface {
         static $dir;
 
         if (is_null($dir)) {
-            $h5p = \php\src\tools\h5p\H5P::getInstance();
+            $h5p = \connector\tools\h5p\H5P::getInstance();
             $dir = $h5p->H5PCore->fs->getTmpPath();
         }
         return $dir;
@@ -215,7 +214,7 @@ class H5PFramework implements \H5PFrameworkInterface {
         static $dir;
 
         if (is_null($dir)) {
-            $h5p = \php\src\tools\h5p\H5P::getInstance();
+            $h5p = \connector\tools\h5p\H5P::getInstance();
             $dir = $h5p->H5PCore->fs->getTmpPath() . '.h5p';
         }
         return $dir;

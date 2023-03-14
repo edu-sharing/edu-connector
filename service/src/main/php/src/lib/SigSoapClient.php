@@ -30,9 +30,7 @@
  *
  */
 
-namespace php\src\lib;
-
-use connector\lib\Exception;
+namespace connector\lib;
 
 class SigSoapClient extends \SoapClient {
 
@@ -56,7 +54,7 @@ class SigSoapClient extends \SoapClient {
         try {
             $timestamp = round(microtime(true) * 1000);
             $signdata = APPID . $timestamp;
-            $cryptographer = new \php\src\lib\Cryptographer();
+            $cryptographer = new \connector\lib\Cryptographer();
             $privkey = $cryptographer->getPrivateKey();
             $pkeyid = openssl_get_privatekey($privkey);
             openssl_sign($signdata, $signature, $pkeyid);

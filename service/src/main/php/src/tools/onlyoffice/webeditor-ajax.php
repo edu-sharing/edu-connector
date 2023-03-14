@@ -1,10 +1,10 @@
 <?php
 
-use php\src\tools\onlyoffice\OnlyOffice;
+use connector\tools\onlyoffice\OnlyOffice;
 
 require __DIR__ . '/../../../vendor/autoload.php';
 $lang = 'de';
-$logger = new \php\src\lib\Logger();
+$logger = new connector\lib\Logger();
 $log = $logger->getLog();
 
 /*
@@ -130,7 +130,7 @@ function track($log)
                 $log->error('ERROR fetching file from docserver, see webserver log');
             } else if (file_put_contents($tmpSavePath, $new_data, LOCK_EX) !== false) {
                 try {
-                    $apiClient = new \php\src\lib\EduRestClient($id);
+                    $apiClient = new connector\lib\EduRestClient($id);
                     if ($aa = $apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $tmpSavePath, OnlyOffice::getMimetype($_SESSION[$id]['filetype']), $comment)) {
                         unlink($tmpSavePath);
                         $log->info('SAVED - ' . json_encode(array($_SESSION[$id]['node']->node->ref->id, $tmpSavePath)));

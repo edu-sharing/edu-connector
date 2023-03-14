@@ -1,6 +1,6 @@
 <?php
 
-namespace php\src\tools\h5p;
+namespace connector\tools\h5p;
 
 class H5PEditorAjaxImpl implements \H5PEditorAjaxInterface {
 

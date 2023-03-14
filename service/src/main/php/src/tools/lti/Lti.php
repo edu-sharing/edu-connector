@@ -2,7 +2,7 @@
 /*
  * @see from https://gist.github.com/matthanger/1171921
  */
-namespace php\src\tools\lti;
+namespace connector\tools\lti;
 
 define("LTI_VERSION", "LTI-1p0");
 define("LTI_MESSAGE_TYPE", "basic-lti-launch-request");
@@ -10,7 +10,7 @@ define("OAUTH_CALLBACK", "about:blank");
 define("OAUTH_VERSION", "1.0");
 define("OAUTH_SIGNATURE_METHOD", "HMAC-SHA1");
 
-class Lti extends \php\src\lib\Tool {
+class Lti extends \connector\lib\Tool {
 
     private $launch_data = array();
     private $signature = '';

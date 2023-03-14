@@ -28,7 +28,7 @@ if (!file_exists(DATA . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'o
     mkdir(DATA . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage', 0755, true);
 }
 
-$cryptographer = new \php\src\lib\Cryptographer();
+$cryptographer = new \connector\lib\Cryptographer();
 $cryptographer -> checkPrivateKey();
 
 echo 'Success';

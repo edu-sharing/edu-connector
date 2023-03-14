@@ -1,10 +1,10 @@
 <?php
 
-namespace php\src\tools\tinymce;
+namespace connector\tools\tinymce;
 
-use php\src\lib\EduRestClient;
+use connector\lib\EduRestClient;
 
-class TinyMce extends \php\src\lib\Tool {
+class TinyMce extends \connector\lib\Tool {
 
     public function run()
     {

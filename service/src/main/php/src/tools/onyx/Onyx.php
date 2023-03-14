@@ -1,7 +1,7 @@
 <?php
-namespace php\src\tools\onyx;
+namespace connector\tools\onyx;
 
-class Onyx extends \php\src\lib\Tool {
+class Onyx extends \connector\lib\Tool {
 
     public function run() {
         $this->forwardToEditor();

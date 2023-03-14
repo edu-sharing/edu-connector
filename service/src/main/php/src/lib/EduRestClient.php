@@ -1,9 +1,6 @@
 <?php
 
-namespace php\src\lib;
-
-use const connector\lib\FORCE_INTERN_COM;
-use const connector\lib\FORCED_APIURL;
+namespace connector\lib;
 
 define('APPID', 'educonnector');
 
@@ -21,7 +18,7 @@ class EduRestClient
     private function getHeaders() {
         $timestamp = round(microtime(true) * 1000);
         $signdata = APPID . $timestamp;
-        $cryptographer = new \php\src\lib\Cryptographer();
+        $cryptographer = new \connector\lib\Cryptographer();
         $privkey = $cryptographer->getPrivateKey();
         $pkeyid = openssl_get_privatekey($privkey);
         openssl_sign($signdata, $signature, $pkeyid);
@@ -149,7 +146,7 @@ class EduRestClient
                 array('key'  => 'firstname', 'value' => $_SESSION[$this->connectorId]['user']->profile->firstName),
                 array('key'  => 'email', 'value' => $_SESSION[$this->connectorId]['user']->profile->email)));
         try {
-            $client = new \php\src\lib\SigSoapClient($this->getApiUrl() . '../services/authbyapp?wsdl');
+            $client = new \connector\lib\SigSoapClient($this->getApiUrl() . '../services/authbyapp?wsdl');
             $return = $client->authenticateByTrustedApp($paramstrusted);
             $ticket = $return->authenticateByTrustedAppReturn->ticket;
             return 'Authorization: EDU-TICKET ' . $ticket;

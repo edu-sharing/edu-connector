@@ -1,9 +1,6 @@
 <?php
 
-namespace php\src\tools\h5p;
-
-use connector\tools\h5p\Exception;
-use connector\tools\h5p\H5peditorFile;
+namespace connector\tools\h5p;
 
 class H5peditorStorageImpl implements \H5peditorStorage {
 
@@ -192,7 +189,7 @@ class H5peditorStorageImpl implements \H5peditorStorage {
         // Get temporary path
         //check this
 
-        $h5p = \php\src\tools\h5p\H5P::getInstance();
+        $h5p = \connector\tools\h5p\H5P::getInstance();
         $path = $h5p->H5PCore->getUploadedH5pPath();
         if ($move_file) {
             // Move so core can validate the file extension.
