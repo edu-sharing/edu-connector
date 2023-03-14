@@ -1,14 +1,11 @@
 <?php
-namespace php\src\tools\h5p;
+namespace connector\tools\h5p;
 
-use php\src\lib\EduRestClient;
-use php\src\tools\h5p\H5PEditorAjaxImpl;
-use php\src\tools\h5p\H5peditorStorageImpl;
-use php\src\tools\h5p\H5PFramework;
+use connector\lib\EduRestClient;
 
 define('MODE_NEW', 'mode_new');
 
-class H5P extends \php\src\lib\Tool {
+class H5P extends \connector\lib\Tool {
 
     protected static $instance = null;
     public $H5PFramework;
@@ -34,7 +31,7 @@ class H5P extends \php\src\lib\Tool {
         }
         global $db;
 
-        $this->logger = new \php\src\lib\Logger();
+        $this->logger = new \connector\lib\Logger();
 
         $this -> h5pLang = isset($_SESSION[$connectorId]['language'])? $_SESSION[$connectorId]['language'] : 'de';
         $langPathBase = __DIR__ . '/../../../lang/' . $this -> h5pLang;

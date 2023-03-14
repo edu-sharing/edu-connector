@@ -1,9 +1,9 @@
 <?php
 
-use php\src\lib\Connector;
-use php\src\lib\EduRestClient;
-use php\src\lib\Logger;
-use php\src\lib\MetadataGenerator;
+use connector\lib\Connector;
+use connector\lib\EduRestClient;
+use connector\lib\Logger;
+use connector\lib\MetadataGenerator;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use Slim\Views\Twig;
@@ -42,7 +42,7 @@ $app->get('/error/{errorid}[/{language}]', function (Request $request, Response 
         $args['language'] = 'en';
     }
     // PHP Code Sniffer can only handle two concatenated strings and wants to see a file extension.
-    $langPathBase = __DIR__ . '/' . 'lang' . 'bootstrap.php/' . $args['language'];
+    $langPathBase = __DIR__ . '/' . 'lang' . '/' . $args['language'];
     $language = include $langPathBase . '.php';
     switch($args['errorid']) {
         case ERROR_INVALID_ID:
@@ -83,8 +83,8 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
     global $db;
     $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $contentHandler = new \php\src\tools\h5p\H5PContentHandler();
-    $h5p = \php\src\tools\h5p\H5P::getInstance();
+    $contentHandler = new \connector\tools\h5p\H5PContentHandler();
+    $h5p = \connector\tools\h5p\H5P::getInstance();
 
      if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_files') {
          $token = '';//$_GET['token'];
@@ -119,7 +119,7 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
             $ctitle = $newContent['title'];
 
             if ($cid) {
-                $apiClient = new \php\src\lib\EduRestClient($id);
+                $apiClient = new \connector\lib\EduRestClient($id);
                 //$contentPath = DATA . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'exports' . DIRECTORY_SEPARATOR . $_SESSION[$id]['node']->node->ref->id.'-'.$cid.'.h5p';
                 $contentPath = DATA . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'exports' . DIRECTORY_SEPARATOR . $ctitle.'-'.$cid.'.h5p';
                 $res = $apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $contentPath, 'application/zip', 'EDITOR_UPLOAD,H5P');
@@ -155,7 +155,7 @@ $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
     try {
         $db = new \PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
         $db->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
-        $h5p = \php\src\tools\h5p\H5P::getInstance();
+        $h5p = \connector\tools\h5p\H5P::getInstance();
 
         if(isset($request->getQueryParams()['machineName']) && isset($request->getQueryParams()['majorVersion']) && isset($request->getQueryParams()['minorVersion'])) {
             $lib = $h5p->H5PEditor->ajax->action(H5PEditorEndpoints::SINGLE_LIBRARY, $request->getQueryParams()['machineName'],
@@ -181,7 +181,7 @@ $app->post('/ajax/unlockNode', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     $id = $request->getQueryParams()['X-CSRF-Token'];
     try {
-        $apiClient = new \php\src\lib\EduRestClient($id);
+        $apiClient = new \connector\lib\EduRestClient($id);
         $apiClient->unlockNode($_SESSION[$id]['node']->node->ref->id);
     } catch (\Exception $e) {
         $this->get('log')->error('HTTP ' . $e -> getCode() . ' ' . $e->getMessage());
@@ -194,7 +194,7 @@ $app->post('/ajax/setText', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     $id = $request->getHeaderLine('X-CSRF-Token');
     try {
-        $apiClient = new \php\src\lib\EduRestClient($id);
+        $apiClient = new \connector\lib\EduRestClient($id);
         $parsedBody = $request->getParsedBody();
         $content = $parsedBody['text'];
         $apiClient->createTextContent($_SESSION[$id]['node']->node->ref->id, $content, 'text/html', 'EDITOR_UPLOAD,TINYMCE');

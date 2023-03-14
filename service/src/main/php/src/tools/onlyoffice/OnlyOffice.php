@@ -1,8 +1,8 @@
 <?php
 
-namespace php\src\tools\onlyoffice;
+namespace connector\tools\OnlyOffice;
 
-class OnlyOffice extends \php\src\lib\Tool {
+class OnlyOffice extends \connector\lib\Tool {
 
     public function run()
     {

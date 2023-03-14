@@ -1,9 +1,7 @@
 <?php
 
-namespace php\src\lib;
+namespace connector\lib;
 
-use php\src\lib\Cryptographer;
-use php\src\lib\EduRestClient;
 use Slim\Exception\SlimException;
 
 class Connector
@@ -78,19 +76,19 @@ class Connector
     {
         switch ($_SESSION[$this->id]['tool']) {
             case 'ONLY_OFFICE':
-                $this -> tool = new \php\src\tools\onlyoffice\OnlyOffice($this->apiClient, $this->log, $this->id);
+                $this -> tool = new \connector\tools\onlyoffice\OnlyOffice($this->apiClient, $this->log, $this->id);
                 break;
             case 'ONYX':
-                $this -> tool = new \php\src\tools\onyx\Onyx($this->apiClient, $this->log, $this->id);
+                $this -> tool = new \connector\tools\onyx\Onyx($this->apiClient, $this->log, $this->id);
                 break;
             case 'TINYMCE':
-                $this -> tool = new \php\src\tools\tinymce\TinyMce($this->apiClient, $this->log, $this->id);
+                $this -> tool = new \connector\tools\tinymce\TinyMce($this->apiClient, $this->log, $this->id);
                 break;
             case 'LTI':
-                $this -> tool = new \php\src\tools\lti\Lti($this->apiClient, $this->log, $this->id);
+                $this -> tool = new \connector\tools\lti\Lti($this->apiClient, $this->log, $this->id);
                 break;
             case 'H5P':
-                $this -> tool = new \php\src\tools\h5p\H5P($this->apiClient, $this->log, $this->id);
+                $this -> tool = new \connector\tools\h5p\H5P($this->apiClient, $this->log, $this->id);
                 break;
             default:
                 throw new \Exception('Unknown tool: ' . $_SESSION[$this->id]['tool'] . '.');

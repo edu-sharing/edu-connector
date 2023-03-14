@@ -1,11 +1,10 @@
 <?php
 
-namespace php\src\lib;
+namespace connector\lib;
 
 use Monolog\Handler\RedisHandler;
 use Monolog\Formatter\LogstashFormatter;
 use Predis\Client;
-use const connector\lib\REDISSERVER;
 
 
 class Logger {

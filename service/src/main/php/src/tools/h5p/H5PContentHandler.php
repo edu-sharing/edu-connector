@@ -1,11 +1,6 @@
 <?php
 
-namespace php\src\tools\h5p;
-
-use php\src\tools\h5p\H5PEditorAjaxImpl;
-use php\src\tools\h5p\H5peditorStorageImpl;
-use php\src\tools\h5p\H5PFramework;
-use function connector\tools\h5p\__;
+namespace connector\tools\h5p;
 
 class H5PContentHandler {
 

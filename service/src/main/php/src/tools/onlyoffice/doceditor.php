@@ -1,7 +1,4 @@
 <?php
-
-use php\src\tools\onlyoffice\JWT;
-
 require __DIR__ . '/../../../vendor/autoload.php';
 
 session_start();
@@ -92,7 +89,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
-    <link rel="stylesheet" href="<?php echo $_SESSION[$id]['WWWURL']?>/php/css/css/materialize.min.css">
+    <link rel="stylesheet" href="<?php echo $_SESSION[$id]['WWWURL']?>/css/materialize.min.css">
     <title>edu-sharing ONLYOFFICE</title>
 
     <style>
@@ -126,8 +123,8 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
 
     <script type="text/javascript" src="<?php echo $GLOBALS["DOC_SERV_API_URL"] ?>"></script>
     <script src="<?php echo $_SESSION[$id]['WWWURL']?>/lang/<?php echo $lang ?>.js"></script>
-    <script src="<?php echo $_SESSION[$id]['WWWURL']?>/php/jsp/js/jquery-3.2.1.min.js"></script>
-    <script src="<?php echo $_SESSION[$id]['WWWURL']?>/php/jsp/js/materialize.min.js"></script>
+    <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/jquery-3.2.1.min.js"></script>
+    <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/materialize.min.js"></script>
     <script type="text/javascript">
 
         var docEditor;

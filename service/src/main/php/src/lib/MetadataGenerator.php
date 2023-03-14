@@ -1,8 +1,6 @@
 <?php
 
-namespace php\src\lib;
-
-use php\src\lib\Cryptographer;
+namespace connector\lib;
 
 class MetadataGenerator {
 
