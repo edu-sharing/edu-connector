@@ -1,3 +1,4 @@
 baseUrl: 
 storageClassName:
-version: maven-fixes-7-0
+clusterIssuer: letsencrypt
+version: maven-fixes-7.0-SNAPSHOT

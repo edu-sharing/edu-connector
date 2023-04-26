@@ -1,7 +1,7 @@
 Usage:
 Install via 
 ```bash
-helm upgrade --install connector . --set baseUrl=example.repo.org --set storageClassName=storage-class --set passwordDB=example
+helm upgrade --install connector . --set baseUrl=example.repo.org --set storageClassName=storage-class --set clusterIssuer=letsencrypt --set passwordDB=example
 ```
 
 View logs of Container `edu-sharing-connector-0` and check for an output like

@@ -4,7 +4,7 @@ annotations:
 metadata:
   name: edu-sharing-connector-ingress
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
+    cert-manager.io/cluster-issuer: {{ .Values.clusterIssuer }}
 spec:
   tls:
   - hosts:
