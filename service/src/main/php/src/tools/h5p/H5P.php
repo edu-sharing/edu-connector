@@ -1,6 +1,7 @@
 <?php
 namespace connector\tools\h5p;
 
+use connector\lib\Database;
 use connector\lib\EduRestClient;
 
 define('MODE_NEW', 'mode_new');
@@ -37,8 +38,7 @@ class H5P extends \connector\lib\Tool {
         $langPathBase = __DIR__ . '/../../../lang/' . $this -> h5pLang;
         // PHP Code Sniffer can only handle two concatenated strings and wants to see a file extension.
 	    $this -> language = include $langPathBase . '.php';
-        $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
-        $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $db = new Database();
         $this->H5PFramework = new H5PFramework();
 
         $this->H5PCore = new \H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), $this -> h5pLang, true);

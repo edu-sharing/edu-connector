@@ -81,8 +81,7 @@ $app->get('/install', function (Request $request, Response $response) {
 //ajax.php needed because h5p concatenates GET parameters
 $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
     global $db;
-    $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $db = new \connector\lib\Database();
     $contentHandler = new \connector\tools\h5p\H5PContentHandler();
     $h5p = \connector\tools\h5p\H5P::getInstance();
 
@@ -93,7 +92,7 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
      }
 
     if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_libraries') {
-        $db = new \PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
+        $db = new \connector\lib\Database();
         $db->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
         $libs = $h5p->H5PEditor->ajax->action(H5PEditorEndpoints::LIBRARIES);
         return $response->withStatus(200)
@@ -102,8 +101,7 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
     }
 
     if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_library-install') {
-        $db = new \PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
-        $db->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+        $db = new \connector\lib\Database();
         $token = '';//$_GET['token'];
         $libs = $h5p->H5PEditor->ajax->action(H5PEditorEndpoints::LIBRARY_INSTALL, $token, $request->getQueryParams()['id']);
         return $response->withStatus(200)
@@ -153,8 +151,7 @@ $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     global $db;
     try {
-        $db = new \PDO('mysql:host='.DBHOST.';dbname='.DBNAME, DBUSER, DBPASSWORD);
-        $db->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+        $db = new \connector\lib\Database();
         $h5p = \connector\tools\h5p\H5P::getInstance();
 
         if(isset($request->getQueryParams()['machineName']) && isset($request->getQueryParams()['majorVersion']) && isset($request->getQueryParams()['minorVersion'])) {
