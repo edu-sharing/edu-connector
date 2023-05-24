@@ -4,6 +4,8 @@
  */
 namespace connector\tools\lti;
 
+use Slim\Http\Response;
+
 define("LTI_VERSION", "LTI-1p0");
 define("LTI_MESSAGE_TYPE", "basic-lti-launch-request");
 define("OAUTH_CALLBACK", "about:blank");
@@ -83,7 +85,7 @@ class Lti extends \connector\lib\Tool {
         </html>';
     }
 
-    public function run() {
+    public function run(Response $response) {
         $this->setToolConfig();
         $this->prepareLaunchData();
         $this->renderLaunchForm();

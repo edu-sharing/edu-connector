@@ -33,7 +33,7 @@ $container['view'] = function ($container) {
 
 $app->get('/', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
-    $connector = new Connector($this->get('log'));
+    $connector = new Connector($this->get('log'), $this, $response);
 });
 
 $app->get('/error/{errorid}[/{language}]', function (Request $request, Response $response, $args) {
