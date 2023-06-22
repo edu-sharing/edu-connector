@@ -1,0 +1,25 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: edu-sharing-connector
+spec:
+  selector:
+    app: edu-sharing-connector
+  ports:
+    - port: 80
+      name: http-api
+      targetPort: api
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: edu-sharing-connector-db
+spec:
+  selector:
+    app: edu-sharing-connector-db
+  ports:
+    - port: 3306
+      name: tcp-db
+      targetPort: db
