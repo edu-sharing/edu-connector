@@ -124,6 +124,9 @@
 
     $(document).ready(function() {
         window.i = setInterval(H5PEditor.init, 10);
+        $("#h5p-content-form").on('submit', () => {
+            $("#h5p-content-form input.h5pSaveBtn").prop('disabled', true);
+        });
     });
 
 })(H5P.jQuery, H5PEditor);

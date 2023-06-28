@@ -2,10 +2,11 @@
 
 namespace connector\tools\OnlyOffice;
 
+use Slim\Http\Response;
+
 class OnlyOffice extends \connector\lib\Tool {
 
-    public function run()
-    {
+    public function run(Response $response) {
         //$_SESSION[$this->connectorId]['fileUrl'] = $_SESSION[$this->connectorId]['node']->node->downloadUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'];
         $_SESSION[$this->connectorId]['fileUrl'] = WWWURL . '/oo-content?sessionId=' . $_SESSION[$this->connectorId]['sessionId'] . '&downloadUrl=' . $_SESSION[$this->connectorId]['node']->node->downloadUrl;
         $this->forwardToEditor();

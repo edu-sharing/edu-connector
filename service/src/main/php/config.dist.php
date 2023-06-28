@@ -10,7 +10,10 @@ define('DATA', '');
 define('LOG_MODE', 'file');
 
 /*h5p*/
+// either pgsql or mysql
+define('DBTYPE', 'pgsql');
 define('DBHOST', '');
+define('DBPORT', '5432');
 define('DBUSER', '');
 define('DBPASSWORD', '');
 define('DBNAME', '');
