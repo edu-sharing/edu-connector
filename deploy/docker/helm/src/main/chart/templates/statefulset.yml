@@ -36,6 +36,14 @@ spec:
           value: {{ required "A valid .Values.passwordDB is required!" .Values.passwordDB }}
         - name: ONLYOFFICE_DOCUMENT_SERVER
           value: {{ .Values.onlyofficeDocumentServer | default "" }}
+        - name: ONLYOFFICE_PLUGIN_URL
+          value: {{ .Values.onlyofficePluginUrl | default "" }}
+        - name: ONLYOFFICE_JWT_SECRET
+          value: {{ .Values.onlyofficeJwtSecret | default "" }}
+        - name: MOODLE_BASE_DIR
+          value: {{ .Values.moodleBaseDir | default "" }}
+        - name: MOODLE_TOKEN
+          value: {{ .Values.moodleToken | default "" }}
         livenessProbe:
           httpGet:
             path: /metadata
