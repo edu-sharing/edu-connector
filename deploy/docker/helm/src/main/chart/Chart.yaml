@@ -1,0 +1,7 @@
+apiVersion: v2
+
+name: edu-sharing-services-connector
+description: Helm chart for edu-sharing connector app
+type: application
+version: 8.0.9998
+appVersion: 0.1.0

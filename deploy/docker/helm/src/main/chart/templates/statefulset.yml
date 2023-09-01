@@ -1,0 +1,132 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: edu-sharing-connector
+spec:
+  selector:
+    matchLabels:
+      app: edu-sharing-connector
+  replicas: 1
+  serviceName: edu-sharing-connector
+  template:
+    metadata:
+      labels:
+        app: edu-sharing-connector
+    spec:
+      containers:
+      - name: edu-sharing-connector
+        image: docker.edu-sharing.com/community/edu_sharing-community-services-edu-connector-service:{{ .Values.version }}
+        imagePullPolicy: Always
+        env:
+        - name: HOST_EXTERNAL
+          value: "connector.services.{{ .Values.baseUrl }}"
+        - name: PROT_EXTERNAL
+          value: "https"
+        - name: PORT_EXTERNAL
+          value: "443"
+        - name: DATABASE_HOST
+          value: edu-sharing-connector-db
+        - name: DATABASE_PORT
+          value: "3306"
+        - name: DATABASE_USER
+          value: "connector"
+        - name: DATABASE_NAME
+          value: "connector"
+        - name: DATABASE_PASSWORD
+          value: {{ required "A valid .Values.passwordDB is required!" .Values.passwordDB }}
+        - name: ONLYOFFICE_DOCUMENT_SERVER
+          value: {{ .Values.onlyofficeDocumentServer | default "" }}
+        - name: ONLYOFFICE_PLUGIN_URL
+          value: {{ .Values.onlyofficePluginUrl | default "" }}
+        - name: ONLYOFFICE_JWT_SECRET
+          value: {{ .Values.onlyofficeJwtSecret | default "" }}
+        - name: MOODLE_BASE_DIR
+          value: {{ .Values.moodleBaseDir | default "" }}
+        - name: MOODLE_TOKEN
+          value: {{ .Values.moodleToken | default "" }}
+        livenessProbe:
+          httpGet:
+            path: /metadata
+            port: api
+          periodSeconds: 10
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /metadata
+            port: api
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: "4000m"
+            memory: "4Gi"
+          requests:
+            cpu: "500m"
+            memory: "4Gi"
+        ports:
+        - containerPort: 80
+          name: api
+        volumeMounts:
+        - name: data
+          mountPath: /var/data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: edu-sharing-services-connector-data
+  
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: edu-sharing-connector-db
+spec:
+  selector:
+    matchLabels:
+      app: edu-sharing-connector-db
+  replicas: 1
+  serviceName: edu-sharing-connector-db
+  template:
+    metadata:
+      labels:
+        app: edu-sharing-connector-db
+    spec:
+      containers:
+      - name: edu-sharing-connector-db
+        image: docker.edu-sharing.com/community/edu_sharing-community-services-edu-connector-deploy-docker-build-postgresql:{{ .Values.version }}
+        env:
+        - name: POSTGRESQL_DATABASE
+          value: connector
+        - name: POSTGRESQL_USERNAME
+          value: connector
+        - name: POSTGRESQL_PASSWORD
+          value: {{ .Values.passwordDB }}
+        - name: POSTGRESQL_POSTGRES_PASSWORD
+          value: {{ .Values.passwordDB }}
+        resources:
+          limits:
+            cpu: "2000m"
+            memory: "2Gi"
+          requests:
+            cpu: "1000m"
+            memory: "2Gi"
+        ports:
+          - name: db
+            containerPort: 5432
+        volumeMounts:
+          - name: data
+            mountPath: /bitnami/postgresql
+
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      storageClassName: {{ .Values.storageClassName }}
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: "16Gi"

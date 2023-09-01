@@ -1,0 +1,4 @@
+baseUrl: 
+storageClassName:
+clusterIssuer: letsencrypt
+version: maven-fixes-8.0-SNAPSHOT

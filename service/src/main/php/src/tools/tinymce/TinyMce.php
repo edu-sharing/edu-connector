@@ -3,10 +3,11 @@
 namespace connector\tools\tinymce;
 
 use connector\lib\EduRestClient;
+use Slim\Http\Response;
 
 class TinyMce extends \connector\lib\Tool {
 
-    public function run()
+    public function run(Response $response)
     {
         $_SESSION[$this->connectorId]['first_run'] = true;
         $this->forwardToEditor();

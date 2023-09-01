@@ -2,15 +2,15 @@ version: "3.9"
 
 services:
   services-edu-connector-database:
-    image: "${docker.repository}/${docker.prefix}-deploy-docker-build-mysql:${docker.tag}"
+    image: "${docker.repository}/${docker.prefix}-deploy-docker-build-postgresql:${docker.tag}"
     container_name: "services-edu-connector-database_${COMPOSE_PROJECT_NAME}"
     environment:
-      MYSQL_USER: "${SERVICES_EDU_CONNECTOR_DATABASE_USER:-connector}"
-      MYSQL_PASSWORD: "${SERVICES_EDU_CONNECTOR_DATABASE_PASS:-connector}"
-      MYSQL_DATABASE: "${SERVICES_EDU_CONNECTOR_DATABASE_NAME:-connector}"
-      MYSQL_ROOT_PASSWORD: "${SERVICES_EDU_CONNECTOR_DATABASE_ROOT_PASS:-connector}"
+      POSTGRESQL_USERNAME: "${SERVICES_EDU_CONNECTOR_DATABASE_USER:-connector}"
+      POSTGRESQL_POSTGRES_PASSWORD: "${SERVICES_EDU_CONNECTOR_DATABASE_PASS:-connector}"
+      POSTGRESQL_DATABASE: "${SERVICES_EDU_CONNECTOR_DATABASE_NAME:-connector}"
+      POSTGRESQL_PASSWORD: "${SERVICES_EDU_CONNECTOR_DATABASE_ROOT_PASS:-connector}"
     volumes:
-      - services-edu-connector-database-data:/bitnami/mysql/data
+      - "services-edu-connector-database-data:/bitnami/postgresql"
 
   services-edu-connector-service:
     image: "${docker.repository}/${docker.prefix}-service:${docker.tag}"
@@ -20,11 +20,17 @@ services:
       HOST_EXTERNAL: "${SERVICES_EDU_CONNECTOR_HOST_EXTERNAL:-edu.connector.127.0.0.1.nip.io}"
       PORT_EXTERNAL: "${SERVICES_EDU_CONNECTOR_PORT_EXTERNAL:-9200}"
       PATH_EXTERNAL: "${SERVICES_EDU_CONNECTOR_PATH_EXTERNAL:-}"
+      DATABASE_TYPE: pgsql
       DATABASE_HOST: services-edu-connector-database
-      DATABASE_PORT: "3306"
+      DATABASE_PORT: "5432"
       DATABASE_NAME: "${SERVICES_EDU_CONNECTOR_DATABASE_NAME:-connector}"
       DATABASE_USER: "${SERVICES_EDU_CONNECTOR_DATABASE_USER:-connector}"
       DATABASE_PASSWORD: "${SERVICES_EDU_CONNECTOR_DATABASE_PASS:-connector}"
+      ONLYOFFICE_DOCUMENT_SERVER: "${SERVICES_EDU_CONNECTOR_ONLYOFFICE_DOCUMENT_SERVER:-}"
+      ONLYOFFICE_PLUGIN_URL: "${SERVICES_EDU_CONNECTOR_ONLYOFFICE_PLUGIN_URL:-}"
+      ONLYOFFICE_JWT_SECRET: "${SERVICES_EDU_CONNECTOR_ONLYOFFICE_JWT_SECRET:-}"
+      MOODLE_BASE_DIR: "${SERVICES_EDU_CONNECTOR_MOODLE_BASE_DIR:-}"
+      MOODLE_TOKEN: "${SERVICES_EDU_CONNECTOR_MOODLE_TOKEN:-}"
     volumes:
       - "services-edu-connector-data:/var/data"
     depends_on:

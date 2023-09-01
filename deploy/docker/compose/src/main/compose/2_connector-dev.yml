@@ -3,6 +3,8 @@ version: '3.7'
 services:
 
   services-edu-connector-service:
+    extra_hosts:
+      - "repository.127.0.0.1.nip.io:host-gateway"
     volumes:
       - type: bind
         source: ${GIT_ROOT}/services-connector/service/src/main/php/vendor

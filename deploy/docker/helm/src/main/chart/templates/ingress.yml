@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+annotations:
+metadata:
+  name: edu-sharing-connector-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: {{ .Values.clusterIssuer }}
+spec:
+  tls:
+  - hosts:
+    - connector.services.{{ .Values.baseUrl }}
+    secretName: edu-sharing-connector-tls
+  rules:
+  - host: connector.services.{{ .Values.baseUrl }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: edu-sharing-connector
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
