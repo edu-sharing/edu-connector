@@ -307,7 +307,11 @@ class H5PFramework implements \H5PFrameworkInterface
      */
     public function getWhitelist($isLibrary, $defaultContentWhitelist, $defaultLibraryWhitelist)
     {
-        return '';
+        if ($isLibrary) {
+            return $defaultLibraryWhitelist;
+        } else {
+            return $defaultContentWhitelist;
+        }
     }
 
     /**
