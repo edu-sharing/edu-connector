@@ -88,17 +88,15 @@ spec:
     spec:
       containers:
       - name: edu-sharing-connector-db
-        image: mysql:8.0.31-debian
+        image: docker.edu-sharing.com/community/edu_sharing-community-services-edu-connector-deploy-docker-build-postgresql:{{ .Values.version }}
         env:
-        - name: MYSQL_DATABASE
+        - name: POSTGRESQL_DATABASE
           value: connector
-        - name: MYSQL_USER
+        - name: POSTGRESQL_USERNAME
           value: connector
-        - name: MYSQL_ROOT_HOST
-          value: "%"
-        - name: MYSQL_PASSWORD 
+        - name: POSTGRESQL_PASSWORD
           value: {{ .Values.passwordDB }}
-        - name: MYSQL_ROOT_PASSWORD
+        - name: POSTGRESQL_POSTGRES_PASSWORD
           value: {{ .Values.passwordDB }}
         resources:
           limits:
@@ -107,12 +105,12 @@ spec:
           requests:
             cpu: "1000m"
             memory: "2Gi"
-        volumeMounts:
-        - name: data
-          mountPath: /var/lib/mysql
         ports:
-        - containerPort: 3306
-          name: db
+          - name: db
+            containerPort: 5432
+        volumeMounts:
+          - name: data
+            mountPath: /bitnami/postgresql
 
   volumeClaimTemplates:
   - metadata:

@@ -20,8 +20,6 @@ connector_database_port=${DATABASE_PORT//\/&/\\&}
 connector_database_user=${DATABASE_USER//\/&/\\&}
 connector_database_password=${DATABASE_PASSWORD//\/&/\\&}
 connector_database_name=${DATABASE_NAME//\/&/\\&}
-connector_database_path=${connector_database_host}:${connector_database_port}
-
 
 # OPTIONALS
 
@@ -38,7 +36,9 @@ sed -i "s|define('WWWURL', '.*')|define('WWWURL', '${connector_url}')|g" "${conf
 sed -i "s|define('DOCROOT', '.*')|define('DOCROOT', '${ROOT}')|g" "${conf}"
 sed -i "s|define('DATA', '.*')|define('DATA', '${DATA}')|g" "${conf}"
 sed -i "s|define('LOG_MODE', '.*')|define('LOG_MODE', 'stdout')|g" "${conf}"
-sed -i "s|define('DBHOST', '.*')|define('DBHOST', '${connector_database_path}')|g" "${conf}"
+sed -i "s|define('DBTYPE', '.*')|define('DBTYPE', 'pgsql')|g" "${conf}"
+sed -i "s|define('DBHOST', '.*')|define('DBHOST', '${connector_database_host}')|g" "${conf}"
+sed -i "s|define('DBPORT', '.*')|define('DBPORT', '${connector_database_port}')|g" "${conf}"
 sed -i "s|define('DBUSER', '.*')|define('DBUSER', '${connector_database_user}')|g" "${conf}"
 sed -i "s|define('DBPASSWORD', '.*')|define('DBPASSWORD', '${connector_database_password}')|g" "${conf}"
 sed -i "s|define('DBNAME', '.*')|define('DBNAME', '${connector_database_name}')|g" "${conf}"
@@ -53,7 +53,7 @@ sed -i "s|define('MOODLE_TOKEN', '.*')|define('MOODLE_TOKEN', '${moodle_token}')
 echo "Installing..."
 php install/install.php
 
-printf "\nWaiting for mysql to come active\n"
+printf "\nWaiting for postgres to come active\n"
 until wait-for-it "${connector_database_host}:${connector_database_port}" -t 3
 do
   sleep 5
@@ -62,6 +62,8 @@ done
 echo "Initializing database..."
 php install/createDb.php
 
+echo ""
+echo ""
 echo "Connector is ready. Please register it at your repository (Admin Tools -> Remote-Systems) with the following url:"
 echo "${connector_url}/metadata"
 echo ""

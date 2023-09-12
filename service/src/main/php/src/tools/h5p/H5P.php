@@ -1,7 +1,10 @@
 <?php
 namespace connector\tools\h5p;
 
+use connector\lib\Database;
 use connector\lib\EduRestClient;
+use Dompdf\Exception;
+use Slim\Http\Response;
 
 define('MODE_NEW', 'mode_new');
 
@@ -37,8 +40,7 @@ class H5P extends \connector\lib\Tool {
         $langPathBase = __DIR__ . '/../../../lang/' . $this -> h5pLang;
         // PHP Code Sniffer can only handle two concatenated strings and wants to see a file extension.
 	    $this -> language = include $langPathBase . '.php';
-        $db = new \PDO('mysql:host=' . DBHOST . ';dbname=' . DBNAME, DBUSER, DBPASSWORD);
-        $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $db = new Database();
         $this->H5PFramework = new H5PFramework();
 
         $this->H5PCore = new \H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), $this -> h5pLang, true);
@@ -63,7 +65,7 @@ class H5P extends \connector\lib\Tool {
         return self::$instance;
     }
 
-    public function run() {
+    public function run(Response $response) {
         $log = $this->logger->getLog();
         $this->H5PCore->disableFileCheck = true;
 
@@ -101,7 +103,7 @@ class H5P extends \connector\lib\Tool {
             }
 
         }
-        $this->showEditor($content);
+        $this->showEditor($content, $response);
     }
 
     private function copyr($source, $dest) {
@@ -154,8 +156,7 @@ class H5P extends \connector\lib\Tool {
     }
 
 
-    public function showEditor($content) {
-        echo '<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">';
+    public function showEditor($content, Response $response) {
         $integration = array();
         $integration['baseUrl'] = WWWURL;
         //$integration['url'] = '/eduConnector/src/tools/h5p';
@@ -200,35 +201,50 @@ class H5P extends \connector\lib\Tool {
             $integration['editor']['hideHub'] = true;
         }
 
-        echo '<link rel="stylesheet" href="' . WWWURL . '/css/h5p.css"> ';
-
         echo '<script>'.
             'window.H5PIntegration='. json_encode($integration).
             '</script>';
-
+        $styles = [
+            WWWURL . '/css/h5p.css'
+        ];
         foreach(\H5PCore::$styles as $style) {
-            echo '<link rel="stylesheet" href="' . WWWURL . '/vendor/h5p/h5p-core/' . $style . '"> ';
+           $styles[] = WWWURL . '/vendor/h5p/h5p-core/' . $style;
         }
         foreach(\H5PEditor::$styles as $style) {
-            echo '<link rel="stylesheet" href="' . WWWURL . '/vendor/h5p/h5p-editor/' . $style . '"> ';
+            $styles[] = WWWURL . '/vendor/h5p/h5p-editor/' . $style;
         }
+        $scripts = [];
         foreach (\H5PCore::$scripts as $script) {
-            echo '<script src="' . WWWURL . '/vendor/h5p/h5p-core/' . $script . '"></script> ';
+            $scripts[] = WWWURL . '/vendor/h5p/h5p-core/' . $script;
         }
         foreach (\H5PEditor::$scripts as $script) {
-            echo '<script src="' . WWWURL . '/vendor/h5p/h5p-editor/' . $script . '"></script> ';
+            $scripts[] = WWWURL . '/vendor/h5p/h5p-editor/' . $script;
         }
+        $scripts[] = WWWURL . '/vendor/h5p/h5p-editor/scripts/h5peditor-editor.js';
+        $scripts[] = WWWURL . '/src/tools/h5p/js/h5peditor-init.js';
 
-        echo '<script src="'.WWWURL.'/vendor/h5p/h5p-editor/scripts/h5peditor-editor.js"></script>';
-        echo '<script src="'.WWWURL.'/src/tools/h5p/js/h5peditor-init.js"></script>';
 
-        echo '</head><body>';
+
 
         $titleShow = $_SESSION[$this->connectorId]['node']->node->title;
         if(empty($titleShow)){
             $titleShow = $_SESSION[$this->connectorId]['node']->node->name;
         }
-
+        $this->container->view->render($response, 'h5p.html.twig', [
+            'WWWURL' => WWWURL,
+            'title' => $titleShow,
+            'content' => $content,
+            'library' => $this->library,
+            'parameters' => $this->parameters,
+            'metadata' => $this->metadata,
+            'styles' => $styles,
+            'nodeId' => $_SESSION[$this->connectorId]['node']->node->ref->id,
+            'connectorId' => $this->connectorId,
+            'scripts' => $scripts,
+            'integration' => json_encode($integration),
+            'language' => $this -> language
+        ]);
+        /*
         echo '<form method="post" enctype="multipart/form-data" id="h5p-content-form" action="'.WWWURL.'/ajax/ajax.php?title='.$_SESSION[$this->connectorId]['node']->node->ref->id.'&action=h5p_create&id='.$this->connectorId.'">';
         echo '<div class="h5pSaveBtnWrapper"><h1 class="h5pTitle">'.$titleShow.'</h1><input type="submit" name="submit" value="' . $this -> language['save'] . '" class="h5pSaveBtn btn button button-primary button-large"/></div>';
         echo '<div class="h5p-create"><div class="h5p-editor"></div></div>';
@@ -238,7 +254,7 @@ class H5P extends \connector\lib\Tool {
         echo '<input type="hidden" name="metadata" value="'.$this->metadata.'">';
         echo '<div class="h5pSaveBtnWrapper"><input type="submit" name="submit" value="' . $this -> language['save'] . '" class="h5pSaveBtn btn button button-primary button-large"/></div>';
         echo '</form>';
-        echo '</body></html>';
+        echo '</body></html>';*/
     }
 
     public function setNode() {

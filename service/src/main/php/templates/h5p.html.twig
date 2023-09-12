@@ -1,0 +1,26 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% for s in styles %}
+<link rel="stylesheet" href="{{s}}">
+{% endfor %}
+<script>
+    window.H5PIntegration = {{integration | raw}};
+</script>
+{% for s in scripts %}
+<script src="{{s}}"></script>
+{% endfor %}
+</head>
+<body>
+<form method="post" enctype="multipart/form-data" id="h5p-content-form" action="{{WWWURL}}/ajax/ajax.php?title={{nodeId}}&action=h5p_create&id={{connectorId}}">
+    <h1 class="h5pTitle">{{title}}</h1>
+    <div class="h5pSaveBtnWrapper">
+        <input type="submit" name="submit" value="{{language.save}}" class="h5pSaveBtn btn button button-primary button-large"/>
+    </div>
+    <div class="h5p-create"><div class="h5p-editor"></div></div>
+    <input type="hidden" name="title" value="{{content.title}}">
+    <input type="hidden" name="library" value="{{library}}">
+    <input type="hidden" name="parameters" value="{{parameters | raw}}">
+    <input type="hidden" name="metadata" value="{{metadata | raw}}">
+    <div class="h5pSaveBtnWrapper"><input type="submit" name="submit" value="{{language.save}}" class="h5pSaveBtn btn button button-primary button-large"/></div>
+</form>
+</body>
+</html>

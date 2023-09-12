@@ -2,9 +2,11 @@
 
 namespace connector\tools\tinymce;
 
+use Slim\Http\Response;
+
 class Etherpad extends \connector\lib\Tool {
 
-	public function run() {
+    public function run(Response $response) {
 
 		$courseId = $resource_link_id = $_SESSION[$this->connectorId]['node']->node->ref->id;
 		$userId = $fname = $_SESSION[$this->connectorId]['user']->userName;

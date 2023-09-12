@@ -2,18 +2,23 @@
 
 namespace connector\lib;
 
+use Slim\App;
+use Slim\Container;
 use Slim\Exception\SlimException;
+use Slim\Http\Response;
 
 class Connector
 {
     private $id;
     private $tool;
+    private Container $container;
     protected $log;
     protected $apiClient;
 
-    public function __construct($log)
+    public function __construct($log, Container $container,Response $response)
     {
         $this->log = $log;
+        $this->container = $container;
         $this->id = bin2hex(openssl_random_pseudo_bytes(32));
         try {
             $this->setParameters();
@@ -22,7 +27,7 @@ class Connector
             $this->startTool();
             $this->tool->setNode();
             $this->setUser();
-            $this->tool->run();
+            $this->tool->run($response);
         } catch (\Exception $e) {
             $this->log->error($e->getCode() . ' ' . $e->__toString());
             header('Location: ' . WWWURL . '/error/' . ERROR_DEFAULT);
@@ -93,5 +98,6 @@ class Connector
             default:
                 throw new \Exception('Unknown tool: ' . $_SESSION[$this->id]['tool'] . '.');
         }
+        $this->tool->setContainer($this->container);
     }
 }

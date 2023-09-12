@@ -16,7 +16,13 @@
   <name>edu_sharing-community-services-connector-deploy-docker</name>
 
   <properties>
-    <docker.from.mysql>dockerio.mirror.docker.edu-sharing.com/bitnami/mysql:8.0.32</docker.from.mysql>
+    <postgresql.version.major>13</postgresql.version.major>
+    <postgresql.version.minor>9</postgresql.version.minor>
+    <postgresql.version.patch>0</postgresql.version.patch>
+    <postgresql.version>${postgresql.version.major}.${postgresql.version.minor}.${postgresql.version.patch}</postgresql.version>
+    <docker.from.postgresql.server>
+      dockerio.mirror.docker.edu-sharing.com/bitnami/postgresql:${postgresql.version}
+    </docker.from.postgresql.server>
   </properties>
 
   <modules>

@@ -10,10 +10,10 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>edu_sharing-community-services-connector-deploy-docker-build-mysql</artifactId>
+  <artifactId>edu_sharing-community-services-connector-deploy-docker-build-postgres</artifactId>
   <packaging>jar</packaging>
 
-  <name>edu_sharing-community-services-connector-deploy-docker-build-mysql</name>
+  <name>edu_sharing-community-services-connector-deploy-docker-build-posgtres</name>
 
 
   <build>
@@ -42,7 +42,7 @@
         <configuration>
           <images>
             <image>
-              <name>${docker.repository}/${docker.prefix}-deploy-docker-build-mysql:${docker.tag}</name>
+              <name>${docker.repository}/${docker.prefix}-deploy-docker-build-postgresql:${docker.tag}</name>
             </image>
           </images>
         </configuration>

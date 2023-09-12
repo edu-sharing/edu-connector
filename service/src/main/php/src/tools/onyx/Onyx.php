@@ -1,9 +1,11 @@
 <?php
 namespace connector\tools\onyx;
 
+use Slim\Http\Response;
+
 class Onyx extends \connector\lib\Tool {
 
-    public function run() {
+    public function run(Response $response) {
         $this->forwardToEditor();
     }
 
