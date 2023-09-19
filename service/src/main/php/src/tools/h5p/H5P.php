@@ -270,11 +270,7 @@ class H5P extends \connector\lib\Tool {
             }
         } else {
             $client = new EduRestClient($this->connectorId);
-            $data = $client->getContent($node);
-
-            $fp = fopen($this->H5PFramework->getUploadedH5pPath(), 'w');
-            fwrite($fp, $data);
-            fclose($fp);
+            $client->getContent($node, null, true);
         }
         $_SESSION[$this->connectorId]['node'] = $node;
     }
