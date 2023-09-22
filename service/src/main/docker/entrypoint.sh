@@ -49,9 +49,9 @@ sed -i "s|define('DBUSER', '.*')|define('DBUSER', '${connector_database_user}')|
 sed -i "s|define('DBPASSWORD', '.*')|define('DBPASSWORD', '${connector_database_password}')|g" "${conf}"
 sed -i "s|define('DBNAME', '.*')|define('DBNAME', '${connector_database_name}')|g" "${conf}"
 
-sed -i -r "s|upload_max_filesize.*/upload_max_filesize = ${upload_max_filesize}|" "${php_ini}"
-sed -i -r "s|post_max_size.*/post_max_size = ${post_max_size}|" "${php_ini}"
-sed -i -r "s|memory_limit.*/memory_limit = ${memory_limit}|" "${php_ini}"
+sed -i -r "s|upload_max_filesize.*|upload_max_filesize = ${upload_max_filesize}|" "${php_ini}"
+sed -i -r "s|post_max_size.*|post_max_size = ${post_max_size}|" "${php_ini}"
+sed -i -r "s|memory_limit.*|memory_limit = ${memory_limit}|" "${php_ini}"
 
 sed -i "s|define('ONLYOFFICE_DOCUMENT_SERVER', '.*')|define('ONLYOFFICE_DOCUMENT_SERVER', '${only_office_document_server}')|g" "${conf}"
 sed -i "s|define('ONLYOFFICE_PLUGIN_URL', '.*')|define('ONLYOFFICE_PLUGIN_URL', '${only_office_plugin_url}')|g" "${conf}"
