@@ -160,7 +160,7 @@ class H5P extends \connector\lib\Tool {
         $integration = array();
         $integration['baseUrl'] = WWWURL;
         //$integration['url'] = '/eduConnector/src/tools/h5p';
-        $integration['url'] = '/eduConnector/src/tools/h5p/cache';
+        $integration['url'] = '/src/tools/h5p/cache';
         $integration['siteUrl'] = WWWURL;
         $integration['postUserStatistics'] = '';
         $integration['ajax'] = array();
