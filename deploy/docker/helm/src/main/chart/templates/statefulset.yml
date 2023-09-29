@@ -44,6 +44,12 @@ spec:
           value: {{ .Values.moodleBaseDir | default "" }}
         - name: MOODLE_TOKEN
           value: {{ .Values.moodleToken | default "" }}
+        - name: UPLOAD_FILE_SIZE
+          value: {{ .Values.uploadFileSize | default "512M" }}
+        - name: POST_MAX_SIZE
+          value: {{ .Values.postMaxSize | default "513M" }}
+        - name: MEMORY_LIMIT
+          value: {{ .Values.memoryLimit | "1024M" }}
         livenessProbe:
           httpGet:
             path: /metadata
