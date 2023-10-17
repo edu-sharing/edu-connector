@@ -20,7 +20,6 @@ if($realPath === false || strpos($realPath, $base) !== 0) {
     return;
 }
 
-ini_set('memory_limit', '2048M');
 $filesize = filesize($src_file);
 
 $mimetype = mime_content_type($src_file);
