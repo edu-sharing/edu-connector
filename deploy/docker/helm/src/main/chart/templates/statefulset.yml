@@ -36,6 +36,20 @@ spec:
           value: {{ required "A valid .Values.passwordDB is required!" .Values.passwordDB }}
         - name: ONLYOFFICE_DOCUMENT_SERVER
           value: {{ .Values.onlyofficeDocumentServer | default "" }}
+        - name: ONLYOFFICE_PLUGIN_URL
+          value: {{ .Values.onlyofficePluginUrl | default "" }}
+        - name: ONLYOFFICE_JWT_SECRET
+          value: {{ .Values.onlyofficeJwtSecret | default "" }}
+        - name: MOODLE_BASE_DIR
+          value: {{ .Values.moodleBaseDir | default "" }}
+        - name: MOODLE_TOKEN
+          value: {{ .Values.moodleToken | default "" }}
+        - name: UPLOAD_FILE_SIZE
+          value: {{ .Values.uploadFileSize | default "512M" }}
+        - name: POST_MAX_SIZE
+          value: {{ .Values.postMaxSize | default "513M" }}
+        - name: MEMORY_LIMIT
+          value: {{ .Values.memoryLimit | "1024M" }}
         livenessProbe:
           httpGet:
             path: /metadata

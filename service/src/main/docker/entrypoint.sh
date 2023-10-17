@@ -23,6 +23,10 @@ connector_database_name=${DATABASE_NAME//\/&/\\&}
 
 # OPTIONALS
 
+upload_max_filesize="${UPLOAD_FILE_SIZE:-512M}"
+post_max_size="${POST_MAX_SIZE:-513M}"
+memory_limit="${MEMORY_LIMIT:-1024M}"
+
 only_office_document_server="${ONLYOFFICE_DOCUMENT_SERVER:-}"
 only_office_plugin_url="${ONLYOFFICE_PLUGIN_URL:-}"
 only_office_jwt_secret="${ONLYOFFICE_JWT_SECRET:-}"
@@ -31,6 +35,8 @@ only_office_jwt_secret="${ONLYOFFICE_JWT_SECRET:-}"
 moodle_base_dir="${MOODLE_BASE_DIR:-}"
 # shellcheck disable=SC2153
 moodle_token="${MOODLE_TOKEN:-}"
+
+php_ini=$PHP_INI_DIR/php.ini
 
 sed -i "s|define('WWWURL', '.*')|define('WWWURL', '${connector_url}')|g" "${conf}"
 sed -i "s|define('DOCROOT', '.*')|define('DOCROOT', '${ROOT}')|g" "${conf}"
@@ -42,6 +48,10 @@ sed -i "s|define('DBPORT', '.*')|define('DBPORT', '${connector_database_port}')|
 sed -i "s|define('DBUSER', '.*')|define('DBUSER', '${connector_database_user}')|g" "${conf}"
 sed -i "s|define('DBPASSWORD', '.*')|define('DBPASSWORD', '${connector_database_password}')|g" "${conf}"
 sed -i "s|define('DBNAME', '.*')|define('DBNAME', '${connector_database_name}')|g" "${conf}"
+
+sed -i -r "s|upload_max_filesize.*|upload_max_filesize = ${upload_max_filesize}|" "${php_ini}"
+sed -i -r "s|post_max_size.*|post_max_size = ${post_max_size}|" "${php_ini}"
+sed -i -r "s|memory_limit.*|memory_limit = ${memory_limit}|" "${php_ini}"
 
 sed -i "s|define('ONLYOFFICE_DOCUMENT_SERVER', '.*')|define('ONLYOFFICE_DOCUMENT_SERVER', '${only_office_document_server}')|g" "${conf}"
 sed -i "s|define('ONLYOFFICE_PLUGIN_URL', '.*')|define('ONLYOFFICE_PLUGIN_URL', '${only_office_plugin_url}')|g" "${conf}"

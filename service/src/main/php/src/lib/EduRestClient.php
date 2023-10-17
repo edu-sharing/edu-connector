@@ -2,6 +2,8 @@
 
 namespace connector\lib;
 
+use connector\tools\h5p\H5PFramework;
+
 define('APPID', 'educonnector');
 
 class EduRestClient
@@ -93,7 +95,7 @@ class EduRestClient
         throw new \Exception('Error unlocking node ' . $nodeId, $httpcode);
     }
 
-    public function getContent($node, $downloadUrl=NULL){
+    public function getContent($node, $downloadUrl = null, $isH5p = false){
         if ($node->node->contentUrl){
             $contentUrl = $node->node->contentUrl; //repo-version 5.0 or older
         }else{
@@ -122,7 +124,14 @@ class EduRestClient
         $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        if (! $isH5p) {
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        } else {
+            $h5pFramework = new H5PFramework();
+            $path         = $h5pFramework->getUploadedH5pPath();
+            $filePath     = fopen($path, 'wb');
+            curl_setopt($curl,CURLOPT_FILE, $filePath);
+        }
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
@@ -130,6 +139,9 @@ class EduRestClient
         $data = curl_exec($curl);
         $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
+        if ($isH5p) {
+            fclose($filePath);
+        }
         if ($httpcode >= 200 && $httpcode < 308) {
             return $data;
         }else{

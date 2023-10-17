@@ -86,7 +86,8 @@ RUN set -eux \
     && adduser www-data appuser
 
 RUN set -eux \
-	&& chown -R appuser:appuser /etc/apache2 $ROOT $DATA
+	&& chown -R appuser:appuser /etc/apache2 $ROOT $DATA \
+    && chown -R appuser:appuser $PHP_INI_DIR
 
 USER appuser
 

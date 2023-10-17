@@ -3,7 +3,7 @@ namespace connector\tools\h5p;
 
 use connector\lib\Database;
 use connector\lib\EduRestClient;
-use Dompdf\Exception;
+use Exception;
 use Slim\Http\Response;
 
 define('MODE_NEW', 'mode_new');
@@ -140,18 +140,22 @@ class H5P extends \connector\lib\Tool {
     }
 
 
-    public function rrmdir($dir) {
-       if (is_dir($dir)) {
-         $objects = scandir($dir);
-         foreach ($objects as $object) {
+    /**
+     * @throws Exception
+     */
+    public function rrmdir(string $dir, bool $throwException = false): void {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
                 if ($object != "." && $object != "..") {
-             if (is_dir($dir."/".$object))
-               $this -> rrmdir($dir."/".$object);
-             else
-               unlink($dir."/".$object);
+                    if (is_dir($dir."/".$object))
+                        $this -> rrmdir($dir."/".$object);
+                    else
+                        unlink($dir."/".$object);
+                }
             }
-            }
-            rmdir($dir);
+            $isDirDeleted = rmdir($dir);
+            ! $isDirDeleted && $throwException && throw new Exception('Cannot delete directory: ' . $dir . '.');
         }
     }
 
@@ -160,7 +164,7 @@ class H5P extends \connector\lib\Tool {
         $integration = array();
         $integration['baseUrl'] = WWWURL;
         //$integration['url'] = '/eduConnector/src/tools/h5p';
-        $integration['url'] = '/eduConnector/src/tools/h5p/cache';
+        $integration['url'] = WWWURL . '/src/tools/h5p/cache';
         $integration['siteUrl'] = WWWURL;
         $integration['postUserStatistics'] = '';
         $integration['ajax'] = array();
@@ -270,11 +274,7 @@ class H5P extends \connector\lib\Tool {
             }
         } else {
             $client = new EduRestClient($this->connectorId);
-            $data = $client->getContent($node);
-
-            $fp = fopen($this->H5PFramework->getUploadedH5pPath(), 'w');
-            fwrite($fp, $data);
-            fclose($fp);
+            $client->getContent($node, null, true);
         }
         $_SESSION[$this->connectorId]['node'] = $node;
     }
