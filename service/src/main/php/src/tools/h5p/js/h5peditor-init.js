@@ -14,6 +14,7 @@
 
         // Required styles and scripts for the editor
         H5PEditor.assets = H5PIntegration.editor.assets;
+        H5PEditor.assets.css.push('/src/tools/h5p/js/customEdu.css')
 
         // Required for assets
         H5PEditor.baseUrl = '';
@@ -103,7 +104,7 @@
             }
         });
 
-        clearInterval(window.i);;
+        clearInterval(window.i);
     };
 
     H5PEditor.getAjaxUrl = function (action, parameters) {
