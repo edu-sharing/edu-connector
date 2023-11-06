@@ -79,7 +79,7 @@ $(document).ready(function() {
             tinyMCE.activeEditor.save(); // to reset isDirty
             save();
         }
-    }, 300000);
+    }, 30000);
 
     if(access < 1) {
         destroy([language.functiondeactivatedheading, language.functiondeactivatedtext, language.closeeditor]);
