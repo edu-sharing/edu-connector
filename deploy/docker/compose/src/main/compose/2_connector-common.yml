@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   services-edu-connector-database:
-    image: "${docker.repository}/${docker.prefix}-deploy-docker-build-postgresql:${docker.tag}"
+    image: "${docker.edu_sharing.community.common.postgresql}"
     container_name: "services-edu-connector-database_${COMPOSE_PROJECT_NAME}"
     environment:
       POSTGRESQL_USERNAME: "${SERVICES_EDU_CONNECTOR_DATABASE_USER:-connector}"

@@ -96,7 +96,7 @@ spec:
     spec:
       containers:
       - name: edu-sharing-connector-db
-        image: docker.edu-sharing.com/community/edu_sharing-community-services-edu-connector-deploy-docker-build-postgresql:{{ .Values.version }}
+        image: {{ .Values.images.postgresql }}
         env:
         - name: POSTGRESQL_DATABASE
           value: connector

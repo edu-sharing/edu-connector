@@ -2,3 +2,6 @@ baseUrl:
 storageClassName:
 clusterIssuer: letsencrypt
 version: maven-fixes-8.0-SNAPSHOT
+
+images:
+  postgresql: ${docker.edu_sharing.community.common.postgresql}

@@ -23,10 +23,18 @@
     <docker.from.postgresql.server>
       dockerio.mirror.docker.edu-sharing.com/bitnami/postgresql:${postgresql.version}
     </docker.from.postgresql.server>
+
+    <docker.edu_sharing.communty.common.repository>
+      ${docker.registry}/community/common
+    </docker.edu_sharing.communty.common.repository>
+
+    <docker.edu_sharing.community.common.postgresql>
+      ${docker.edu_sharing.communty.common.repository}/edu_sharing-community-common-postgresql:${postgresql.version}
+    </docker.edu_sharing.community.common.postgresql>
+
   </properties>
 
   <modules>
     <module>compose</module>
-    <module>build</module>
   </modules>
 </project>
