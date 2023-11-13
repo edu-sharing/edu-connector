@@ -29,7 +29,7 @@
     </docker.edu_sharing.communty.common.repository>
 
     <docker.edu_sharing.community.common.postgresql>
-      ${docker.edu_sharing.communty.common.repository}/edu_sharing-community-common-postgresql:${postgresql.version}
+      ${docker.edu_sharing.communty.common.repository}/edu_sharing-community-common-docker-postgresql:${postgresql.version}
     </docker.edu_sharing.community.common.postgresql>
 
   </properties>
