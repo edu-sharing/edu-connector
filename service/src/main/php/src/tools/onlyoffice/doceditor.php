@@ -235,10 +235,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
             }
         };
         <?php if (defined('ONLYOFFICE_JWT_SECRET') && !empty(ONLYOFFICE_JWT_SECRET)): ?>
-        config.token = "<?php
-            $token = ["payload" => $payload];
-            echo JWT::encode($token, ONLYOFFICE_JWT_SECRET);
-            ?>"
+        config.token = "<?php echo JWT::encode($payload, ONLYOFFICE_JWT_SECRET);?>"
         <?php endif; ?>;
         var сonnectEditor = function () {
             docEditor = new DocsAPI.DocEditor("iframeEditor", config);
