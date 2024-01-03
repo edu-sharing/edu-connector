@@ -94,6 +94,12 @@ class Connector
                 break;
             case 'H5P':
                 $this -> tool = new \connector\tools\h5p\H5P($this->apiClient, $this->log, $this->id);
+                // By adding the query param "reloadLibraries" to the URL we can force the H5P implementation
+                // to reload all libraries in order to mitigate "missing content type" errors.
+                $queryParams = $this->container->request->getQueryParams();
+                if (isset ($queryParams['reloadLibraries'])) {
+                    $this->tool->enableForceLibraryLoad();
+                }
                 break;
             default:
                 throw new \Exception('Unknown tool: ' . $_SESSION[$this->id]['tool'] . '.');

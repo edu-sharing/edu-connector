@@ -9,6 +9,7 @@ class H5PFramework implements \H5PFrameworkInterface
 
     private $messages = array('error' => array(), 'info' => array());
     public $id;
+    private bool $forceLibraryLoad = false;
 
 
     /**
@@ -329,6 +330,9 @@ class H5PFramework implements \H5PFrameworkInterface
      */
     public function isPatchedLibrary($library)
     {
+        if ($this->forceLibraryLoad) {
+            return true;
+        }
         global $db;
 
         $query = 'SELECT id 
@@ -336,10 +340,10 @@ class H5PFramework implements \H5PFrameworkInterface
           WHERE name = ' . $db->quote($library['machineName']) . '
           AND major_version = ' . (int)$library['majorVersion'] . '
           AND minor_version = ' . (int)$library['minorVersion'] . '
-          AND patch_version < ' . (int)$library['patchVersion'];
+          AND patch_version = ' . (int)$library['patchVersion'];
 
         $statement = $db->query($query);
-        return $statement->fetch() !== FALSE;
+        return $statement->fetch() === false;
     }
 
     /**
@@ -1211,5 +1215,18 @@ class H5PFramework implements \H5PFrameworkInterface
     public function setContentHubMetadataChecked($time, $lang = 'en')
     {
         // TODO: Implement setContentHubMetadataChecked() method.
+    }
+
+    /**
+     * Function setForceLibraryLoad
+     *
+     * Setting this parameter to true will force all libraries to be reloaded.
+     * This will fix potential "missing content type" errors.
+     *
+     * @param bool $forceLibraryLoad
+     * @return void
+     */
+    public function setForceLibraryLoad(bool $forceLibraryLoad): void {
+        $this->forceLibraryLoad = $forceLibraryLoad;
     }
 }
