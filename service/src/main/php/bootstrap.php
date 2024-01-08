@@ -1,17 +1,20 @@
 <?php
 
+use connector\lib\BlockingMiddleware;
 use connector\lib\Connector;
 use connector\lib\EduRestClient;
 use connector\lib\Logger;
 use connector\lib\MetadataGenerator;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+use Slim\App;
+use Slim\Container;
 use Slim\Views\Twig;
 
 error_reporting(0); //do not change, can cause ajax problems
 
-$container = new \Slim\Container;
-$app = new \Slim\App([$container, 'settings' => [
+$container = new Container;
+$app = new App([$container, 'settings' => [
     'displayErrorDetails' => true,
     'debug'               => true,
     'whoops.editor'       => 'sublime',
@@ -30,6 +33,8 @@ $container['view'] = function ($container) {
     $view->addExtension(new Slim\Views\TwigExtension($container['router'], $basePath));
     return $view;
 };
+
+$app->add(new BlockingMiddleware());
 
 $app->get('/', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
