@@ -40,8 +40,8 @@ connectorList.connectors+={
 - Set values for
     - __ONLYOFFICE_DOCUMENT_SERVER__ URL of the document server
     - __ONLYOFFICE_PLUGIN_URL__ optional, if you want to use custom plugins
-```
 To enable the OnlyOffice editing, please add the following into your `edu-sharing.conf` in the repository (Admin Tools / Global system configuration):
+```
 connectorList.connectors+={
   id:"ONLY_OFFICE", icon:"edit", showNew: true, onlyDesktop: false, hasViewMode: true,
   filetypes:[
