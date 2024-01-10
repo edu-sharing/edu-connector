@@ -40,6 +40,18 @@ connectorList.connectors+={
 - Set values for
     - __ONLYOFFICE_DOCUMENT_SERVER__ URL of the document server
     - __ONLYOFFICE_PLUGIN_URL__ optional, if you want to use custom plugins
+```
+To enable the OnlyOffice editing, please add the following into your `edu-sharing.conf` in the repository (Admin Tools / Global system configuration):
+connectorList.connectors+={
+  id:"ONLY_OFFICE", icon:"edit", showNew: true, onlyDesktop: false, hasViewMode: true,
+  filetypes:[
+      {mimetype: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",filetype: "docx",createable: true,editable: true},
+      {mimetype: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",filetype: "xlsx",createable: true,editable: true},
+      {mimetype: "application/vnd.openxmlformats-officedocument.presentationml.presentation",filetype: "pptx",createable: true,editable: true}
+  ]
+}
+```
+
 ### ONYX
 - Setup the ONYX editor
 - Set values for
