@@ -140,7 +140,15 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
 
                     //cordova
                     echo '<script>window.shouldClose=true;</script>';
-                    echo '<script>setInterval(function(){if(window.opener){window.opener.postMessage({event:"REFRESH"},"*"); window.opener.postMessage({event:"CLOSE"},"*");}},100);</script>';
+                    echo '<script>setInterval(
+                        () => {
+                            if(window.opener){
+                                setTimeout(() => {
+                                    window.opener.postMessage({event:"REFRESH"},"*");
+                                    window.opener.postMessage({event:"CLOSE"},"*");
+                                }, 3000)
+                            }
+                         },100);</script>';
                     exit(0);
                 }
             }
