@@ -128,19 +128,29 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
                 $res = $apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $contentPath, 'application/zip', 'EDITOR_UPLOAD,H5P');
                 if($res) {
                     //cleanup filesystem and db
-                    $h5p->H5PFramework -> deleteContentData($cid);
-                    $h5p->H5PFramework -> deleteLibraryUsage($cid);
-                    unlink($contentPath);
-                    $h5p -> rrmdir($h5p -> H5PFramework -> get_h5p_path() . '/content/' . $cid);
-                    if(isset($_SESSION[$id]['viewContentId'])){
-                        $h5p -> rrmdir($h5p -> H5PFramework -> get_h5p_path() . '/content/' . $_SESSION[$id]['viewContentId']);
+                    if (! H5P_SUPPRESS_CLEANUP) {
+                        $h5p->H5PFramework -> deleteContentData($cid);
+                        $h5p->H5PFramework -> deleteLibraryUsage($cid);
+                        unlink($contentPath);
+                        $h5p -> rrmdir($h5p -> H5PFramework -> get_h5p_path() . '/content/' . $cid);
+                        if(isset($_SESSION[$id]['viewContentId'])){
+                            $h5p -> rrmdir($h5p -> H5PFramework -> get_h5p_path() . '/content/' . $_SESSION[$id]['viewContentId']);
+                        }
+                        $h5p -> rrmdir(DATA . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'editor');
+                        $h5p -> rrmdir(DATA . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'temp');
                     }
-                    $h5p -> rrmdir(DATA . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'editor');
-                    $h5p -> rrmdir(DATA . DIRECTORY_SEPARATOR . 'h5p' . DIRECTORY_SEPARATOR . 'temp');
 
                     //cordova
                     echo '<script>window.shouldClose=true;</script>';
-                    echo '<script>setInterval(function(){if(window.opener){window.opener.postMessage({event:"REFRESH"},"*"); window.opener.postMessage({event:"CLOSE"},"*");}},100);</script>';
+                    echo '<script>setInterval(
+                        () => {
+                            if(window.opener){
+                                setTimeout(() => {
+                                    window.opener.postMessage({event:"REFRESH"},"*");
+                                    window.opener.postMessage({event:"CLOSE"},"*");
+                                }, 3000)
+                            }
+                         },100);</script>';
                     exit(0);
                 }
             }

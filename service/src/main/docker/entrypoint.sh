@@ -60,6 +60,8 @@ sed -i "s|define('ONLYOFFICE_JWT_SECRET', '.*')|define('ONLYOFFICE_JWT_SECRET', 
 sed -i "s|define('MOODLE_BASE_DIR', '.*')|define('MOODLE_BASE_DIR', '${moodle_base_dir}')|g" "${conf}"
 sed -i "s|define('MOODLE_TOKEN', '.*')|define('MOODLE_TOKEN', '${moodle_token}')|g" "${conf}"
 
+sed -i "s|define('H5P_SUPPRESS_CLEANUP', false)|define('H5P_SUPPRESS_CLEANUP', ${H5P_SUPPRESS_CLEANUP})|g" "${conf}"
+
 echo "Installing..."
 php install/install.php
 
