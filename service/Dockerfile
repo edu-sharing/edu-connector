@@ -4,15 +4,14 @@ RUN  set -eux \
          && apt-get update \
          && apt-get install -yqq git libzip-dev  \
          && apt-get clean \
-         && rm -r /var/lib/apt/lists/*
-
-RUN curl -sS https://getcomposer.org/installer | php -- \
---install-dir=/usr/bin --filename=composer
+         && rm -r /var/lib/apt/lists/* \
+         && curl -sS https://getcomposer.org/installer | php -- \
+         --install-dir=/usr/bin --filename=composer
 
 WORKDIR /var/www/html
 COPY src/main/php .
 
-RUN composer install
+RUN composer install && rm composerinstaller.php composer.phar
 
 ########################################################################################################################
 
@@ -38,36 +37,15 @@ ARG project_artifactId=edu_sharing-community-services-connector
 ARG project_groupId=org.edu_sharing
 ARG project_version=dev
 
-ENV PATH /application/bin:$PATH
-ENV ROOT /var/www/html
-ENV DATA /var/data
+ENV PATH=/application/bin:$PATH ROOT=/var/www/html DATA=/var/data
 
 WORKDIR $ROOT
 
-COPY --from=builder /var/www/html/css/ css/
-COPY --from=builder /var/www/html/fonts/ fonts/
-COPY --from=builder /var/www/html/img/ img/
-COPY --from=builder /var/www/html/install/ install/
-COPY --from=builder /var/www/html/js/ js/
-COPY --from=builder /var/www/html/lang/ lang/
-COPY --from=builder /var/www/html/src/ src/
-COPY --from=builder /var/www/html/templates/ templates/
-COPY --from=builder /var/www/html/vendor/ vendor/
-COPY --from=builder /var/www/html/composer.json .
-COPY --from=builder /var/www/html/composer.lock .
-COPY --from=builder /var/www/html/bootstrap.php .
-COPY --from=builder /var/www/html/config.dist.php .
-COPY --from=builder /var/www/html/defines.php .
-COPY --from=builder /var/www/html/index.php .
-COPY --from=builder /var/www/html/version.php .
-COPY --from=builder /var/www/html/.htaccess .
+COPY --from=builder /var/www/html ./
 
 RUN set -eux \
     && sed -i "s|#BUILD_COMMIT|$git_commit_id|g" install/version_info.php \
-    && sed -i "s|#BUILD_BRANCH|$git_branch|g" install/version_info.php
-
-
-RUN set -eux \
+    && sed -i "s|#BUILD_BRANCH|$git_branch|g" install/version_info.php \
     && mkdir $DATA \
     && chown -R www-data:www-data $DATA
 
@@ -76,16 +54,10 @@ RUN set -eux \
 COPY src/main/docker/entrypoint.sh src/main/docker/init.sh /usr/local/bin/
 
 RUN set -eux \
-	&& find /usr/local/bin -type f -name '*.sh' -exec chmod +x {} \;
-
-########################################################################################################################
-
-RUN set -eux \
+	&& find /usr/local/bin -type f -name '*.sh' -exec chmod +x {} \; \
     && addgroup --gid 1000 appuser \
     && adduser --uid 1000 --gid 1000 --disabled-password appuser \
-    && adduser www-data appuser
-
-RUN set -eux \
+    && adduser www-data appuser \
 	&& chown -R appuser:appuser /etc/apache2 $ROOT $DATA \
     && chown -R appuser:appuser $PHP_INI_DIR
 
@@ -99,10 +71,10 @@ CMD ["apache2-foreground"]
 ########################################################################################################################
 
 # TODO default value substituion doesn't work because of the '.' delimiter
-LABEL git.branch=${git_branch}
-LABEL git.closest.tag.name=${git_closest_tag_fixed}
-LABEL git.commit.id=${git_commit_id}
-LABEL git.dirty=${git_dirty}
-LABEL mvn.project.artifactId=${project_artifactId}
-LABEL mvn.project.groupId=${project_groupId}
-LABEL mvn.project.version=${project_version}
+LABEL git.branch=${git_branch} \
+git.closest.tag.name=${git_closest_tag_fixed} \
+git.commit.id=${git_commit_id} \
+git.dirty=${git_dirty} \
+mvn.project.artifactId=${project_artifactId} \
+mvn.project.groupId=${project_groupId} \
+mvn.project.version=${project_version}
