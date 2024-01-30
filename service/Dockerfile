@@ -37,7 +37,9 @@ ARG project_artifactId=edu_sharing-community-services-connector
 ARG project_groupId=org.edu_sharing
 ARG project_version=dev
 
-ENV PATH=/application/bin:$PATH ROOT=/var/www/html DATA=/var/data
+ENV PATH /application/bin:$PATH
+ENV ROOT /var/www/html
+ENV DATA /var/data
 
 WORKDIR $ROOT
 
