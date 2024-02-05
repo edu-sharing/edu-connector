@@ -42,6 +42,8 @@ deploy_release:
     - sed -i "s/#BUILD_BRANCH/$CI_COMMIT_REF_NAME/g" install/version_info.php
   script:
     - rm -rf .git/
+    - rm -rf vendor/composer/installed.json
+    - rm -rf .gitlab-ci.yml
     - find ./vendor/ -name ".git" -exec rm -rf {} \; || true
     - ls ./
 
