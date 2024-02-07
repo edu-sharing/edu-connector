@@ -2,7 +2,7 @@ FROM dockerio.mirror.docker.edu-sharing.com/php:8.1.12-apache as builder
 
 RUN  set -eux \
          && apt-get update \
-         && apt-get install -yqq git libzip-dev  \
+         && apt-get install -yqq git libzip-dev zip \
          && apt-get clean \
          && rm -r /var/lib/apt/lists/* \
          && curl -sS https://getcomposer.org/installer | php -- \
@@ -11,7 +11,7 @@ RUN  set -eux \
 WORKDIR /var/www/html
 COPY src/main/php .
 
-RUN composer install && rm composerinstaller.php composer.phar
+RUN composer install && rm -f composerinstaller.php composer.phar
 
 ########################################################################################################################
 
