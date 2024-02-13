@@ -224,6 +224,7 @@ class H5P extends \connector\lib\Tool {
         foreach (\H5PEditor::$scripts as $script) {
             $scripts[] = WWWURL . '/vendor/h5p/h5p-editor/' . $script;
         }
+        $scripts[] = WWWURL . '/vendor/h5p/h5p-editor/language/'.$this -> h5pLang.'.js';
         $scripts[] = WWWURL . '/vendor/h5p/h5p-editor/scripts/h5peditor-editor.js';
         $scripts[] = WWWURL . '/src/tools/h5p/js/h5peditor-init.js';
 
