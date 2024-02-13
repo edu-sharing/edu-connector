@@ -31,6 +31,8 @@ only_office_document_server="${ONLYOFFICE_DOCUMENT_SERVER:-}"
 only_office_plugin_url="${ONLYOFFICE_PLUGIN_URL:-}"
 only_office_jwt_secret="${ONLYOFFICE_JWT_SECRET:-}"
 
+h5p_suppress_cleanup="${H5P_SUPPRESS_CLEANUP:-false}"
+
 # shellcheck disable=SC2153
 moodle_base_dir="${MOODLE_BASE_DIR:-}"
 # shellcheck disable=SC2153
@@ -60,7 +62,7 @@ sed -i "s|define('ONLYOFFICE_JWT_SECRET', '.*')|define('ONLYOFFICE_JWT_SECRET', 
 sed -i "s|define('MOODLE_BASE_DIR', '.*')|define('MOODLE_BASE_DIR', '${moodle_base_dir}')|g" "${conf}"
 sed -i "s|define('MOODLE_TOKEN', '.*')|define('MOODLE_TOKEN', '${moodle_token}')|g" "${conf}"
 
-sed -i "s|define('H5P_SUPPRESS_CLEANUP', false)|define('H5P_SUPPRESS_CLEANUP', ${H5P_SUPPRESS_CLEANUP})|g" "${conf}"
+sed -i "s|define('H5P_SUPPRESS_CLEANUP', false)|define('H5P_SUPPRESS_CLEANUP', ${h5p_suppress_cleanup})|g" "${conf}"
 
 echo "Installing..."
 php install/install.php
