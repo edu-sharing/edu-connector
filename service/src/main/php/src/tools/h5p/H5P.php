@@ -187,6 +187,7 @@ class H5P extends \connector\lib\Tool {
         foreach(\H5PEditor::$styles as $b) {
             $integration['editor']['assets']['css'][] = WWWURL . '/vendor/h5p/h5p-editor/' . $b;
         }
+        $integration['editor']['assets']['css'][] = WWWURL . '/src/tools/h5p/js/customEdu.css';
         foreach(\H5PCore::$scripts as $b) {
             $integration['editor']['assets']['js'][] = WWWURL . '/vendor/h5p/h5p-core/' . $b;
         }
@@ -226,8 +227,6 @@ class H5P extends \connector\lib\Tool {
         }
         $scripts[] = WWWURL . '/vendor/h5p/h5p-editor/scripts/h5peditor-editor.js';
         $scripts[] = WWWURL . '/src/tools/h5p/js/h5peditor-init.js';
-
-
 
 
         $titleShow = $_SESSION[$this->connectorId]['node']->node->title;
