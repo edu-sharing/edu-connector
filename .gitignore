@@ -1,17 +1,38 @@
-.idea/eduConnector.iml
-.idea/modules.xml
-.idea/vcs.xml
-.idea/workspace.xml
+#php
 config.php
-src/tools/onlyoffice/storage
-!src/tools/onlyoffice/storage/templates
-assets/private.key
-assets/public.key
+service/src/main/php/data/
+service/src/main/php/src/tools/onlyoffice/storage
+!service/src/main/php/src/tools/onlyoffice/storage/templates
+service/src/main/assets/private.key
+service/src/main/assets/public.key
 composer.phar
 composer.lock
+composerinstaller.php
 vendor
 log
 !log/.gitkeep
 test.php
-.idea/php.xml
+
+# IntelliJ Ultimate
 .idea/
+*.iml
+overlays/
+
+# Maven
+generated/
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.git-versioned-pom.xml
+
+# 3rd party licenses
+THIRD-PARTY*.txt
+
+# Dotenv
+.env

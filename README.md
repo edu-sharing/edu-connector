@@ -24,6 +24,17 @@ To use the H5P editor you need to install and configure a database. At this time
     - __DBPASSWORD__ the users password
     - __DBNAME__ name of the database
 - Create database tables by executing `php eduConnector/install/createDb.php`
+
+To enable the h5p editing, please add the following into your `edu-sharing.conf` in the repository (Admin Tools / Global system configuration):
+```
+connectorList.connectors+={
+  id:"H5P", icon:"edit", showNew: true, onlyDesktop: true, hasViewMode: false,
+  filetypes:[
+    {mimetype: "application/zip",filetype: "h5p", ccressourcetype: "h5p", createable: true,editable: true}
+  ]
+}
+```
+
 ### OnlyOffice
 - Setup the OnlyOffice Document Server (see https://helpcenter.onlyoffice.com/de/server/document.aspx)
 - Set values for

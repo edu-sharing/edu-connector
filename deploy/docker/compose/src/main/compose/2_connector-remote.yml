@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+
+  services-edu-connector-service:
+    image: "${docker.registry}/community/${docker.prefix}-service:${docker.tag}"
+
+  services-edu-connector-service-init:
+    image: "${docker.registry}/community/${docker.prefix}-service:${docker.tag}"
