@@ -17,7 +17,7 @@
 
   <properties>
     <postgresql.version.major>13</postgresql.version.major>
-    <postgresql.version.minor>9</postgresql.version.minor>
+    <postgresql.version.minor>15</postgresql.version.minor>
     <postgresql.version.patch>0</postgresql.version.patch>
     <postgresql.version>${postgresql.version.major}.${postgresql.version.minor}.${postgresql.version.patch}</postgresql.version>
     <docker.from.postgresql.server>
