@@ -1,4 +1,14 @@
 baseUrl: 
 storageClassName:
 clusterIssuer: letsencrypt
-version: maven-fixes-8.1-SNAPSHOT
+version: 8.1.2
+database:
+  storageSize: 30Gi
+  enabled: true
+  # when enabled = false for external database
+  config:
+     host: "???"
+     port: "???"
+     database: "???"
+     username: "???"
+     password: "???"
