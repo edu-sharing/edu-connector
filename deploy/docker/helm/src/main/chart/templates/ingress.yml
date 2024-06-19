@@ -9,13 +9,16 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "180"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "180"
+    {{- with .Values.ingress.annotations }}
+    {{ toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   tls:
   - hosts:
-    - connector.services.{{ .Values.baseUrl }}
+    - {{ if .Values.absoluteUrl }}{{ .Values.absoluteUrl }}{{else}}"connector.services.{{ .Values.baseUrl }}"{{ end }}
     secretName: edu-sharing-connector-tls
   rules:
-  - host: connector.services.{{ .Values.baseUrl }}
+  - host: {{ if .Values.absoluteUrl }}{{ .Values.absoluteUrl }}{{else}}"connector.services.{{ .Values.baseUrl }}"{{ end }}
     http:
       paths:
       - backend:

@@ -1,7 +1,7 @@
 baseUrl: 
 storageClassName:
 clusterIssuer: letsencrypt
-version: 8.1.2
+version: 8.3.0-RC1
 database:
   storageSize: 30Gi
   enabled: true
@@ -12,3 +12,24 @@ database:
      database: "???"
      username: "???"
      password: "???"
+  podSecurityContext:
+    fsGroup: 1001
+  securityContext:
+    runAsUser: 1001
+
+
+podSecurityContext:
+
+  fsGroup: 1000
+  fsGroupChangePolicy: OnRootMismatch
+
+securityContext:
+
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  runAsUser: 1000
+
+ingress:
+  annotations:
