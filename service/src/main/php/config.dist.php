@@ -33,3 +33,6 @@ define('REPOSITORY', '');
 define('ETHERPAD_SERVER', '');
 define('ETHERPAD_PROTOCOL', '');
 define('ETHERPAD_APIKEY', '');
+
+/*h5p cache*/
+define('H5P_SUPPRESS_CLEANUP', false);
