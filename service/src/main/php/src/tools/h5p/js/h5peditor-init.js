@@ -96,7 +96,7 @@
 
                 $library.val(h5peditor.getLibrary());
                 $params.val(JSON.stringify(params));
-                $title.val(h5peditor.isMainTitleSet());
+                $title.val(h5peditor.isMainTitleSet() === false ? document.querySelector(".h5pTitle").innerHTML : h5peditor.isMainTitleSet());
 
                 formIsUpdated = true;
             }
