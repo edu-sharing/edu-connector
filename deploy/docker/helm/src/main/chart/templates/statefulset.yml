@@ -13,27 +13,33 @@ spec:
       labels:
         app: edu-sharing-connector
     spec:
+     {{- with .Values.podSecurityContext }}
+      securityContext: {{ toYaml . | nindent 8 }}
+     {{- end }}
       containers:
       - name: edu-sharing-connector
         image: docker.edu-sharing.com/community/edu_sharing-community-services-edu-connector-service:{{ .Values.version }}
+        {{- with .Values.securityContext }}
+        securityContext: {{ toYaml . | nindent 10 }}
+        {{- end }}
         imagePullPolicy: Always
         env:
         - name: HOST_EXTERNAL
-          value: "connector.services.{{ .Values.baseUrl }}"
+          value: {{ if .Values.absoluteUrl }}{{ .Values.absoluteUrl }}{{else}}"connector.services.{{ .Values.baseUrl }}"{{ end }}
         - name: PROT_EXTERNAL
           value: "https"
         - name: PORT_EXTERNAL
           value: "443"
         - name: DATABASE_HOST
-          value: edu-sharing-connector-db
+          value: {{ if .Values.database.enabled }}"edu-sharing-connector-db"{{ else }}{{ .Values.database.config.host }}{{ end }}
         - name: DATABASE_PORT
-          value: "3306"
+          value: {{ if .Values.database.enabled }}"3306"{{ else }}"{{ .Values.database.config.port }}"{{ end }}
         - name: DATABASE_USER
-          value: "connector"
+          value: {{ if .Values.database.enabled }}"connector"{{ else }}{{ .Values.database.config.username }}{{ end }}
         - name: DATABASE_NAME
-          value: "connector"
+          value: {{ if .Values.database.enabled }}"connector"{{ else }}{{ .Values.database.config.database }}{{ end }}
         - name: DATABASE_PASSWORD
-          value: {{ required "A valid .Values.passwordDB is required!" .Values.passwordDB }}
+          value: {{ if .Values.database.enabled }}{{required "A valid .Values.passwordDB is required!" .Values.passwordDB}}{{ else }}{{ .Values.database.config.password }}{{ end }}
         - name: ONLYOFFICE_DOCUMENT_SERVER
           value: {{ .Values.onlyofficeDocumentServer | default "" }}
         - name: ONLYOFFICE_PLUGIN_URL
@@ -65,13 +71,9 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
-        resources:
-          limits:
-            cpu: "4000m"
-            memory: "4Gi"
-          requests:
-            cpu: "500m"
-            memory: "4Gi"
+        {{- with .Values.resources }}
+        resources: {{ toYaml . | nindent 10 }}
+        {{- end }}
         ports:
         - containerPort: 80
           name: api
@@ -84,7 +86,7 @@ spec:
           claimName: edu-sharing-services-connector-data
   
 ---
-
+{{- if .Values.database.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -100,9 +102,15 @@ spec:
       labels:
         app: edu-sharing-connector-db
     spec:
+      {{- with merge .Values.database.podSecurityContext .Values.podSecurityContext }}
+      securityContext: {{ toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: edu-sharing-connector-db
         image: {{ .Values.images.postgresql }}
+        {{- with merge .Values.database.securityContext .Values.securityContext }}
+        securityContext: {{ toYaml . | nindent 10 }}
+        {{- end }}
         env:
         - name: POSTGRESQL_DATABASE
           value: connector
@@ -136,3 +144,4 @@ spec:
       resources:
         requests:
           storage: "16Gi"
+{{ end }}
