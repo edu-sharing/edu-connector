@@ -7,8 +7,7 @@ require_once __DIR__ . '/../../../config.php';
 $connector_name = basename(WWWURL);
 $base = DATA.'/h5p';
 
-$wholeRequest = $_REQUEST['ID'];
-$requestUri = explode(' ', $wholeRequest)[1];
+$requestUri = $_REQUEST['ID'];
 $oldPath = explode('?', $requestUri)[0];
 
 $src_file = str_replace('/'.$connector_name.'/src/tools/h5p/cache', $base, $oldPath);
