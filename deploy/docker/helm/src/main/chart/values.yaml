@@ -1,7 +1,7 @@
 baseUrl: 
 storageClassName:
 clusterIssuer: letsencrypt
-version: maven-fixes-9.0-SNAPSHOT
+version: maven-fixes-9.1-SNAPSHOT
 database:
   storageSize: 30Gi
   enabled: true
@@ -18,7 +18,7 @@ database:
     runAsUser: 1001
 
 images:
-  postgresql: ${docker.edu_sharing.community.common.postgresql}
+  postgresql: docker.edu-sharing.com/community/common/edu_sharing-community-common-docker-postgresql:13.15.0
 
 podSecurityContext:
 
