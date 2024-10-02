@@ -178,7 +178,12 @@ $app->get('/ajax/ajax.php', function (Request $request, Response $response) {
                 ->withHeader('Content-type', 'application/json')
                 ->write($lib);
         } else {
-            $libs = $h5p->H5PEditor->ajax->action(str_replace('h5p_', '', $request->getQueryParams()['action']));
+            $action = str_replace('h5p_', '', $request->getQueryParams()['action']);
+            if ($action == H5PEditorEndpoints::CONTENT_HUB_METADATA_CACHE) {
+                $libs = "";
+            } else {
+                $libs = $h5p->H5PEditor->ajax->action(str_replace('h5p_', '', $request->getQueryParams()['action']));
+            }
             return $response->withStatus(200)
                 ->withHeader('Content-type', 'application/json')
                 ->write($libs);
