@@ -44,6 +44,12 @@ spec:
           value: {{ .Values.onlyofficeDocumentServer | default "" }}
         - name: ONLYOFFICE_PLUGIN_URL
           value: {{ .Values.onlyofficePluginUrl | default "" }}
+        - name: ONLYOFFICE_EDUSHARING_PLUGIN
+          value: "{{ .Values.onlyofficeEdusharingPlugin.enabled }}"
+        - name: ONLYOFFICE_EDUSHARING_PLUGIN_LABEL
+          value: {{ .Values.onlyofficeEdusharingPlugin.label }}
+        - name: ONLYOFFICE_EDUSHARING_PLUGIN_ICON
+          value: {{ .Values.onlyofficeEdusharingPlugin.icon }}
         - name: ONLYOFFICE_JWT_SECRET
           value: {{ .Values.onlyofficeJwtSecret | default "" }}
         - name: MOODLE_BASE_DIR

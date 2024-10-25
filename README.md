@@ -41,6 +41,23 @@ connectorList.connectors+={
     - __ONLYOFFICE_DOCUMENT_SERVER__ URL of the document server
     - __ONLYOFFICE_PLUGIN_URL__ optional, if you want to use custom plugins
 
+#### OnlyOffice Edu-Sharing plugin
+You can enable the edu-sharing plugin to apply edu-sharing elements directly into only office documents via the config
+
+For helm deployments:
+```yaml
+onlyofficeEdusharingPlugin:
+  enabled: true
+  label: My edu-sharing Repo Name
+  icon: https://example.icon.url.png
+```
+
+or via docker env
+```
+ONLYOFFICE_EDUSHARING_PLUGIN=true
+ONLYOFFICE_EDUSHARING_PLUGIN_LABEL=My edu-sharing Repo Name
+ONLYOFFICE_EDUSHARING_PLUGIN_ICON=https://example.icon.url.png
+```
 To enable the OnlyOffice editing, please add the following into your `edu-sharing.conf` in the repository (Admin Tools / Global system configuration):
 ```
 connectorList.connectors+={
