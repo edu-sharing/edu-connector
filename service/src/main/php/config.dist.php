@@ -21,6 +21,19 @@ define('DBNAME', '');
 /*onlyoffice*/
 define('ONLYOFFICE_DOCUMENT_SERVER', '');
 define('ONLYOFFICE_PLUGIN_URL', '');
+/**
+ * enable the edu-sharing plugin for only office?
+ * allows to apply content from edu sharing int only office documents
+ */
+define('ONLYOFFICE_EDUSHARING_PLUGIN', false);
+/**
+ * custom label for edu-sharing plugin, if not set 'edu-sharing' will be shwon
+ */
+define('ONLYOFFICE_EDUSHARING_PLUGIN_LABEL', '');
+/**
+ * absolute uri to custom icon
+ */
+define('ONLYOFFICE_EDUSHARING_PLUGIN_ICON', '');
 define('ONLYOFFICE_JWT_SECRET', '');
 define('ONLYOFFICE_STORAGEFOLDER','storage');
 
