@@ -63,10 +63,6 @@ deploy:
       entrypoint: [ "env", "-u", "DOCKER_HOST" ]
       command: [ "dockerd-entrypoint.sh" ]
   stage: deploy
-  rules:
-    - if: $CI_COMMIT_BRANCH =~ /^maven\/release\/.*/ && $CI_PIPELINE_SOURCE == "pipeline"
-    - if: $CI_COMMIT_TAG && $CI_PIPELINE_SOURCE == "pipeline"
-    - if: $CI_COMMIT_BRANCH !~ /^maven\/release\/.*/ && $CI_COMMIT_TAG == null
   before_script:
     - apt-get update -y
     - apt-get install -y php php-curl php-dom php-gd php-mbstring php-xml php-zip
