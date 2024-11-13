@@ -6,7 +6,6 @@ service/src/main/php/src/tools/onlyoffice/storage
 service/src/main/assets/private.key
 service/src/main/assets/public.key
 composer.phar
-composer.lock
 composerinstaller.php
 vendor
 log
