@@ -60,7 +60,7 @@ sed -i -r "s|memory_limit.*|memory_limit = ${memory_limit}|" "${php_ini}"
 
 sed -i "s|define('ONLYOFFICE_DOCUMENT_SERVER', '.*')|define('ONLYOFFICE_DOCUMENT_SERVER', '${only_office_document_server}')|g" "${conf}"
 sed -i "s|define('ONLYOFFICE_PLUGIN_URL', '.*')|define('ONLYOFFICE_PLUGIN_URL', '${only_office_plugin_url}')|g" "${conf}"
-sed -i "s|define('ONLYOFFICE_EDUSHARING_PLUGIN', .*)|define('ONLYOFFICE_EDUSHARING_PLUGIN', ${only_office_edusharing_plugin})|g" "${conf}"
+sed -i "s|define('ONLYOFFICE_EDUSHARING_PLUGIN', '.*')|define('ONLYOFFICE_EDUSHARING_PLUGIN', '${only_office_edusharing_plugin}')|g" "${conf}"
 sed -i "s|define('ONLYOFFICE_EDUSHARING_PLUGIN_LABEL', '.*')|define('ONLYOFFICE_EDUSHARING_PLUGIN_LABEL', '${only_office_edusharing_plugin_label}')|g" "${conf}"
 sed -i "s|define('ONLYOFFICE_EDUSHARING_PLUGIN_ICON', '.*')|define('ONLYOFFICE_EDUSHARING_PLUGIN_ICON', '${only_office_edusharing_plugin_icon}')|g" "${conf}"
 sed -i "s|define('ONLYOFFICE_JWT_SECRET', '.*')|define('ONLYOFFICE_JWT_SECRET', '${only_office_jwt_secret}')|g" "${conf}"
