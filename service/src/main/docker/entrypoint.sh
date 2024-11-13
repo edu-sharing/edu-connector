@@ -64,6 +64,9 @@ sed -i "s|define('MOODLE_TOKEN', '.*')|define('MOODLE_TOKEN', '${moodle_token}')
 
 sed -i "s|define('H5P_SUPPRESS_CLEANUP', false)|define('H5P_SUPPRESS_CLEANUP', ${h5p_suppress_cleanup})|g" "${conf}"
 
+echo "Config file"
+echo "${conf}"
+
 echo "Installing..."
 php install/install.php
 
