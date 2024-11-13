@@ -7,7 +7,9 @@ error_reporting(0);
 ini_set('display_errors', 0);
 
 $id = $_GET['id'];
-$lang = 'de';
+$lang = $_SESSION[$id]['language'] ?? 'de';
+
+
 
 /*
  *
@@ -127,7 +129,9 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
   <script src="<?php echo $_SESSION[$id]['WWWURL']?>/js/materialize.min.js"></script>
   <script type="text/javascript">
 
-    var docEditor;
+      var lang = '<?php echo ($_SESSION[$id]['language'] ?? 'de') ?>';
+
+      var docEditor;
 
     var innerAlert = function (message) {
       if (console && console.log)
@@ -144,8 +148,21 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
     };
 
     var onRequestEditRights = function () {
-      return;
+        const queryData = new URLSearchParams(window.location.search.slice(1));
+        queryData.set("requestEdit", "true");
+        const newUrl = new URL(window.location.href);
+        newUrl.search = queryData;
+        window.location.href = newUrl;
     };
+
+    var onOutdatedVersion = function () {
+        const messages = {
+            en: 'The session expired or the document is now longer up to date. Please reload it from the repository.',
+            de: 'Die Session ist abgelaufen oder das Dokument ist veraltet. Bitte laden Sie es aus dem Repositorium neu.'
+        }
+        alert(lang === 'de' ? messages.de : messages.en);
+        window.close();
+    }
 
     var onError = function (event) {
       if (event)
@@ -161,10 +178,11 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
         $payload_download = false;
         //$payload_print = $get_array["embed"] == "true" ? "false" : "true";
         $payload_edit = $_SESSION[$id]['edit'] ? true : false;
+        $switchToEditMode = $payload_edit && isset($_GET['requestEdit']) && (bool)$_GET['requestEdit'] === true;
         //$payload_comment = $get_array["comment"] == "true" ? "true" : "false";
         //$payload_review = $get_array["review"] == "true" ? "true" : "false";
         $payload_form = false;
-        $payload_mode = 'edit';
+        $payload_mode = $switchToEditMode ? 'edit' : 'view';
         $detector = new Mobile_Detect();
         $type = $detector->isMobile() ? 'mobile' : 'desktop';
         $payload_callback = getCallbackUrl($id);
@@ -187,8 +205,9 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                     "created" => $payload_created,
                 ],
                 "permissions" => [
-                    "download" => false,
-                    "edit" => $payload_edit
+                    "download" => true,
+                    "edit" => $payload_edit,
+                    "chat" => true
                 ]
             ],
             "editorConfig" => [
@@ -211,8 +230,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                     "about" => false,
                     "feedback" => false,
                     "comments" => true,
-                    "forcesave" => false, //check concept, some integrity issues with versions
-                    "chat" => true
+                    "forcesave" => true, //check concept, some integrity issues with versions
                     //  goback: {
                     /*   url: "<?php echo serverPath() ?>/index.php",*/
                     // },
@@ -230,33 +248,35 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
             ];
         }
         echo json_encode(json_encode($payload));
+
         ?>
     );
 
     config.events = {
-      'onReady': onReady,
-      'onDocumentStateChange': onDocumentStateChange,
-      'onRequestEditRights': onRequestEditRights,
-      'onError': onError,
-      'onInfo': function ( data ) {
-        if ( data && data.data && data.data.getConfig ) {
-          docEditor.serviceCommand ( 'getConfig', '<?php echo $_SESSION[$id]['ticket']; ?>' );
+        'onReady': onReady,
+        'onDocumentStateChange': onDocumentStateChange,
+        'onRequestEditRights': onRequestEditRights,
+        'onError': onError,
+        'onOutdatedVersion': onOutdatedVersion,
+        'onInfo': function ( data ) {
+            if ( data && data.data && data.data.getConfig ) {
+            docEditor.serviceCommand ( 'getConfig', '<?php echo $_SESSION[$id]['ticket']; ?>' );
         }
       }
     };
     <?php if (defined('ONLYOFFICE_JWT_SECRET') && !empty(ONLYOFFICE_JWT_SECRET)): ?>
     config.token = "<?php echo JWT::encode($payload, ONLYOFFICE_JWT_SECRET);?>"
     <?php endif; ?>;
-    var сonnectEditor = function () {
+    var connectEditor = function () {
       docEditor = new DocsAPI.DocEditor("iframeEditor", config);
     }
     if(window.addEventListener)
     {
-      window.addEventListener("load", сonnectEditor);
+      window.addEventListener("load", connectEditor);
     }
     else
     if (window.attachEvent) {
-      window.attachEvent("load", сonnectEditor);
+      window.attachEvent("load", connectEditor);
     }
     function getXmlHttp() {
       var xmlhttp;

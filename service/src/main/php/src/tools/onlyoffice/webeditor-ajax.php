@@ -111,11 +111,7 @@ function track($log)
             $downloadUri = $data["url"];
             $saved = 1;
             $tmpSavePath = DATA . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
-            if ($status == 'ForcedSave') {
-                $comment = 'EDITOR_UPLOAD_USER,ONLY_OFFICE';
-            } else {
-                $comment = 'EDITOR_UPLOAD,ONLY_OFFICE';
-            }
+            $comment = $status == 'ForcedSave' ? '' : 'EDITOR_UPLOAD,ONLY_OFFICE';
 
             $arrContextOptions = array(
                 "ssl" => array(
