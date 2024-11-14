@@ -29,7 +29,7 @@ memory_limit="${MEMORY_LIMIT:-1024M}"
 
 only_office_document_server="${ONLYOFFICE_DOCUMENT_SERVER:-}"
 only_office_plugin_url="${ONLYOFFICE_PLUGIN_URL:-}"
-only_office_edusharing_plugin="${ONLYOFFICE_EDUSHARING_PLUGIN:-}"
+only_office_edusharing_plugin="${ONLYOFFICE_EDUSHARING_PLUGIN:-false}"
 only_office_edusharing_plugin_label="${ONLYOFFICE_EDUSHARING_PLUGIN_LABEL:-}"
 only_office_edusharing_plugin_icon="${ONLYOFFICE_EDUSHARING_PLUGIN_ICON:-}"
 only_office_jwt_secret="${ONLYOFFICE_JWT_SECRET:-}"
