@@ -209,7 +209,11 @@ class EduRestClient
     }
 
     public function createContentNode($nodeId, $contentpath, $mimetype, $versionComment = '') {
-        $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/content?versionComment=' . $versionComment . '&mimetype=' . $mimetype);
+        $url = $this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/content?mimetype=' . $mimetype;
+        if (!empty($versionComment)) {
+            $url .= '&versionComment=' . $versionComment;
+        }
+        $ch = curl_init($url);
         $headers = $this->getHeaders();
         $headers[] = 'Content-Type: multipart/form-data';
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
