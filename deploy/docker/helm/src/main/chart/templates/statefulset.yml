@@ -15,7 +15,11 @@ spec:
     spec:
       containers:
       - name: edu-sharing-connector
-        image: docker.edu-sharing.com/community/edu_sharing-community-services-edu-connector-service:{{ .Values.version }}
+        image: {{ .Values.global.image.registry }}/community/edu_sharing-community-services-edu-connector-service:{{ .Values.version }}
+        imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+        {{- with .Values.securityContext }}
+        securityContext: {{ toYaml . | nindent 10 }}
+        {{- end }}
         imagePullPolicy: Always
         env:
         - name: HOST_EXTERNAL
@@ -102,7 +106,7 @@ spec:
     spec:
       containers:
       - name: edu-sharing-connector-db
-        image: docker.edu-sharing.com/community/edu_sharing-community-services-edu-connector-deploy-docker-build-postgresql:{{ .Values.version }}
+        image: {{ .Values.image.custom.postgresql }}
         env:
         - name: POSTGRESQL_DATABASE
           value: connector
