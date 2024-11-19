@@ -6,6 +6,8 @@ use Slim\Http\Response;
 
 class OnlyOffice extends \connector\lib\Tool {
 
+    private bool $isNewDocument = true;
+
     public function run(Response $response) {
         //$_SESSION[$this->connectorId]['fileUrl'] = $_SESSION[$this->connectorId]['node']->node->downloadUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'];
         $_SESSION[$this->connectorId]['fileUrl'] = WWWURL . '/oo-content?sessionId=' . $_SESSION[$this->connectorId]['sessionId'] . '&downloadUrl=' . $_SESSION[$this->connectorId]['node']->node->downloadUrl;
@@ -53,13 +55,19 @@ class OnlyOffice extends \connector\lib\Tool {
         if ($node->node->size === NULL) {
             $this->apiClient->createContentNode($node->node->ref->id, DOCROOT . '/src/tools/onlyoffice/storage/templates/init.' . $_SESSION[$this->connectorId]['filetype'], \connector\tools\onlyoffice\OnlyOffice::getMimetype($_SESSION[$this->connectorId]['filetype']), 'MAIN_FILE_UPLOAD');
             $node = $this->apiClient->getNode($node->node->ref->id);
+        } else {
+            $this->isNewDocument = false;
         }
         $_SESSION[$this->connectorId]['node'] = $node;
     }
 
     private function forwardToEditor()
     {
-        header('Location: ' . WWWURL . '/src/tools/onlyoffice/doceditor.php?id=' . $this->connectorId . '&ref=' . base64_encode($_SESSION[$this->connectorId]['node']->node->properties->{'virtual:permalink'}[0]));
+        $location = WWWURL . '/src/tools/onlyoffice/doceditor.php?id=' . $this->connectorId . '&ref=' . base64_encode($_SESSION[$this->connectorId]['node']->node->properties->{'virtual:permalink'}[0]);
+        if ($this->isNewDocument) {
+            $location .= '&initDoc=true';
+        }
+        header('Location: ' . $location);
         exit();
     }
 
