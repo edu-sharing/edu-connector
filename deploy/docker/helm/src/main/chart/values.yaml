@@ -23,11 +23,12 @@ onlyofficeEdusharingPlugin:
 
 global:
   image:
+    pullSecret:
     registry: docker.edu-sharing.com
     pullPolicy: Always
 image:
   custom:
-    postgresql: docker.edu-sharing.com/community/common/edu_sharing-community-common-docker-postgresql:13.15.0
+    postgresql: community/common/edu_sharing-community-common-docker-postgresql:13.15.0
 
 podSecurityContext:
 

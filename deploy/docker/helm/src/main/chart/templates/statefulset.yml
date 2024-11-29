@@ -13,6 +13,10 @@ spec:
       labels:
         app: edu-sharing-connector
     spec:
+     {{- if .Values.global.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.global.image.pullSecret }}
+     {{- end }}
      {{- with .Values.podSecurityContext }}
       securityContext: {{ toYaml . | nindent 8 }}
      {{- end }}
@@ -90,7 +94,7 @@ spec:
       - name: data
         persistentVolumeClaim:
           claimName: edu-sharing-services-connector-data
-  
+
 ---
 {{- if .Values.database.enabled }}
 apiVersion: apps/v1
@@ -108,12 +112,16 @@ spec:
       labels:
         app: edu-sharing-connector-db
     spec:
+      {{- if .Values.global.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.global.image.pullSecret }}
+      {{- end }}
       {{- with merge .Values.database.podSecurityContext .Values.podSecurityContext }}
       securityContext: {{ toYaml . | nindent 8 }}
       {{- end }}
       containers:
       - name: edu-sharing-connector-db
-        image: {{ .Values.image.custom.postgresql }}
+        image: {{ .Values.global.image.registry }}/{{ .Values.image.custom.postgresql }}
         {{- with merge .Values.database.securityContext .Values.securityContext }}
         securityContext: {{ toYaml . | nindent 10 }}
         {{- end }}
