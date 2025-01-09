@@ -113,12 +113,12 @@ class EduRestClient
             $arrApiUrl = parse_url($apiUrlStr);
             $arrContentUrl = parse_url($contentUrl);
             $contentUrl = $arrApiUrl['scheme'].'://'.$arrApiUrl['host'].':'.$arrApiUrl['port'].$arrContentUrl['path'].'?'.$arrContentUrl['query'] . '&com=internal';
-            $curlHeader = array('Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId']);
+            $curlHeader = array_merge(array('Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId']),$curlHeader);
         }
 
         if (!empty($downloadUrl)){
             $contentUrl = $downloadUrl;
-            $curlHeader = array('Cookie:JSESSIONID=' . $this->connectorId);
+            $curlHeader = array_merge(array('Cookie:JSESSIONID=' . $this->connectorId), $curlHeader);
         }
 
         $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
