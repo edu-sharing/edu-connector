@@ -4,7 +4,8 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
 (function (window, undefined) {
     window.Asc.plugin.init = function (objectData) {
         const requestEdit = new URLSearchParams(window.location.search).get('requestEdit');
-        if(!requestEdit && !objectData) {
+        const initDoc = new URLSearchParams(window.location.search).get('initDoc');
+        if((!requestEdit && !initDoc) && !objectData) {
             console.info('do not triggering plugin without edit mode!');
             window.Asc.plugin.executeCommand("close", "");
             return;
