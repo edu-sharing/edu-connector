@@ -4,6 +4,7 @@ header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
 $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
+$requestEdit = $_GET["requestEdit"] == 'true';
 
 $icon = 'icon.php';
 echo json_encode([
@@ -12,7 +13,7 @@ echo json_encode([
     "variations" => [
         [
             "description" => defined("ONLYOFFICE_EDUSHARING_PLUGIN_LABEL") && ONLYOFFICE_EDUSHARING_PLUGIN_LABEL ? ONLYOFFICE_EDUSHARING_PLUGIN_LABEL : "edu-sharing",
-            "url" => "index.php?id=" . $id . "&",
+            "url" => "index.php?id=" . $id . "&requestEdit=".$requestEdit . "&",
             "icons" => [$icon, $icon, $icon, $icon],
             "isViewer" => true,
             "isDisplayedInViewer" => false,
