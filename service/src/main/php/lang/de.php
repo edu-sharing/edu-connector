@@ -1,5 +1,6 @@
 <?php
 return array(
+    'loading' => 'Lädt...',
     'save' => 'Speichern',
     'error' => 'Fehler',
     'errorDefault' => 'Es ist ein Fehler aufgetreten.',
