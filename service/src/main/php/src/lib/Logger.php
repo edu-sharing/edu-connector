@@ -15,11 +15,17 @@ use Predis\Client;
 class Logger {
 
     private MonoLogger $log;
+    private ?string $nodeId = null;
 
     public function __construct() {
         $this->log = new MonoLogger('eduConnector');
         $this->log->pushProcessor(new IntrospectionProcessor());
-
+        $this->log->pushProcessor(function ($record) {
+            if($this->nodeId !== null) {
+                $record['extra']['nodeId'] = $this->nodeId;
+            }
+            return $record;
+        });
         /*
         * Log to local file
         * */
@@ -46,5 +52,9 @@ class Logger {
 
     public function getLog() {
         return $this->log;
+    }
+
+    public function setNodeId(string $nodeId) {
+        $this->nodeId = $nodeId;
     }
 }

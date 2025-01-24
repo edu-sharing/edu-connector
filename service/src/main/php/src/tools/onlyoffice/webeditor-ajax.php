@@ -60,7 +60,7 @@ if (isset($_GET["type"]) && !empty($_GET["type"])) { //Checks if type value exis
     $type = $_GET["type"];
     switch ($type) { //Switch case for value of type
         case "track":
-            $response_array = track($log);
+            $response_array = track();
             $response_array['status'] = 'success';
             http_response_code($response_array['error'] ? 500 : 200);
             die (json_encode($response_array));
@@ -72,8 +72,10 @@ if (isset($_GET["type"]) && !empty($_GET["type"])) { //Checks if type value exis
     }
 }
 
-function track($log)
+function track()
 {
+    global $logger;
+    global $log;
     global $_trackerStatus;
 
     $log->info('Track START');
@@ -108,6 +110,8 @@ function track($log)
         case "Corrupted":
         case "ForcedSave":
 
+            $logger->setNodeId($_SESSION[$id]['node']->node->ref->id);
+            $log->info('OnlyOffice ajax start: ' . $status);
             $downloadUri = $data["url"];
             $saved = 1;
             $tmpSavePath = DATA . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
@@ -123,13 +127,13 @@ function track($log)
             $new_data = file_get_contents($downloadUri, false, stream_context_create($arrContextOptions));
             if ($new_data === FALSE) {
                 $saved = 0;
-                $log->error('ERROR fetching file from docserver, see webserver log');
+                $log->error('OnlyOffice ajax ERROR fetching file from docserver, see webserver log');
             } else if (file_put_contents($tmpSavePath, $new_data, LOCK_EX) !== false) {
                 try {
                     $apiClient = new connector\lib\EduRestClient($id);
                     if ($aa = $apiClient->createContentNodeEnhanced($_SESSION[$id]['node']->node->ref->id, $tmpSavePath, OnlyOffice::getMimetype($_SESSION[$id]['filetype']), $comment)) {
                         unlink($tmpSavePath);
-                        $log->info('SAVED - ' . json_encode(array($_SESSION[$id]['node']->node->ref->id, $tmpSavePath)));
+                        $log->info('OnlyOffice ajax SAVED: ' . $status. ' - ' . $tmpSavePath);
                     }
                 } catch (Exception $e) {
                     $result["c"] = "not saved";
@@ -138,12 +142,12 @@ function track($log)
                 }
             }else{
                 //try to save local an return error
-                $log->error('ERROR saving file to cache. Check path and permissions: ' . $tmpSavePath);
+                $log->error('OnlyOffice ajax ERROR saving file to cache. Check path and permissions: ' . $tmpSavePath);
                 $localPath = DOCROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
                 if(file_put_contents($localPath, $new_data, LOCK_EX) === false) {
-                    $log->error('FATAL ERROR: saving to fallback folder failed (' . $localPath . ')! The document may be lost! Check the configuration!');
+                    $log->error('OnlyOffice ajax FATAL ERROR: saving to fallback folder failed (' . $localPath . ')! The document may be lost! Check the configuration!');
                 } else {
-                    $log->error('SUCCESS: Stored file to backup path ' . $localPath);
+                    $log->error('OnlyOffice ajax SUCCESS: Stored file to backup path ' . $localPath);
                 }
 
                 $result["c"] = "not saved";

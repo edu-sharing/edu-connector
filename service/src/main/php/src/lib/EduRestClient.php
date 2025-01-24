@@ -95,6 +95,30 @@ class EduRestClient
         throw new \Exception('Error unlocking node ' . $nodeId, $httpcode);
     }
 
+    public function getNodeVersions($nodeId): array {
+        $ch = curl_init($this->getApiUrl() . 'node/v1/nodes/-home-/' . $nodeId . '/versions');
+        $headers = $this->getHeaders();
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        $res = curl_exec($ch);
+
+        if ($res === false) {
+            throw new \Exception('Cannot reach API');
+        }
+
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+        if ($httpcode >= 200 && $httpcode < 308) {
+            $versions = json_decode($res);
+            return $versions->versions;
+        }
+        throw new \Exception('Error fetching node versions ' . $nodeId, $httpcode);
+    }
+
     public function getContent($node, $downloadUrl = null, $isH5p = false){
         if ($node->node->contentUrl){
             $contentUrl = $node->node->contentUrl; //repo-version 5.0 or older
