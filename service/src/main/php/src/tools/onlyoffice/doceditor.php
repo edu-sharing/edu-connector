@@ -247,7 +247,7 @@ $_SESSION['id_'.getDocEditorKey($id)] = $id;
                         "about" => false,
                         "feedback" => false,
                         "comments" => true,
-                        "forcesave" => true, //check concept, some integrity issues with versions
+                        "forcesave" => false, //check concept, some integrity issues with versions
                         //  goback: {
                         /*   url: "<?php echo serverPath() ?>/index.php",*/
                         // },
