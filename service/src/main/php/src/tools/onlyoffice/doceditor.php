@@ -1,5 +1,9 @@
 <?php
+
 require __DIR__ . '/../../../vendor/autoload.php';
+
+use Detection\Exception\MobileDetectException;
+use Detection\MobileDetect;
 
 session_start();
 
@@ -184,9 +188,13 @@ $_SESSION['id_' . getDocEditorKey($id)] = $id;
             //$payload_comment = $get_array["comment"] == "true" ? "true" : "false";
             //$payload_review = $get_array["review"] == "true" ? "true" : "false";
             $payload_form = false;
+            $detector = new MobileDetect();
+            try {
+                $type = $detector->isMobile() ? 'mobile' : 'desktop';
+            } catch (MobileDetectException $exception) {
+                $type = 'desktop';
+            }
             $payload_mode = ($switchToEditMode || $initWithEditMode) ? 'edit' : 'view';
-            $detector = new Mobile_Detect();
-            $type = $detector->isMobile() ? 'mobile' : 'desktop';
             $payload_callback = getCallbackUrl($id);
             $payload_user = session_id();
             $payload_fname = $_SESSION[$id]['user']->profile->firstName;
@@ -195,7 +203,7 @@ $_SESSION['id_' . getDocEditorKey($id)] = $id;
             $payload = [
                 "width" => "100%",
                 "height" => "100%",
-                "type" => $type, // embedded
+                "type" => 'desktop', // embedded
                 "documentType" => getDocumentType('dummy.' . $_SESSION[$id]['filetype']),
                 "document" => [
                     "title" => $payload_title,
@@ -232,10 +240,10 @@ $_SESSION['id_' . getDocEditorKey($id)] = $id;
                         "about" => false,
                         "feedback" => false,
                         "comments" => true,
-                        "forcesave" => true, //check concept, some integrity issues with versions
-                        //  goback: {
-                        /*   url: "<?php echo serverPath() ?>/index.php",*/
-                        // },
+                        "forcesave" => false,
+                        "mobile" => [
+                            "standardView" => true
+                        ]
                     ]
                 ]
             ];

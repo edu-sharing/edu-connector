@@ -25,6 +25,6 @@
     "tinymce/tinymce": "5.10.3",
     "h5p/h5p-core": "1.27.*",
     "h5p/h5p-editor": "1.25",
-    "mobiledetect/mobiledetectlib": "^2.8"
+    "mobiledetect/mobiledetectlib": "^4.8.09"
   }
 }
