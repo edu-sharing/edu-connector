@@ -194,7 +194,7 @@ $_SESSION['id_' . getDocEditorKey($id)] = $id;
             } catch (MobileDetectException $exception) {
                 $type = 'desktop';
             }
-            $payload_mode = ($switchToEditMode || $initWithEditMode || $type === 'mobile') ? 'edit' : 'view';
+            $payload_mode = ($switchToEditMode || $initWithEditMode) ? 'edit' : 'view';
             $payload_callback = getCallbackUrl($id);
             $payload_user = session_id();
             $payload_fname = $_SESSION[$id]['user']->profile->firstName;
@@ -203,7 +203,7 @@ $_SESSION['id_' . getDocEditorKey($id)] = $id;
             $payload = [
                 "width" => "100%",
                 "height" => "100%",
-                "type" => $type, // embedded
+                "type" => 'desktop', // embedded
                 "documentType" => getDocumentType('dummy.' . $_SESSION[$id]['filetype']),
                 "document" => [
                     "title" => $payload_title,
@@ -240,10 +240,10 @@ $_SESSION['id_' . getDocEditorKey($id)] = $id;
                         "about" => false,
                         "feedback" => false,
                         "comments" => true,
-                        "forcesave" => false, //check concept, some integrity issues with versions
-                        //  goback: {
-                        /*   url: "<?php echo serverPath() ?>/index.php",*/
-                        // },
+                        "forcesave" => false,
+                        "mobile" => [
+                            "standardView" => true
+                        ]
                     ]
                 ]
             ];
