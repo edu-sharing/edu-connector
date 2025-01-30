@@ -36,11 +36,19 @@ $container['view'] = function ($container) {
 
 $app->add(new BlockingMiddleware());
 
-$app->get('/', function (Request $request, Response $response) {
+$app->get('/', function (Request $request, Response $response, $args) {
+    $this->get('log')->info($request->getUri());
+    if (!isset($args['language'])) {
+        $args['language'] = 'en';
+    }
+    $langPathBase = __DIR__ . '/' . 'lang' . '/' . $args['language'];
+    $language = include $langPathBase . '.php';
+    return $this->view->render($response, 'loading.html', array('title' => $language['loading'], 'wwwurl' => WWWURL));
+});
+$app->get('/start', function (Request $request, Response $response) {
     $this->get('log')->info($request->getUri());
     $connector = new Connector($this->get('log'), $this, $response);
 });
-
 $app->get('/error/{errorid}[/{language}]', function (Request $request, Response $response, $args) {
     $this->get('log')->info($request->getUri());
     if (!isset($args['language'])) {
@@ -90,11 +98,11 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
     $contentHandler = new \connector\tools\h5p\H5PContentHandler();
     $h5p = \connector\tools\h5p\H5P::getInstance();
 
-     if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_files') {
-         $token = '';//$_GET['token'];
-         $contentId = $_GET['contentId'];
-         $h5p->H5PEditor->ajax->action(H5PEditorEndpoints::FILES, $token, $contentId);
-     }
+    if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_files') {
+        $token = '';//$_GET['token'];
+        $contentId = $_GET['contentId'];
+        $h5p->H5PEditor->ajax->action(H5PEditorEndpoints::FILES, $token, $contentId);
+    }
 
     if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_libraries') {
         $db = new \connector\lib\Database();
@@ -110,12 +118,12 @@ $app->post('/ajax/ajax.php', function (Request $request, Response $response) {
         $token = '';//$_GET['token'];
         $libs = $h5p->H5PEditor->ajax->action(H5PEditorEndpoints::LIBRARY_INSTALL, $token, $request->getQueryParams()['id']);
         return $response->withStatus(200)
-           ->withHeader('Content-type', 'application/json')
+            ->withHeader('Content-type', 'application/json')
             ->write($libs);
     }
 
     if(isset($request->getQueryParams()['action']) && $request->getQueryParams()['action']==='h5p_create') {
-    try {
+        try {
             $id = $_REQUEST['id']; // apiClient id
             $newContent = $contentHandler->process_new_content();
             $cid = $newContent['id'];
