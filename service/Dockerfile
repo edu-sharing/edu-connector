@@ -15,7 +15,7 @@ RUN composer install && rm -f composerinstaller.php composer.phar
 
 ########################################################################################################################
 
-FROM dockerio.mirror.docker.edu-sharing.com/php:8.3.6-apache
+FROM dockerio.mirror.docker.edu-sharing.com/php:8.3.16-apache
 
 RUN  set -eux \
          && apt-get update \
