@@ -16,6 +16,11 @@ database:
     fsGroup: 1001
   securityContext:
     runAsUser: 1001
+
+onlyofficeDocumentServer:
+onlyofficePluginUrl:
+onlyOfficePlugins: true
+
 onlyofficeEdusharingPlugin:
   enabled: false
   label:

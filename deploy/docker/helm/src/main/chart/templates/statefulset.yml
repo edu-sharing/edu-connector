@@ -45,9 +45,11 @@ spec:
         - name: DATABASE_PASSWORD
           value: {{ if .Values.database.enabled }}{{required "A valid .Values.passwordDB is required!" .Values.passwordDB}}{{ else }}{{ .Values.database.config.password }}{{ end }}
         - name: ONLYOFFICE_DOCUMENT_SERVER
-          value: {{ .Values.onlyofficeDocumentServer | default "" }}
+          value: {{ .Values.onlyofficeDocumentServer}}
         - name: ONLYOFFICE_PLUGIN_URL
-          value: {{ .Values.onlyofficePluginUrl | default "" }}
+          value: {{ .Values.onlyofficePluginUrl }}
+        - name: ONLYOFFICE_PLUGINS
+          value: "{{ .Values.onlyOfficePlugins }}"
         - name: ONLYOFFICE_EDUSHARING_PLUGIN
           value: "{{ .Values.onlyofficeEdusharingPlugin.enabled }}"
         - name: ONLYOFFICE_EDUSHARING_PLUGIN_LABEL

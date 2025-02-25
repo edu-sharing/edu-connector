@@ -241,6 +241,7 @@ $_SESSION['id_' . getDocEditorKey($id)] = $id;
                         "feedback" => false,
                         "comments" => true,
                         "forcesave" => false,
+                        "plugins" => ONLYOFFICE_PLUGINS,
                         "mobile" => [
                             "standardView" => true
                         ]
