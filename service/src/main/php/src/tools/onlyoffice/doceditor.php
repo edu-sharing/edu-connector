@@ -56,22 +56,37 @@ if (empty($_SESSION[$id])) {
     header('Location: ' . $permalinkwithoutversion . '?editor=ONLY_OFFICE');
     exit;
 }
+$apiClient = new connector\lib\EduRestClient($id);
+$logger = new connector\lib\Logger();
+$log = $logger->getLog();
 
 $filename = $_SESSION[$id]["fileUrl"];
 $fileuri = FileUri($filename);
 
 //setcookie('EDUCONNECTOR', getDocEditorKey(), 0, '/', '.metaventis.com');
 
-function getDocEditorKey($id)
-{
+function getDocEditorKey($id) {
+    global $apiClient;
+    global $log;
+    global $logger;
     $node = $_SESSION[$id]['node']->node;
     // use the unique id (which is the original id in case of a collection) to make sure everyone edits the real content
     $nodeId = $node->originalId ? $node->originalId : $node->ref->id;
+    $logger->setNodeId($nodeId);
+    $contentVersion = null;
+    try {
+        $versions = $apiClient->getNodeVersions($nodeId);
+        $v = $versions[array_key_last($versions)];
+        $contentVersion = $v->major . '.' . $v->minor;
+        $log->info('Using latest content version ' . $contentVersion);
+    } catch(Exception $exception) {
+        $log->warn('Could not fetch versions of node ' . $exception->getMessage());
     if (!empty($node->contentVersion)) {
         $contentVersion = $node->contentVersion;
     } else {
         // since  repo 6.0
         $contentVersion = $node->content->version;
+    }
     }
     //$revisionId = GenerateRevisionId(md5($nodeId));
     $revisionId = GenerateRevisionId(md5($contentVersion . $nodeId));
@@ -240,7 +255,7 @@ $_SESSION['id_' . getDocEditorKey($id)] = $id;
                         "about" => false,
                         "feedback" => false,
                         "comments" => true,
-                        "forcesave" => false,
+                        "forcesave" => false, //check concept, some integrity issues with versions
                         "plugins" => ONLYOFFICE_PLUGINS,
                         "mobile" => [
                             "standardView" => true
