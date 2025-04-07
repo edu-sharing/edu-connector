@@ -1,4 +1,4 @@
-FROM dockerio.mirror.docker.edu-sharing.com/php:8.1.12-apache as builder
+FROM dockerio.mirror.docker.edu-sharing.com/php:8.1.32-apache as builder
 
 RUN  set -eux \
          && apt-get update \
@@ -16,7 +16,7 @@ RUN composer install
 
 ########################################################################################################################
 
-FROM dockerio.mirror.docker.edu-sharing.com/php:8.1.12-apache
+FROM dockerio.mirror.docker.edu-sharing.com/php:8.1.32-apache
 
 RUN  set -eux \
          && apt-get update \
@@ -24,6 +24,7 @@ RUN  set -eux \
          && a2enmod rewrite \
          && ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini \
          && sed -i 's/max_execution_time = 30/max_execution_time = 120/g' $PHP_INI_DIR/php.ini \
+         && sed -i 's/expose_php = On/expose_php = Off/g' $PHP_INI_DIR/php.ini \
          && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
          && docker-php-ext-install pdo pdo_pgsql pgsql zip \
          && apt-get clean \
