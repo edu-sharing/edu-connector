@@ -14,7 +14,7 @@ class EduRestClient
 
     public function __construct($connectorId) {
         $this->connectorId = $connectorId;
-        $this->authHeader = 'Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId'];
+        $this->authHeader = 'Cookie:JSESSIONID=' . ($_SESSION[$this->connectorId]['sessionId'] ?: $this->connectorId);
     }
 
     private function getHeaders() {
@@ -137,12 +137,10 @@ class EduRestClient
             $arrApiUrl = parse_url($apiUrlStr);
             $arrContentUrl = parse_url($contentUrl);
             $contentUrl = $arrApiUrl['scheme'].'://'.$arrApiUrl['host'].':'.$arrApiUrl['port'].$arrContentUrl['path'].'?'.$arrContentUrl['query'] . '&com=internal';
-            $curlHeader = array_merge(array('Cookie:JSESSIONID=' . $_SESSION[$this->connectorId]['sessionId']),$curlHeader);
         }
 
         if (!empty($downloadUrl)){
             $contentUrl = $downloadUrl;
-            $curlHeader = array_merge(array('Cookie:JSESSIONID=' . $this->connectorId), $curlHeader);
         }
 
         $url = $contentUrl . '&ticket=' . $_SESSION[$this->connectorId]['ticket'] . '&params=display%3Ddownload';
