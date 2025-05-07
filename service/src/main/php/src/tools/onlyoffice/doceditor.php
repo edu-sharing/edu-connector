@@ -12,7 +12,11 @@ ini_set('display_errors', 0);
 
 $id = $_GET['id'];
 $lang = $_SESSION[$id]['language'] ?? 'de';
-
+if($lang == 'en') {
+    $lang = 'en-US';
+} else if($lang == 'de') {
+    $lang = 'de-DE';
+}
 
 /*
  *
