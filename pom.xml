@@ -31,6 +31,9 @@
 
   <properties>
 
+    <!-- git extension controlled props -->
+    <project.version.base>git</project.version.base>
+
     <docker.repository>community</docker.repository>
     <docker.prefix>edu_sharing-community-services-edu-connector</docker.prefix>
     <helm.prefix>edu_sharing-community-services-edu-connector</helm.prefix>
