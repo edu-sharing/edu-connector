@@ -21,7 +21,7 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
 </div>
 
 <div class="eduWrapper">
-  <div class="repoMenu">
+  <div class="repoMenu" id="repoMenu">
     <p id="repoMenu_label">Open edu-sharing repository:</p>
     <button class="btn" id="repo_btn">Open Repo</button>
   </div>
