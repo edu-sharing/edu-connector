@@ -21,10 +21,6 @@ define('DBNAME', '');
 /*onlyoffice*/
 define('ONLYOFFICE_DOCUMENT_SERVER', '');
 define('ONLYOFFICE_PLUGIN_URL', '');
-/**
- * allow only office (default) plugins to be shown
- */
-define('ONLYOFFICE_PLUGINS', true);
 
 /**
  * enable the edu-sharing plugin for only office?
