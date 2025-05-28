@@ -3,5 +3,5 @@ apiVersion: v2
 name: edu-sharing-services-connector
 description: Helm chart for edu-sharing connector app
 type: application
-version: 9.1.1
-appVersion: 9.1.1
+version: 9.1.2
+appVersion: 9.1.2
