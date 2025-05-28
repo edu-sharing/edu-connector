@@ -18,6 +18,8 @@ database:
     runAsUser: 1001
 
 onlyofficeDocumentServer:
+# enable the save button in only office
+onlyofficeForceSaveEnabled: false
 onlyofficePluginUrl:
 onlyOfficePlugins: true
 

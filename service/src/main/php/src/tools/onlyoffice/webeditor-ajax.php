@@ -109,12 +109,18 @@ function track()
         case "MustSave":
         case "Corrupted":
         case "ForcedSave":
-
-            $logger->setNodeId($_SESSION[$id]['node']->node->ref->id);
+            $nodeId = $_SESSION[$id]['node']->node->ref->id;
+            $log->info('Session id: ' . $id . ' node id: ' . $nodeId);
+            if($nodeId) {
+                $logger->setNodeId($nodeId);
+            } else {
+                $nodeId = $id . '_' . rand(10000, 99999);
+                $log->error('Something is wrong with session ' . $id . '! Node id is null! Saving node with temporary id: ' . $nodeId);
+            }
             $log->info('OnlyOffice ajax start: ' . $status);
             $downloadUri = $data["url"];
             $saved = 1;
-            $tmpSavePath = DATA . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . date("Y-m-d_H-i-s") . '_' . $_SESSION[$id]['node']->node->ref->id . '.' . $_SESSION[$id]['filetype'];
+            $tmpSavePath = DATA . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'onlyoffice' . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . date("Y-m-d_H-i-s") . '_' . $nodeId . '.' . $_SESSION[$id]['filetype'];
             $comment = $status == 'ForcedSave' ? '' : 'EDITOR_UPLOAD,ONLY_OFFICE';
 
             $arrContextOptions = array(
@@ -136,6 +142,7 @@ function track()
                         $log->info('OnlyOffice ajax SAVED: ' . $status. ' - ' . $tmpSavePath);
                     }
                 } catch (Exception $e) {
+                    $log->error('OnlyOffice ERROR could not save to api. Keeping cache file ' . $tmpSavePath);
                     $result["c"] = "not saved";
                     $result["error"] = "error: " . json_encode($e->__toString());
                     break;

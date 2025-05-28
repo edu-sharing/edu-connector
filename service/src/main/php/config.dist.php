@@ -21,16 +21,17 @@ define('DBNAME', '');
 /*onlyoffice*/
 define('ONLYOFFICE_DOCUMENT_SERVER', '');
 define('ONLYOFFICE_PLUGIN_URL', '');
-/**
- * allow only office (default) plugins to be shown
- */
-define('ONLYOFFICE_PLUGINS', true);
 
 /**
  * enable the edu-sharing plugin for only office?
  * allows to apply content from edu sharing int only office documents
  */
 define('ONLYOFFICE_PLUGINS', true);
+/**
+ * enable the force save button in only office
+ */
+define('ONLYOFFICE_FORCE_SAVE_ENABLED', false);
+
 define('ONLYOFFICE_EDUSHARING_PLUGIN', false);
 /**
  * custom label for edu-sharing plugin, if not set 'edu-sharing' will be shwon
