@@ -3,18 +3,28 @@
 namespace connector\lib;
 
 use connector\tools\h5p\H5PFramework;
+use EduSharingApiClient\EduSharingAuthHelper;
+use EduSharingApiClient\EduSharingHelperBase;
 
 define('APPID', 'educonnector');
 
 class EduRestClient
 {
-
     private $connectorId = '';
     private $authHeader = '';
+    private EduSharingAuthHelper $authHelper;
 
     public function __construct($connectorId) {
         $this->connectorId = $connectorId;
         $this->authHeader = 'Cookie:JSESSIONID=' . ($_SESSION[$this->connectorId]['sessionId'] ?: $this->connectorId);
+        $privateKey = openssl_pkey_get_private('file://' . DATA . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'private.key');
+        $apiUrl = $this->getApiUrl();
+        $basehelper  = new EduSharingHelperBase(
+            $apiUrl,
+            $privateKey,
+            APPID
+        );
+        $this->authHelper = new EduSharingAuthHelper($basehelper);
     }
 
     private function getHeaders() {
@@ -173,23 +183,17 @@ class EduRestClient
     }
 
     private function getTicketHeader() {
-        $paramstrusted = array("applicationId"  => APPID,
-            "ticket"  => session_id(), "ssoData"  => array(
-                array('key'  => 'userid', 'value' => $_SESSION[$this->connectorId]['user']->userName),
-                array('key'  => 'lastname', 'value' => $_SESSION[$this->connectorId]['user']->profile->lastName),
-                array('key'  => 'firstname', 'value' => $_SESSION[$this->connectorId]['user']->profile->firstName),
-                array('key'  => 'email', 'value' => $_SESSION[$this->connectorId]['user']->profile->email)));
+        $additionalfields = [
+            'firstName' => $_SESSION[$this->connectorId]['user']->profile->lastName,
+            'lastName'  => $_SESSION[$this->connectorId]['user']->profile->lastName,
+            'email'     => $_SESSION[$this->connectorId]['user']->profile->email,
+        ];
         try {
-            $client = new \connector\lib\SigSoapClient($this->getApiUrl() . '../services/authbyapp?wsdl');
-            $return = $client->authenticateByTrustedApp($paramstrusted);
-            $ticket = $return->authenticateByTrustedAppReturn->ticket;
+            $ticket = $this->authHelper->getTicketForUser($_SESSION[$this->connectorId]['user']->userName, $additionalfields);
             return 'Authorization: EDU-TICKET ' . $ticket;
         } catch (\Exception $e) {
             throw new \Exception('Error fetching edu-sharing ticket. Check catalina.out. ' . $e->getMessage(), $e->getCode());
-        } catch (\SoapFault $s) {
-            throw new \Exception('Error fetching edu-sharing ticket. Check catalina.out. ' . $s->getMessage(), $s->faultcode);
         }
-
     }
 
     public function createTextContent($nodeId, $content, $mimetype, $versionComment = '')
