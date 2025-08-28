@@ -17,11 +17,11 @@ class EduRestClient
     public function __construct($connectorId) {
         $this->connectorId = $connectorId;
         $this->authHeader = 'Cookie:JSESSIONID=' . ($_SESSION[$this->connectorId]['sessionId'] ?: $this->connectorId);
-        $privateKey = openssl_pkey_get_private('file://' . DATA . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'private.key');
+        $privateKeyString = file_get_contents(DATA . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'private.key');
         $apiUrl = $this->getApiUrl();
         $basehelper  = new EduSharingHelperBase(
             $apiUrl,
-            $privateKey,
+            $privateKeyString,
             APPID
         );
         $this->authHelper = new EduSharingAuthHelper($basehelper);
@@ -222,6 +222,7 @@ class EduRestClient
     
     public function createContentNodeEnhanced($nodeId, $contentpath, $mimetype, $versionComment = '') {
         try {
+            throw new \Exception('test');
            return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
         } catch(\Exception $e) {
             if($e->getCode() === 401 || $e->getCode() === 403) {
