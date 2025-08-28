@@ -222,7 +222,6 @@ class EduRestClient
     
     public function createContentNodeEnhanced($nodeId, $contentpath, $mimetype, $versionComment = '') {
         try {
-            throw new \Exception('test');
            return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
         } catch(\Exception $e) {
             if($e->getCode() === 401 || $e->getCode() === 403) {
