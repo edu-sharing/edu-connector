@@ -18,7 +18,8 @@ class EduRestClient
         $this->connectorId = $connectorId;
         $this->authHeader = 'Cookie:JSESSIONID=' . ($_SESSION[$this->connectorId]['sessionId'] ?: $this->connectorId);
         $privateKeyString = file_get_contents(DATA . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'private.key');
-        $apiUrl = $this->getApiUrl();
+        // remove /rest/ from end
+        $apiUrl = substr($this->getApiUrl(), 0, -6);
         $basehelper  = new EduSharingHelperBase(
             $apiUrl,
             $privateKeyString,
