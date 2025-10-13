@@ -68,6 +68,7 @@ tinymce.addI18n('de',{
     "Lower Roman": "R\u00f6mische Zahlen (Kleinbuchstaben)",
     "Upper Alpha": "Gro\u00dfbuchstaben",
     "Upper Roman": "R\u00f6mische Zahlen (Gro\u00dfbuchstaben)",
+    "Anchor...": "Textmarke...",
     "Anchor": "Textmarke",
     "Name": "Name",
     "Id": "Kennung",
