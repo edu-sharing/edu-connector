@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5b9f8465a8162ecdd875695a6c6b2bba",
+    "content-hash": "ed687c46d6ba345ebf444f23d50ccc8c",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -41,6 +41,53 @@
             },
             "abandoned": "psr/container",
             "time": "2017-02-14T19:40:03+00:00"
+        },
+        {
+            "name": "edu-sharing/auth-plugin",
+            "version": "10.0.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/edu-sharing/php-auth-plugin.git",
+                "reference": "3d59766c8e5c14db79788e69d2bad93a11afe25d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/edu-sharing/php-auth-plugin/zipball/3d59766c8e5c14db79788e69d2bad93a11afe25d",
+                "reference": "3d59766c8e5c14db79788e69d2bad93a11afe25d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "php": ">= 8.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^12"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "EduSharingApiClient\\": "src/EduSharing"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Torsten Simon",
+                    "email": "simon@edu-sharing.net"
+                }
+            ],
+            "description": "Plugin to provide authentification via Auth By App with a edu-sharing repository",
+            "support": {
+                "issues": "https://github.com/edu-sharing/php-auth-plugin/issues",
+                "source": "https://github.com/edu-sharing/php-auth-plugin/tree/10.0"
+            },
+            "time": "2025-08-07T08:55:34+00:00"
         },
         {
             "name": "h5p/h5p-core",
@@ -864,7 +911,7 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.31.0",
+            "version": "v1.33.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
@@ -923,7 +970,7 @@
                 "portable"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.31.0"
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.33.0"
             },
             "funding": [
                 {
@@ -932,6 +979,10 @@
                 },
                 {
                     "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
                     "type": "github"
                 },
                 {
@@ -1080,7 +1131,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "alpha",
-    "stability-flags": {},
+    "stability-flags": {
+        "edu-sharing/auth-plugin": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {},
