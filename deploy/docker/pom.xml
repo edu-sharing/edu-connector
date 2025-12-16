@@ -16,8 +16,8 @@
   <name>edu_sharing-community-services-connector-deploy-docker</name>
 
   <properties>
-    <postgresql.version.major>17</postgresql.version.major>
-    <postgresql.version.minor>5</postgresql.version.minor>
+    <postgresql.version.major>16</postgresql.version.major>
+    <postgresql.version.minor>6</postgresql.version.minor>
     <postgresql.version.patch>0</postgresql.version.patch>
     <postgresql.version>${postgresql.version.major}.${postgresql.version.minor}.${postgresql.version.patch}</postgresql.version>
     <docker.from.postgresql.server>
