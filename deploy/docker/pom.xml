@@ -36,5 +36,6 @@
 
   <modules>
     <module>compose</module>
+    <module>helm</module>
   </modules>
 </project>
