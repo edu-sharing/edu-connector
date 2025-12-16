@@ -1,7 +1,7 @@
 baseUrl: 
 storageClassName:
 clusterIssuer: letsencrypt
-version: maven-fixes-9.1-SNAPSHOT
+version: ${docker.tag}
 database:
   storageSize: 30Gi
   enabled: true
