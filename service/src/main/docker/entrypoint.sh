@@ -2,7 +2,46 @@
 [[ -n $DEBUG ]] && set -x
 set -eu
 
+cache_cluster="${CACHE_CLUSTER:-false}"
+cache_database="${CACHE_DATABASE:-0}"
+cache_host="${CACHE_HOST:-}"
+cache_port="${CACHE_PORT:-}"
+
 cd "$ROOT"
+
+### Wait ###############################################################################################################
+
+[[ -n "${cache_host}" && -n "${cache_port}" ]] && {
+
+	until wait-for-it "${cache_host}:${cache_port}" -t 3; do sleep 1; done
+
+	[[ "${cache_cluster}" == "true" ]] && {
+	  echo ""
+    echo "Cache cluster is enabled. Will configure cache storage to redis at ${cache_host}:${cache_port}"
+    echo ""
+		until [[ $(redis-cli --cluster info "${cache_host}" "${cache_port}" | grep '[OK]' | cut -d ' ' -f5) -gt 1 ]]; do
+			echo "."
+			sleep 2
+		done
+	}
+
+}
+
+########################################################################################################################
+
+[[ -n "${cache_host}" && -n "${cache_port}" ]] && {
+
+	if [[ ${cache_cluster} == "true" ]] ; then
+		sed -i 's|^[;\s]*session\.save_handler.*|session.save_handler = 'rediscluster'|' "${PHP_INI_DIR}/php.ini"
+		echo "session.save_path = \"seed[]=${cache_host}:${cache_port}\"" >>"${PHP_INI_DIR}/php.ini"
+	else
+		sed -i 's|^[;\s]*session\.save_handler.*|session.save_handler = 'redis'|' "${PHP_INI_DIR}/php.ini"
+		echo "session.save_path = \"tcp://${cache_host}:${cache_port}?database=${cache_database}\"" >>"${PHP_INI_DIR}/php.ini"
+	fi
+
+}
+
+########################################################################################################################
 
 conf="config.php"
 cp config.dist.php "${conf}"
