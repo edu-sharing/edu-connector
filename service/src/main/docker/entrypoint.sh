@@ -6,7 +6,7 @@ cache_cluster="${CACHE_CLUSTER:-false}"
 cache_database="${CACHE_DATABASE:-0}"
 cache_host="${CACHE_HOST:-}"
 cache_port="${CACHE_PORT:-}"
-cache_prefix="PHPREDIS_CLUSTER_SESSION_CONNECTOR"
+cache_prefix="PHPREDIS_CLUSTER_SESSION_CONNECTOR:"
 
 cd "$ROOT"
 
