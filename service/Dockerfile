@@ -1,12 +1,21 @@
 FROM dockerio.mirror.docker.edu-sharing.com/php:8.3-apache as builder
 
 RUN  set -eux \
-         && apt-get update \
-         && apt-get install -yqq git libzip-dev zip \
-         && apt-get clean \
-         && rm -r /var/lib/apt/lists/* \
-         && curl -sS https://getcomposer.org/installer | php -- \
-         --install-dir=/usr/bin --filename=composer
+     && apt-get update \
+     && apt-get install -yqq  \
+     git  \
+     libzip-dev  \
+     zip \
+     redis-tools \
+     && apt-get clean \
+     && rm -r /var/lib/apt/lists/* \
+     && curl -sS https://getcomposer.org/installer | php -- \
+     --install-dir=/usr/bin --filename=composer \
+    && curl -L -o /tmp/phpredis.tar.gz https://github.com/phpredis/phpredis/archive/5.3.7.tar.gz \
+    && mkdir -p /usr/src/php/ext/redis \
+    && tar -C /usr/src/php/ext/redis -xzf /tmp/phpredis.tar.gz --strip 1 \
+    && rm -r /tmp/phpredis.tar.gz \
+    && docker-php-ext-install redis
 
 WORKDIR /var/www/html
 COPY src/main/php .
