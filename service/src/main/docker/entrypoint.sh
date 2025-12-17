@@ -6,6 +6,7 @@ cache_cluster="${CACHE_CLUSTER:-false}"
 cache_database="${CACHE_DATABASE:-0}"
 cache_host="${CACHE_HOST:-}"
 cache_port="${CACHE_PORT:-}"
+cache_prefix="edu-sharing-connector-"
 
 cd "$ROOT"
 
@@ -33,10 +34,10 @@ cd "$ROOT"
 
 	if [[ ${cache_cluster} == "true" ]] ; then
 		sed -i 's|^[;\s]*session\.save_handler.*|session.save_handler = 'rediscluster'|' "${PHP_INI_DIR}/php.ini"
-		echo "session.save_path = \"seed[]=${cache_host}:${cache_port}\"" >>"${PHP_INI_DIR}/php.ini"
+    echo "session.save_path = \"seed[]=${cache_host}:${cache_port},prefix=${cache_prefix}\"" >> "${PHP_INI_DIR}/php.ini"
 	else
 		sed -i 's|^[;\s]*session\.save_handler.*|session.save_handler = 'redis'|' "${PHP_INI_DIR}/php.ini"
-		echo "session.save_path = \"tcp://${cache_host}:${cache_port}?database=${cache_database}\"" >>"${PHP_INI_DIR}/php.ini"
+    echo "session.save_path = \"tcp://${cache_host}:${cache_port}?database=${cache_database}&prefix=${cache_prefix}\"" >> "${PHP_INI_DIR}/php.ini"
 	fi
 
 }

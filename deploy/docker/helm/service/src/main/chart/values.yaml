@@ -21,7 +21,7 @@ config:
     ## @param config.cache.cluster Set cache as cluster
     cluster: true
     ## @param config.cache.database Set cache database
-    database: 1
+    database: 0
     ## @param config.cache.host Set cache host
     host: edusharing-rediscluster
     ## @param config.cache.port Set cache port
