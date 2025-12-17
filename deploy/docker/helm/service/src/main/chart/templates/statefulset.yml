@@ -47,7 +47,7 @@ spec:
         - name: ONLYOFFICE_DOCUMENT_SERVER
           value: {{ .Values.onlyofficeDocumentServer}}
         - name: ONLYOFFICE_FORCE_SAVE_ENABLED
-          value: {{ .Values.onlyofficeForceSaveEnabled }}
+          value: "{{ .Values.onlyofficeForceSaveEnabled }}"
         - name: ONLYOFFICE_PLUGIN_URL
           value: {{ .Values.onlyofficePluginUrl }}
         - name: ONLYOFFICE_PLUGINS
