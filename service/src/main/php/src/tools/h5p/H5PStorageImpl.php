@@ -9,7 +9,9 @@ namespace connector\tools\h5p;
 class H5PStorageImpl extends \H5PDefaultStorage {
     public function getTmpPath() {
         $temp = "/tmp/h5p";
-        self::dirReady($temp);
+        $reflection = new ReflectionMethod(\H5PDefaultStorage::class, 'dirReady');
+        $reflection->setAccessible(true);
+        $reflection->invoke($this, $temp);
         return "{$temp}/" . uniqid('h5p-');
     }
 
