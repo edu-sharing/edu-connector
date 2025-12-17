@@ -220,17 +220,17 @@ class EduRestClient
             . '" - parent "' . $_SESSION[$this->connectorId]['node'] -> node -> parent -> id . '" - user "' . $_SESSION[$this->connectorId]['user'] -> authorityName . '"';
         throw new \Exception($errorStr, $httpcode);
     }
-    
+
     public function createContentNodeEnhanced($nodeId, $contentpath, $mimetype, $versionComment = '') {
         try {
-           return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
+            return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
         } catch(\Exception $e) {
             if($e->getCode() === 401 || $e->getCode() === 403) {
                 $this->setAuthHeader($this->getTicketHeader());
                 return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
             }
             $errorStr = $_SESSION[$this->connectorId]['tool'] . ' Error creating content for node "' . $nodeId . '" - repo "' . $_SESSION[$this->connectorId]['node'] -> node -> ref -> repo
-                . '" - parent "' . $_SESSION[$this->connectorId]['node'] -> node -> parent -> id . '" - user "' . $_SESSION[$this->connectorId]['user'] -> authorityName . '" - content path "' . $contentpath . '"';
+                . '" - parent "' . $_SESSION[$this->connectorId]['node'] -> node -> parent -> id . '" - ' . $e->getCode() . ' - user "' . $_SESSION[$this->connectorId]['user'] -> authorityName . '" - content path "' . $contentpath . '"';
             throw new \Exception($errorStr, $e->getCode());
         }
     }
@@ -265,7 +265,7 @@ class EduRestClient
         throw new \Exception('Error creating content node HTTP STATUS ' . $httpcode . '. Curl error ' . $error, $httpcode);
     }
 
-/*
+    /*
     public function updateReferenceUrl($nodeId, $url)
     {
 
