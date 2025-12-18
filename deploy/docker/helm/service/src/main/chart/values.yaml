@@ -1,7 +1,7 @@
 baseUrl: 
 storageClassName:
 clusterIssuer: letsencrypt
-version: maven-fixes-9.1-SNAPSHOT
+version: ${docker.tag}
 database:
   storageSize: 30Gi
   enabled: true
@@ -16,6 +16,16 @@ database:
     fsGroup: 1001
   securityContext:
     runAsUser: 1001
+config:
+  cache:
+    ## @param config.cache.cluster Set cache as cluster
+    cluster: true
+    ## @param config.cache.database Set cache database
+    database: 0
+    ## @param config.cache.host Set cache host
+    host: edusharing-rediscluster
+    ## @param config.cache.port Set cache port
+    port: 6379
 
 onlyofficeDocumentServer:
 # enable the save button in only office
@@ -35,7 +45,7 @@ global:
     pullPolicy: Always
 image:
   custom:
-    postgresql: community/common/edu_sharing-community-common-docker-postgresql:13.15.0
+    postgresql: ${docker.edu_sharing.community.common.postgresql}
 
 podSecurityContext:
 

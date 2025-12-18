@@ -28,6 +28,14 @@ spec:
         {{- end }}
         imagePullPolicy: {{ .Values.global.image.pullPolicy }}
         env:
+        - name: CACHE_CLUSTER
+          value: {{ .Values.config.cache.cluster | quote }}
+        - name: CACHE_DATABASE
+          value: {{ .Values.config.cache.database | quote }}
+        - name: CACHE_HOST
+          value: {{ .Values.config.cache.host | quote }}
+        - name: CACHE_PORT
+          value: {{ .Values.config.cache.port | quote }}
         - name: HOST_EXTERNAL
           value: {{ if .Values.absoluteUrl }}{{ .Values.absoluteUrl }}{{else}}"connector.services.{{ .Values.baseUrl }}"{{ end }}
         - name: PROT_EXTERNAL
@@ -47,7 +55,7 @@ spec:
         - name: ONLYOFFICE_DOCUMENT_SERVER
           value: {{ .Values.onlyofficeDocumentServer}}
         - name: ONLYOFFICE_FORCE_SAVE_ENABLED
-          value: {{ .Values.onlyofficeForceSaveEnabled }}
+          value: "{{ .Values.onlyofficeForceSaveEnabled }}"
         - name: ONLYOFFICE_PLUGIN_URL
           value: {{ .Values.onlyofficePluginUrl }}
         - name: ONLYOFFICE_PLUGINS
@@ -125,7 +133,7 @@ spec:
       {{- end }}
       containers:
       - name: edu-sharing-connector-db
-        image: {{ .Values.global.image.registry }}/{{ .Values.image.custom.postgresql }}
+        image: {{ .Values.image.custom.postgresql }}
         {{- with merge .Values.database.securityContext .Values.securityContext }}
         securityContext: {{ toYaml . | nindent 10 }}
         {{- end }}

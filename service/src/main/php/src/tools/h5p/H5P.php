@@ -43,7 +43,7 @@ class H5P extends \connector\lib\Tool {
 	    $this -> language = include $langPathBase . '.php';
         $db = new Database();
         $this->H5PFramework = new H5PFramework();
-        $this->H5PCore = new \H5PCore($this->H5PFramework, $this->H5PFramework->get_h5p_path(), $this->H5PFramework->get_h5p_url(), $this -> h5pLang, true);
+        $this->H5PCore = new \H5PCore($this->H5PFramework, new H5PStorageImpl($this->H5PFramework->get_h5p_path()), $this->H5PFramework->get_h5p_url(), $this -> h5pLang, true);
         $this->H5PCore->aggregateAssets = TRUE; // why not?
         $this->H5PCore->disableFileCheck = TRUE; // @needs approval
 

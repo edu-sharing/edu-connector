@@ -1,13 +1,15 @@
 FROM dockerio.mirror.docker.edu-sharing.com/php:8.3-apache as builder
 
 RUN  set -eux \
-         && apt-get update \
-         && apt-get install -yqq git libzip-dev zip \
-         && apt-get clean \
-         && rm -r /var/lib/apt/lists/* \
-         && curl -sS https://getcomposer.org/installer | php -- \
-         --install-dir=/usr/bin --filename=composer
-
+     && apt-get update \
+     && apt-get install -yqq  \
+     git  \
+     libzip-dev  \
+     zip \
+     && apt-get clean \
+     && rm -r /var/lib/apt/lists/* \
+     && curl -sS https://getcomposer.org/installer | php -- \
+     --install-dir=/usr/bin --filename=composer
 WORKDIR /var/www/html
 COPY src/main/php .
 
@@ -18,16 +20,21 @@ RUN composer install && rm -f composerinstaller.php composer.phar
 FROM dockerio.mirror.docker.edu-sharing.com/php:8.3-apache
 
 RUN  set -eux \
-         && apt-get update \
-         && apt-get install -yqq wait-for-it libpq-dev libzip-dev curl xmlstarlet jq nano \
-         && a2enmod rewrite \
-         && ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini \
-         && sed -i 's/max_execution_time = 30/max_execution_time = 120/g' $PHP_INI_DIR/php.ini \
-         && sed -i 's/session.gc_maxlifetime = 1440/session.gc_maxlifetime = 21600/g' $PHP_INI_DIR/php.ini \
-         && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-         && docker-php-ext-install pdo pdo_pgsql pgsql zip \
-         && apt-get clean \
-         && rm -r /var/lib/apt/lists/*
+    && apt-get update \
+    && apt-get install -yqq wait-for-it libpq-dev libzip-dev curl xmlstarlet redis-tools jq nano \
+    && a2enmod rewrite \
+    && ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini \
+    && sed -i 's/max_execution_time = 30/max_execution_time = 120/g' $PHP_INI_DIR/php.ini \
+    && sed -i 's/session.gc_maxlifetime = 1440/session.gc_maxlifetime = 21600/g' $PHP_INI_DIR/php.ini \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install pdo pdo_pgsql pgsql zip \
+    && apt-get clean \
+    && rm -r /var/lib/apt/lists/* \
+    && curl -L -o /tmp/phpredis.tar.gz https://github.com/phpredis/phpredis/archive/5.3.7.tar.gz \
+    && mkdir -p /usr/src/php/ext/redis \
+    && tar -C /usr/src/php/ext/redis -xzf /tmp/phpredis.tar.gz --strip 1 \
+    && rm -r /tmp/phpredis.tar.gz \
+    && docker-php-ext-install redis
 
 
 ARG git_branch=dev

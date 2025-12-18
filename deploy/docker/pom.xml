@@ -16,25 +16,26 @@
   <name>edu_sharing-community-services-connector-deploy-docker</name>
 
   <properties>
-    <postgresql.version.major>13</postgresql.version.major>
-    <postgresql.version.minor>15</postgresql.version.minor>
+    <postgresql.version.major>16</postgresql.version.major>
+    <postgresql.version.minor>6</postgresql.version.minor>
     <postgresql.version.patch>0</postgresql.version.patch>
     <postgresql.version>${postgresql.version.major}.${postgresql.version.minor}.${postgresql.version.patch}</postgresql.version>
     <docker.from.postgresql.server>
       dockerio.mirror.docker.edu-sharing.com/bitnami/postgresql:${postgresql.version}
     </docker.from.postgresql.server>
 
-    <docker.edu_sharing.communty.common.repository>
+    <docker.edu_sharing.community.common.repository>
       ${docker.registry}/community/common
-    </docker.edu_sharing.communty.common.repository>
+    </docker.edu_sharing.community.common.repository>
 
     <docker.edu_sharing.community.common.postgresql>
-      ${docker.edu_sharing.communty.common.repository}/edu_sharing-community-common-docker-postgresql:${postgresql.version}
+      ${docker.edu_sharing.community.common.repository}/edu_sharing-community-common-docker-postgresql:${postgresql.version}
     </docker.edu_sharing.community.common.postgresql>
 
   </properties>
 
   <modules>
     <module>compose</module>
+    <module>helm</module>
   </modules>
 </project>
