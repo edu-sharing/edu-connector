@@ -81,7 +81,7 @@ class EduRestClient
         if ($httpcode >= 200 && $httpcode < 308) {
             return json_decode($res);
         }
-        throw new \Exception('Error validating session: ' . $this->getAuthHeader(), $httpcode);
+        throw new \Exception('Error validating session: ' . $this->getAuthHeader() . ' ' . $this->getApiUrl(), $httpcode);
     }
 
     public function unlockNode($nodeId) {
@@ -317,6 +317,19 @@ class EduRestClient
         throw new \Exception('Error fetching node ' . $nodeId, $httpcode . ': ' . $res);
     }
 
+    /**
+     * return true if this node is writable by the current user and a writable note
+     */
+    public function isWritable($node): bool {
+        $perm = $node->node->access;
+        if ($node->node->accessEffective) {
+            $perm = $node->node->accessEffective;
+        }
+
+        print_r($node->node->properties);
+        print_r(property_exists($node->node->properties, 'ccm:published_original'));
+        return in_array('Write', $perm) && !property_exists($node->node->properties, 'ccm:published_original');
+    }
 
     public function getUser()
     {
