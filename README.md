@@ -99,6 +99,13 @@ If you'll get 404 errors check for active `mod_rewrite` in Apache. You can activ
 </Directory>
 ```
 
+When running via the docker stack, make sure that the repository uri will be redirected to your host
+```yaml
+  services-edu-connector-service:
+    extra_hosts:
+      - "repository.127.0.0.1.nip.io:host-gateway"
+```
+And make sure that the repository is allowed to be accessed from everywhere using the `.env` config: `COMMON_BIND_HOST=0.0.0.0`
 
 # Hints & ToDos
 ## etherpad
