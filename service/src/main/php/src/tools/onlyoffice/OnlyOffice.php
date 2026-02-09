@@ -28,7 +28,7 @@ class OnlyOffice extends \connector\lib\Tool {
             try {
                 $originalId = $node->node->properties->{'ccm:original'}[0];
                 $originalNode = $this->apiClient->getNode($originalId);
-                if (in_array('Write', $originalNode->node->access)) {
+                if ($this->apiClient->isWritable($node)) {
                     $_SESSION[$this->connectorId]['edit'] = true;
                 } else {
                     $_SESSION[$this->connectorId]['edit'] = false;
@@ -40,7 +40,7 @@ class OnlyOffice extends \connector\lib\Tool {
                 return $node;
             }
         }
-        if (in_array('Write', $node->node->access)) {
+        if ($this->apiClient->isWritable($node)) {
             $_SESSION[$this->connectorId]['edit'] = true;
         } else {
             $_SESSION[$this->connectorId]['edit'] = false;
