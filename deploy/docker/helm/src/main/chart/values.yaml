@@ -2,6 +2,9 @@ baseUrl:
 storageClassName:
 clusterIssuer: letsencrypt
 version: maven-fixes-9.1-SNAPSHOT
+
+# memory limit for php
+memoryLimit: 1024M
 resources:
   limits:
     cpu: "1000m"

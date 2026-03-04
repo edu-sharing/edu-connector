@@ -69,7 +69,7 @@ spec:
         - name: POST_MAX_SIZE
           value: {{ .Values.postMaxSize | default "513M" }}
         - name: MEMORY_LIMIT
-          value: {{ .Values.memoryLimit | default "1024M" }}
+          value: {{ .Values.memoryLimit }}
         livenessProbe:
           httpGet:
             path: /metadata
