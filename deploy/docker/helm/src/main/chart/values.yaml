@@ -2,8 +2,25 @@ baseUrl:
 storageClassName:
 clusterIssuer: letsencrypt
 version: maven-fixes-9.1-SNAPSHOT
+
+# memory limit for php
+memoryLimit: 1024M
+resources:
+  limits:
+    cpu: "1000m"
+    memory: "2Gi"
+  requests:
+    cpu: "500m"
+    memory: "2Gi"
 database:
   storageSize: 30Gi
+  resources:
+    limits:
+      cpu: "1000m"
+      memory: "2Gi"
+    requests:
+      cpu: "500m"
+      memory: "2Gi"
   enabled: true
   # when enabled = false for external database
   config:
