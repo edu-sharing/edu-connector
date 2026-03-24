@@ -23,7 +23,7 @@ data:
   SERVICES_CONNECTOR_SERVICE_HOST_EXTERNAL: {{ .Values.ingress.hosts | first | quote }}
   SERVICES_CONNECTOR_SERVICE_HOST_INTERNAL: {{ include "edusharing_common_lib.names.name" . | quote }}
   SERVICES_CONNECTOR_SERVICE_MEMORY_LIMIT: {{ .Values.config.server.memoryLimit | quote }}
-  SERVICES_CONNECTOR_SERVICE_PATH_EXTERNAL: {{ .Values.ingress.paths | first | quote }}
+  SERVICES_CONNECTOR_SERVICE_PATH_EXTERNAL: {{ if eq (.Values.ingress.paths | first) "/" -}}{{ "" | quote }}{{- else -}}{{ .Values.ingress.paths | first | quote }}{{- end }}
   SERVICES_CONNECTOR_SERVICE_PORT_EXTERNAL: {{ if .Values.ingress.tls }}"443"{{ else }}"80"{{ end }}
   SERVICES_CONNECTOR_SERVICE_PORT_INTERNAL: {{ .Values.service.port.api.internal | quote }}
   SERVICES_CONNECTOR_SERVICE_POST_MAX_SIZE: {{ .Values.config.server.postMaxSize | quote }}
