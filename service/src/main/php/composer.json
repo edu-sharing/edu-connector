@@ -1,14 +1,25 @@
 {
-  "name": "edu-sharing/edu-connector",
+  "name": "${composer.vendor}/community-services-connector",
+  "version": "${composer.version}",
+  "type": "project",
   "description": "Connect edu-sharing repository with editing tools",
-  "minimum-stability": "alpha",
+  "minimum-stability": "stable",
+  "homepage": "http://www.edu-sharing.com/",
   "license": "GPL-3.0-or-later",
   "authors": [
     {
-      "name": "ernst",
-      "email": "ernst@edu-sharing.com"
+      "name": "metaVentis GmbH",
+      "homepage": "http://www.metaventis.com/"
     }
   ],
+  "config": {
+    "platform": {
+      "php": "8.3"
+    },
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  },
   "autoload": {
     "psr-4": {"connector\\": "src/"},
     "files" : [
@@ -27,5 +38,15 @@
     "h5p/h5p-editor": "1.25",
     "mobiledetect/mobiledetectlib": "^4.8.09",
     "edu-sharing/auth-plugin": "10.0.x-dev"
-  }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://repo.packagist.org"
+    },
+    {
+      "type": "composer",
+      "url": "${composer.repo.url}"
+    }
+  ]
 }
