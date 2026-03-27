@@ -4,4 +4,4 @@ services:
 
   services-connector-database:
     ports:
-      - "${COMMON_BIND_HOST:-127.0.0.1}:${SERVICES_CONNECTOR_DATABASE_PORT:-9201}:5432"
+      - "${COMMON_BIND_HOST:-127.0.0.1}:${SERVICES_CONNECTOR_DATABASE_PORT:-9301}:5432"
