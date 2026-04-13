@@ -342,5 +342,12 @@ class EduRestClient
         throw new \Exception('Error fetching person', $httpcode);
     }
 
-
+    public function getTicket() {
+        $additionalfields = [
+            'firstName' => $_SESSION[$this->connectorId]['user']->profile->lastName,
+            'lastName'  => $_SESSION[$this->connectorId]['user']->profile->lastName,
+            'email'     => $_SESSION[$this->connectorId]['user']->profile->email,
+        ];
+        return $this->authHelper->getTicketForUser($_SESSION[$this->connectorId]['user']->userName, $additionalfields);
+    }
 }
