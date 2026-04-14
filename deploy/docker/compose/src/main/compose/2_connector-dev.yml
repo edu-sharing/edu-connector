@@ -6,7 +6,7 @@ services:
     extra_hosts:
       - "repository.127.0.0.1.nip.io:host-gateway"
     volumes:
-      - "${GIT_ROOT}/services-connector/service/target/php:/var/www/html"
+      - "${GIT_ROOT}/services-connector/service/src/main/php/:/var/www/html/"
 
 #      - "${GIT_ROOT}/services-connector/service/src/main/php/css:/var/www/html/css"
 #      - "${GIT_ROOT}/services-connector/service/src/main/php/fonts:/var/www/html/fonts"
