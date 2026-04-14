@@ -25,19 +25,19 @@
     <url>https://scm.edu-sharing.com/edu-sharing/community/services/edu-sharing-community-services-connector.git</url>
   </scm>
 
-
   <properties>
 
     <!-- git extension controlled props -->
     <project.version.base>git</project.version.base>
 
+    <!-- release-2 -->
+    <bom.repository.version>${project.version}</bom.repository.version>
+
     <docker.repository>community</docker.repository>
-    <docker.prefix>edu_sharing-community-services-edu-connector</docker.prefix>
-    <helm.prefix>edu_sharing-community-services-edu-connector</helm.prefix>
+    <docker.prefix>edu_sharing-community-services-connector</docker.prefix>
+    <helm.prefix>edu_sharing-community-services-connector</helm.prefix>
 
   </properties>
-
-
 
   <profiles>
 
@@ -58,16 +58,52 @@
       </properties>
 
     </profile>
-
   </profiles>
+
   <dependencyManagement>
+
     <dependencies>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>edu_sharing-community-repository</artifactId>
+        <version>${bom.repository.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>edu_sharing-community-services-connector-deploy-docker-compose</artifactId>
         <version>${project.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>edu_sharing-community-services-connector-deploy-docker-helm-bundle</artifactId>
+        <version>${project.version}</version>
+        <type>tar.gz</type>
+        <classifier>bin</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>edu_sharing-community-services-connector-deploy-docker-helm-service</artifactId>
+        <version>${project.version}</version>
+        <type>tar.gz</type>
+        <classifier>bin</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>edu_sharing-community-services-connector-service</artifactId>
+        <version>${project.version}</version>
+        <type>tar.gz</type>
+        <classifier>bin</classifier>
+      </dependency>
+
     </dependencies>
+
   </dependencyManagement>
 
   <repositories>

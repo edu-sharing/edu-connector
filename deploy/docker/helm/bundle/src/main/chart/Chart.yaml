@@ -1,0 +1,33 @@
+apiVersion: v2
+
+name: ${helm.prefix}
+description: ${helm.prefix}
+
+icon: ${helm.chart.icon}
+
+version: ${helm.chart.version}
+appVersion: ${docker.tag}
+kubeVersion: "${helm.kube.version}"
+
+dependencies:
+
+  - name: edu_sharing-community-common-lib
+    repository: ${helm.deploy.url}
+    version: 1.x.x
+
+  - name: edu_sharing-community-common-postgresql
+    repository: ${helm.deploy.url}
+    version: 2.x.x
+    alias: edusharing_services_connector_postgresql
+    condition: edusharing_services_connector_postgresql.enabled
+
+  - name: edu_sharing-community-common-rediscluster
+    repository: ${helm.deploy.url}
+    version: 2.x.x
+    alias: edusharing_services_connector_rediscluster
+    condition: edusharing_services_connector_rediscluster.enabled
+
+  - name: ${helm.prefix}-service
+    version: ${helm.chart.version}
+    alias: edusharing_services_connector_service
+    condition: edusharing_services_connector_service.enabled

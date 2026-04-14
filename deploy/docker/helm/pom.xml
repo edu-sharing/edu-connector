@@ -71,6 +71,7 @@
   </build>
 
   <modules>
+    <module>bundle</module>
     <module>service</module>
   </modules>
 

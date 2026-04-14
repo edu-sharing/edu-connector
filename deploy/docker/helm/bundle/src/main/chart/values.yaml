@@ -1,0 +1,155 @@
+########################################################################################################################
+# GLOBAL
+########################################################################################################################
+
+## @section Global parameters
+global:
+
+  patroni:
+    ## @param global.patroni.name Name of patroni
+    name: &postgresqlNameOverride edusharing-services-connector-postgresql
+
+########################################################################################################################
+# LOCAL
+########################################################################################################################
+
+## @section Local parameters
+## @param nameOverride Override name
+nameOverride: edusharing-services-connector
+
+########################################################################################################################
+# DEPENDENCY
+########################################################################################################################
+
+edusharing_services_connector_postgresql:
+
+  ## @param edusharing_services_connector_postgresql.enabled Enable postgresql connector service
+  enabled: true
+
+  image:
+    ## @param edusharing_services_connector_postgresql.image.name  Set postgresql connector service image name
+    name: ${docker.edu_sharing.community.common.postgresql.name}
+    ## @param edusharing_services_connector_postgresql.image.tag  Set postgresql connector service image tag
+    tag: ${docker.edu_sharing.community.common.postgresql.tag}
+
+  ## @param edusharing_services_connector_postgresql.nameOverride Override edusharing postgresql connector service name
+  nameOverride: *postgresqlNameOverride
+
+  service:
+    port:
+      ## @param edusharing_services_connector_postgresql.service.port.api Set port for postgresql connector service api
+      api: &postgresqlServicePortApi 5432
+
+  config:
+    ## @param edusharing_services_connector_postgresql.config.database Set postgresql connector service database name
+    database: &postgresqlConfigDatabase connector
+    ## @param edusharing_services_connector_postgresql.config.username Set postgresql connector service database username
+    username: &postgresqlConfigUsername connector
+
+  init:
+
+    permission:
+
+      image:
+        ## @param edusharing_services_connector_postgresql.init.permission.image.name Set postgresql connector service init permission container name
+        name: ${docker.edu_sharing.community.common.minideb.name}
+        ## @param edusharing_services_connector_postgresql.init.permission.image.tag Set postgresql connector service init permission container tag
+        tag: ${docker.edu_sharing.community.common.minideb.tag}
+
+    upgrade:
+
+      image:
+        ## @param edusharing_services_connector_postgresql.init.upgrade.image.name Set postgresql repository init upgrade image name
+        name: ${docker.edu_sharing.community.common.postgresql.upgrade.name}
+        ## @param edusharing_services_connector_postgresql.init.upgrade.image.tag Set postgresql repository init upgrade image tag
+        tag: ${docker.edu_sharing.community.common.postgresql.upgrade.tag}
+
+  job:
+
+    dump:
+
+      image:
+        ## @param edusharing_services_connector_postgresql.job.dump.image.name Set postgresql connector service dump job container name
+        name: ${docker.edu_sharing.community.common.postgresql.name}
+        ## @param edusharing_services_connector_postgresql.job.dump.image.tag Set postgresql connector service dump job container tag
+        tag: ${docker.edu_sharing.community.common.postgresql.tag}
+
+  sidecar:
+
+    metrics:
+
+      image:
+        ## @param edusharing_services_connector_postgresql.sidecar.metrics.image.name Set postgresql connector service metrics sidecar name
+        name: ${docker.edu_sharing.community.common.postgresql.exporter.name}
+        ## @param edusharing_services_connector_postgresql.sidecar.metrics.image.tag Set postgresql connector service metrics sidecar tag
+        tag: ${docker.edu_sharing.community.common.postgresql.exporter.tag}
+
+########################################################################################################################
+
+edusharing_services_connector_rediscluster:
+
+  ## @param edusharing_services_connector_rediscluster.enabled Enable rediscluster connector service
+  enabled: true
+
+  image:
+    ## @param edusharing_services_connector_rediscluster.image.name  Set rediscluster connector service image name
+    name: ${docker.edu_sharing.community.common.redis-cluster.name}
+    ## @param edusharing_services_connector_rediscluster.image.tag  Set rediscluster connector service image tag
+    tag: ${docker.edu_sharing.community.common.redis-cluster.tag}
+
+  ## @param edusharing_services_connector_rediscluster.nameOverride Override edusharing rediscluster connector service name
+  nameOverride: &redisclusterNameOverride edusharing-services-connector-rediscluster
+
+  service:
+    port:
+      ## @param edusharing_services_connector_rediscluster.service.port.api Set port for rediscluster connector service api
+      api: &redisclusterServicePortApi 6379
+
+  init:
+
+    permission:
+
+      image:
+        ## @param edusharing_services_connector_rediscluster.init.permission.image.name Set rediscluster connector service init permission container name
+        name: ${docker.edu_sharing.community.common.minideb.name}
+        ## @param edusharing_services_connector_rediscluster.init.permission.image.tag Set rediscluster connector service init permission container tag
+        tag: ${docker.edu_sharing.community.common.minideb.tag}
+
+    sysctl:
+
+      image:
+        ## @param edusharing_services_connector_rediscluster.init.sysctl.image.name Set rediscluster connector service init sysctl container name
+        name: ${docker.edu_sharing.community.common.minideb.name}
+        ## @param edusharing_services_connector_rediscluster.init.sysctl.image.tag Set rediscluster connector service init sysctl container tag
+        tag: ${docker.edu_sharing.community.common.minideb.tag}
+
+  sidecar:
+
+    metrics:
+
+      image:
+        ## @param edusharing_services_connector_rediscluster.sidecar.metrics.image.name Set rediscluster connector service metrics sidecar name
+        name: ${docker.edu_sharing.community.common.redis.exporter.name}
+        ## @param edusharing_services_connector_rediscluster.sidecar.metrics.image.tag Set rediscluster connector service metrics sidecar tag
+        tag: ${docker.edu_sharing.community.common.redis.exporter.tag}
+
+########################################################################################################################
+
+edusharing_services_connector_service:
+
+  ## @param edusharing_services_connector_service.enabled Enable connector service
+  enabled: true
+
+  config:
+
+    database:
+      ## @param edusharing_services_connector_service.config.database.host Set connector service database host
+      host: *postgresqlNameOverride
+      ## @param edusharing_services_connector_service.config.database.port Set connector service database port
+      port: *postgresqlServicePortApi
+      ## @param edusharing_services_connector_service.config.database.database Set connector service database name
+      database: *postgresqlConfigDatabase
+      ## @param edusharing_services_connector_service.config.database.username Set connector service database username
+      username: *postgresqlConfigUsername
+
+########################################################################################################################

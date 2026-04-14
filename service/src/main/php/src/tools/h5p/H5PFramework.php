@@ -2,6 +2,8 @@
 
 namespace connector\tools\h5p;
 
+use stdClass;
+
 require_once __DIR__ . '/../../../config.php';
 
 class H5PFramework implements \H5PFrameworkInterface
@@ -512,6 +514,12 @@ class H5PFramework implements \H5PFrameworkInterface
     {
         global $db;
 
+        if (!empty($content['metadata'])) {
+            $params = json_decode($content['params']);
+            $params->metadata = $content['metadata'];
+            $content['params'] = json_encode($params);
+        }
+
         if (!isset($content['id'])) {
             $db->query('INSERT INTO h5p_contents (title,parameters,embed_type,library_id,user_id,slug,filtered,disable)' .
                 'values (' . $db->quote($content['title']) . ',' . $db->quote($content['params']) . ' , ' . $db->quote('iframe') . ',' . (int)$content['library']['libraryId'] . ',-1,' . $db->quote('') . ',' . $db->quote('') . ',' . (int)($content['disable']) . ')');
@@ -877,23 +885,20 @@ class H5PFramework implements \H5PFrameworkInterface
 
         $content = $prep->fetch();
 
-        if ($content !== NULL) {
-            $content['metadata'] = array();
-            $metadata_structure = array('title', 'authors', 'source', 'yearFrom', 'yearTo', 'license', 'licenseVersion', 'licenseExtras', 'authorComments', 'changes', 'defaultLanguage');
-            foreach ($metadata_structure as $property) {
-                if (!empty($content[$property])) {
-                    if ($property === 'authors' || $property === 'changes') {
-                        $content['metadata'][$property] = json_decode($content[$property]);
-                    } else if ($property === 'title') { // since we use the title for nodeID, use description instead
-                        $content['metadata'][$property] = $content['description'];
-                    } else {
-                        $content['metadata'][$property] = $content[$property];
-                    }
-                    if ($property !== 'title') {
-                        unset($content[$property]); // Unset all except title
-                    }
-                }
+        if ($content !== null) {
+            // The table scheme is rather crappy and we need to clean up the content array
+            $metadata_structure = ['title', 'authors', 'source', 'yearFrom', 'yearTo', 'license', 'licenseVersion', 'licenseExtras', 'authorComments', 'changes', 'defaultLanguage'];
+            foreach ($metadata_structure as $property) if (!empty($content[$property]) && $property !== 'title') {
+                unset($content[$property]); // Unset all except title
             }
+            // Then we build the metadata. Older entries do not have the metadata stored in params. We do what we can.
+            $params = json_decode($content['params']);
+            $metadata = $params->metadata ?? null;
+            if ($metadata === null) {
+                $metadata = new stdClass();
+                $metadata->title = $content['title'];
+            }
+            $content['metadata'] = $metadata;
         }
 
         return $content;

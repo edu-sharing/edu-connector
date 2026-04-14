@@ -1,67 +1,67 @@
 version: "3.9"
 
 services:
-  services-edu-connector-database:
-    image: "${docker.edu_sharing.community.common.postgresql}"
-    container_name: "services-edu-connector-database_${COMPOSE_PROJECT_NAME}"
-    environment:
-      POSTGRESQL_USERNAME: "${SERVICES_EDU_CONNECTOR_DATABASE_USER:-connector}"
-      POSTGRESQL_POSTGRES_PASSWORD: "${SERVICES_EDU_CONNECTOR_DATABASE_PASS:-connector}"
-      POSTGRESQL_DATABASE: "${SERVICES_EDU_CONNECTOR_DATABASE_NAME:-connector}"
-      POSTGRESQL_PASSWORD: "${SERVICES_EDU_CONNECTOR_DATABASE_ROOT_PASS:-connector}"
-    volumes:
-      - "services-edu-connector-database-data:/bitnami/postgresql"
 
-  services-edu-connector-service:
-    image: "${docker.repository}/${docker.prefix}-service:${docker.tag}"
-    container_name: "services-edu-connector-service_${COMPOSE_PROJECT_NAME}"
+  services-connector-database:
+    image: "${docker.registry}/${docker.common}/${docker.edu_sharing.community.common.postgresql.name}:${docker.edu_sharing.community.common.postgresql.tag}"
+    container_name: "services-connector-database_${COMPOSE_PROJECT_NAME}"
     environment:
-      PROT_EXTERNAL: "${SERVICES_EDU_CONNECTOR_PROT_EXTERNAL:-http}"
-      HOST_EXTERNAL: "${SERVICES_EDU_CONNECTOR_HOST_EXTERNAL:-edu.connector.127.0.0.1.nip.io}"
-      PORT_EXTERNAL: "${SERVICES_EDU_CONNECTOR_PORT_EXTERNAL:-9200}"
-      PATH_EXTERNAL: "${SERVICES_EDU_CONNECTOR_PATH_EXTERNAL:-}"
-      DATABASE_TYPE: pgsql
-      DATABASE_HOST: services-edu-connector-database
-      DATABASE_PORT: "5432"
-      DATABASE_NAME: "${SERVICES_EDU_CONNECTOR_DATABASE_NAME:-connector}"
-      DATABASE_USER: "${SERVICES_EDU_CONNECTOR_DATABASE_USER:-connector}"
-      DATABASE_PASSWORD: "${SERVICES_EDU_CONNECTOR_DATABASE_PASS:-connector}"
-      ONLYOFFICE_DOCUMENT_SERVER: "${SERVICES_EDU_CONNECTOR_ONLYOFFICE_DOCUMENT_SERVER:-}"
-      ONLYOFFICE_PLUGIN_URL: "${SERVICES_EDU_CONNECTOR_ONLYOFFICE_PLUGIN_URL:-}"
-      ONLYOFFICE_FORCE_SAVE_ENABLED: "${SERVICES_EDU_CONNECTOR_ONLYOFFICE_FORCE_SAVE_ENABLED:-false}"
-      ONLYOFFICE_EDUSHARING_PLUGIN: "${SERVICES_EDU_CONNECTOR_ONLYOFFICE_EDUSHARING_PLUGIN:-false}"
-      ONLYOFFICE_EDUSHARING_PLUGIN_LABEL: "${SERVICES_EDU_CONNECTOR_ONLYOFFICE_EDUSHARING_PLUGIN_LABEL:-}"
-      ONLYOFFICE_EDUSHARING_PLUGIN_ICON: "${SERVICES_EDU_CONNECTOR_ONLYOFFICE_EDUSHARING_PLUGIN_ICON:-}"
-      ONLYOFFICE_JWT_SECRET: "${SERVICES_EDU_CONNECTOR_ONLYOFFICE_JWT_SECRET:-}"
-      H5P_SUPPRESS_CLEANUP: "${SERVICES_EDU_CONNECTOR_H5P_SUPPRESS_CLEANUP:-false}"
-      UPLOAD_FILE_SIZE: "${SERVICES_EDU_CONNECTOR_UPLOAD_FILE_SIZE:-512M}"
-      POST_MAX_SIZE: "${SERVICES_EDU_CONNECTOR_POST_MAX_SIZE:-513M}"
-      MEMORY_LIMIT: "${SERVICES_EDU_CONNECTOR_MEMORY_LIMIT:-1024M}"
-      MOODLE_BASE_DIR: "${SERVICES_EDU_CONNECTOR_MOODLE_BASE_DIR:-}"
-      MOODLE_TOKEN: "${SERVICES_EDU_CONNECTOR_MOODLE_TOKEN:-}"
+      POSTGRESQL_DATABASE: "${SERVICES_CONNECTOR_DATABASE_NAME:-connector}"
+      POSTGRESQL_POSTGRES_PASSWORD: "${SERVICES_CONNECTOR_DATABASE_PASS:-connector}"
+      POSTGRESQL_PASSWORD: "${SERVICES_CONNECTOR_DATABASE_PASS:-connector}"
+      POSTGRESQL_USERNAME: "${SERVICES_CONNECTOR_DATABASE_USER:-connector}"
+    expose:
+      - "5432"
+    shm_size: 256m
     volumes:
-      - "services-edu-connector-data:/var/data"
-    depends_on:
-      - services-edu-connector-database
+      - "services-connector-database-volume-data:/bitnami/postgresql"
+
+  services-connector-service:
+    image: "${docker.repository}/${docker.prefix}-deploy-docker-build-service:${docker.tag}"
+    container_name: "services-connector-service_${COMPOSE_PROJECT_NAME}"
+    environment:
+      SERVICES_CONNECTOR_SERVICE_PROT_EXTERNAL: "${SERVICES_CONNECTOR_SERVICE_PROT:-http}"
+      SERVICES_CONNECTOR_SERVICE_HOST_EXTERNAL: "${SERVICES_CONNECTOR_SERVICE_HOST:-connector.services.127.0.0.1.nip.io}"
+      SERVICES_CONNECTOR_SERVICE_PORT_EXTERNAL: "${SERVICES_CONNECTOR_SERVICE_PORT:-9300}"
+      SERVICES_CONNECTOR_SERVICE_PATH_EXTERNAL: "${SERVICES_CONNECTOR_SERVICE_PATH:-}"
+      SERVICES_CONNECTOR_DATABASE_HOST: services-connector-database
+      SERVICES_CONNECTOR_DATABASE_PORT: "5432"
+      SERVICES_CONNECTOR_DATABASE_NAME: "${SERVICES_CONNECTOR_DATABASE_NAME:-connector}"
+      SERVICES_CONNECTOR_DATABASE_USER: "${SERVICES_CONNECTOR_DATABASE_USER:-connector}"
+      SERVICES_CONNECTOR_DATABASE_PASS: "${SERVICES_CONNECTOR_DATABASE_PASS:-connector}"
+      SERVICES_CONNECTOR_ONLYOFFICE_DOCUMENT_SERVER: "${SERVICES_CONNECTOR_ONLYOFFICE_DOCUMENT_SERVER:-}"
+      SERVICES_CONNECTOR_ONLYOFFICE_PLUGINS: "${SERVICES_CONNECTOR_ONLYOFFICE_PLUGINS:-true}"
+      SERVICES_CONNECTOR_ONLYOFFICE_FORCE_SAVE_ENABLED: "${SERVICES_CONNECTOR_ONLYOFFICE_FORCE_SAVE_ENABLED:-false}"
+      SERVICES_CONNECTOR_ONLYOFFICE_EDUSHARING_PLUGIN: "${SERVICES_CONNECTOR_ONLYOFFICE_EDUSHARING_PLUGIN:-false}"
+      SERVICES_CONNECTOR_ONLYOFFICE_EDUSHARING_PLUGIN_LABEL: "${SERVICES_CONNECTOR_ONLYOFFICE_EDUSHARING_PLUGIN_LABEL:-}"
+      SERVICES_CONNECTOR_ONLYOFFICE_EDUSHARING_PLUGIN_ICON: "${SERVICES_CONNECTOR_ONLYOFFICE_EDUSHARING_PLUGIN_ICON:-}"
+      SERVICES_CONNECTOR_ONLYOFFICE_JWT_SECRET: "${SERVICES_CONNECTOR_ONLYOFFICE_JWT_SECRET:-}"
+      SERVICES_CONNECTOR_H5P_SUPPRESS_CLEANUP: "${SERVICES_CONNECTOR_H5P_SUPPRESS_CLEANUP:-false}"
+      SERVICES_CONNECTOR_SERVICE_UPLOAD_FILE_SIZE: "${SERVICES_CONNECTOR_SERVICE_UPLOAD_FILE_SIZE:-512M}"
+      SERVICES_CONNECTOR_SERVICE_POST_MAX_SIZE: "${SERVICES_CONNECTOR_SERVICE_POST_MAX_SIZE:-513M}"
+      SERVICES_CONNECTOR_SERVICE_MEMORY_LIMIT: "${SERVICES_CONNECTOR_SERVICE_MEMORY_LIMIT:-1024M}"
+    expose:
+      - "8080"
     ports:
-      - "${COMMON_BIND_HOST:-127.0.0.1}:${SERVICES_EDU_CONNECTOR_PORT_HTTP:-9200}:80"
+      - "${COMMON_BIND_HOST:-127.0.0.1}:${SERVICES_CONNECTOR_SERVICE_PORT:-9300}:8081"
+    volumes:
+      - "services-connector-service-volume-data:/var/data"
+    depends_on:
+      - services-connector-database
 
-  services-edu-connector-service-init:
-    image: "${docker.repository}/${docker.prefix}-service:${docker.tag}"
-    container_name: "services-edu-connector-service-init_${COMPOSE_PROJECT_NAME}"
+  services-connector-service-init:
+    image: "${docker.repository}/${docker.prefix}-deploy-docker-build-service:${docker.tag}"
+    container_name: "services-connector-service-init_${COMPOSE_PROJECT_NAME}"
     entrypoint: ["init.sh"]
     environment:
-      DEBUG: "true"
-      CONNECTOR_INTERNAL_HOST: services-edu-connector-service
-      CONNECTOR_INTERNAL_PORT: "80"
-      REPOSITORY_SERVICE_PROT: "http"
+      SERVICES_CONNECTOR_SERVICE_HOST_INTERNAL: services-connector-service
+      SERVICES_CONNECTOR_SERVICE_PORT_INTERNAL: "8080"
       REPOSITORY_SERVICE_HOST: repository-service
       REPOSITORY_SERVICE_PORT: "8080"
-      REPOSITORY_SERVICE_PATH: "/edu-sharing"
       REPOSITORY_SERVICE_ADMIN_PASS: "${REPOSITORY_SERVICE_ADMIN_PASS:-admin}"
     depends_on:
-      - services-edu-connector-service
+      - services-connector-service
 
 volumes:
-  services-edu-connector-database-data:
-  services-edu-connector-data:
+  services-connector-database-volume-data:
+  services-connector-service-volume-data:
