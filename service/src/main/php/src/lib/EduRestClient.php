@@ -3,6 +3,7 @@
 namespace connector\lib;
 
 use connector\tools\h5p\H5PFramework;
+use EduSharingApiClient\AppAuthException;
 use EduSharingApiClient\EduSharingAuthHelper;
 use EduSharingApiClient\EduSharingHelperBase;
 
@@ -331,9 +332,8 @@ class EduRestClient
         return in_array('Write', $perm) && !property_exists($node->node->properties, 'ccm:published_original');
     }
 
-    public function getUser()
-    {
-        $ch = curl_init($this->getApiUrl() . 'iam/v1/people/-home-/-me-');
+    public function getUser() {
+        $ch      = curl_init($this->getApiUrl() . 'iam/v1/people/-home-/-me-');
         $headers = $this->getHeaders();
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -355,5 +355,34 @@ class EduRestClient
         throw new \Exception('Error fetching person', $httpcode);
     }
 
+    /**
+     * @throws AppAuthException
+     */
+    public function getTicket(): string {
+        $cacheKey = 'ticket';
+        $cacheTimeKey = 'ticket_ts';
 
+        if (
+            isset($_SESSION[$this->connectorId][$cacheKey], $_SESSION[$this->connectorId][$cacheTimeKey]) &&
+            (time() - (int)$_SESSION[$this->connectorId][$cacheTimeKey]) < 300
+        ) {
+            return $_SESSION[$this->connectorId][$cacheKey];
+        }
+
+        $additionalFields = [
+            'firstName' => $_SESSION[$this->connectorId]['user']->profile->lastName,
+            'lastName'  => $_SESSION[$this->connectorId]['user']->profile->lastName,
+            'email'     => $_SESSION[$this->connectorId]['user']->profile->email,
+        ];
+
+        $ticket = $this->authHelper->getTicketForUser(
+            $_SESSION[$this->connectorId]['user']->userName,
+            $additionalFields
+        );
+
+        $_SESSION[$this->connectorId][$cacheKey] = $ticket;
+        $_SESSION[$this->connectorId][$cacheTimeKey] = time();
+
+        return $ticket;
+    }
 }
