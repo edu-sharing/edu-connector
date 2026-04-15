@@ -6,6 +6,10 @@ use connector\tools\h5p\H5PFramework;
 use EduSharingApiClient\AppAuthException;
 use EduSharingApiClient\EduSharingAuthHelper;
 use EduSharingApiClient\EduSharingHelperBase;
+use EduSharingApiClient\EduSharingNodeHelper;
+use EduSharingApiClient\EduSharingNodeHelperConfig;
+use EduSharingApiClient\SecuredNode;
+use EduSharingApiClient\UrlHandling;
 
 define('APPID', 'educonnector');
 
@@ -14,6 +18,7 @@ class EduRestClient
     private $connectorId = '';
     private $authHeader = '';
     private EduSharingAuthHelper $authHelper;
+    private EduSharingNodeHelper $nodeHelper;
 
     public function __construct($connectorId) {
         $this->connectorId = $connectorId;
@@ -21,12 +26,14 @@ class EduRestClient
         $privateKeyString = file_get_contents(DATA . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'private.key');
         // remove /rest/ from end
         $apiUrl = substr($this->getApiUrl(), 0, -6);
-        $basehelper  = new EduSharingHelperBase(
+        $baseHelper  = new EduSharingHelperBase(
             $apiUrl,
             $privateKeyString,
             APPID
         );
-        $this->authHelper = new EduSharingAuthHelper($basehelper);
+        $nodeConfig       = new EduSharingNodeHelperConfig(new UrlHandling(false));
+        $this->authHelper = new EduSharingAuthHelper($baseHelper);
+        $this->nodeHelper = new EduSharingNodeHelper($baseHelper, $nodeConfig);
     }
 
     private function getHeaders() {
@@ -384,5 +391,13 @@ class EduRestClient
         $_SESSION[$this->connectorId][$cacheTimeKey] = time();
 
         return $ticket;
+    }
+
+    /**
+     * @throws \JsonException
+     * @throws AppAuthException
+     */
+    public function getSecuredNode(string $nodeId, string $repoId): SecuredNode {
+        return $this->nodeHelper->getSecuredNode($this->getTicket(), $nodeId, $repoId);
     }
 }
