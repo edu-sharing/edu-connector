@@ -137,11 +137,19 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
         }
 
     };
-    window.Asc.plugin.button = async function (id) {
-
-        if (id !== 0 || !nodeID) {
+    window.Asc.plugin.button = function (id) {
+        if (id !== 0) {
+            // button id 0 is ok
+            // button id 1 is cancel
             this.executeCommand("close", "");
+            return;
         }
+
+        if ((typeof nodeID === "undefined" || !nodeID)) {
+            this.executeCommand("close", "");
+            return;
+        }
+
 
         const _info = window.Asc.plugin.info;
         const _method = (_info.objectId === undefined) ? "AddOleObject" : "EditOleObject";
@@ -177,7 +185,8 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
             window.Asc.plugin.executeCommand("command", "");
         });
 
-        let authorText = nodeAuthors ? ' ' + window.Asc.plugin.tr("by_author") + ' ' + nodeAuthors : '';
+
+        let authorText = nodeAuthors ? ` ${window.Asc.plugin.tr("by_author")} ${nodeAuthors}  ` : '  ';
         var text = changeBranding('edu-sharing: ' + nodeTitle + authorText);
         var eduIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHCUExURTFip8LH5MHG44CSxYCRxYCSxIGSxcHG5HqMwr7E4r3C4fn6/CVZotLW6sDF4+fp83+QxMLG4y1fpYunzr/E4r/F4r/I4XiLwSRYotHY6iRYoXmLwoGSxniKwfDx99LX5d3h7zBip8DP5NHV6naIwLO93PT3+niLwCBVn0Rwr36PxHeKwevt9e3v9XmMwvT1+TZmqenu9d7m8Jmx0+nu9jBhpsPS5cbN5HuNws/W6cLQ5MjV536cx3aWxM3R6PL1+bvB4cHG4nSHv97i8JKgxy1fpvn5+dLV6uLm8S9gpnybxypdpCtdpGKIvHyOwsrP5xpRniZZotre7oqmzcLI4+Pl8XeKwOzu9klzsd7j74CRxIShyu7w9/j5/MPR5dba7NHc6tjd7Zuz1CVYorDD3a3A29PW6tDT6b/F48bL5XyOwx5Tn8LH4zhnqsTS5tDX6Shco4eXyOHo8r7E4efq83yNwyhbo3+Rw2OHvClcpJakz7W/3dPZ6sPS5r7D4o2dyoumzcHH47/E49ve7svQ59DW6IqZxMTM46iz1r3D4rzF4MLI5MXK5CBVoPL0+b7H4SdaomOIvH+Rxdjc53qMwQAAAM1wQbgAAACWdFJOU///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////AGkSznoAAAEmSURBVHjaVNFVb8NQDAXgC0maJmXu2o6ZmbeOmZmZmZmZ2f93N520pn78pGMd2QggI6Zer583QnAQwFyFTauVXmQ19m8TQjB57FLjjQ0zxKQyPIi9kiKEmLXlQUy7NLAwxvisGgreHY6nEyV+LZkZ4YV2uK3q8yXE7qcylBevNBqisY+MnrfxAqXpD0olo2Gl59k+DsdOynsFgYoR6H/74O4XN+TlBH7pjqG8NpZ/Gp27Q02UpxxHC2sYTiXuHW68HsC9h+OZmZK/EWxlWhBCUdMzcCQyFXxxdQjKdEiZliR/pNMj/qRsvgEqbs4LIAprgsl1t7uogZWfdf0Z6vxUHaT1I2CW1WwVTtQ2BtI5IUcu7XDpdMsD8SGY1X1htQ6XqN7xK8AAYpOAIExuNXEAAAAASUVORK5CYII=';
         Asc.scope.text = text;
@@ -192,9 +201,17 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
             oDocument.MoveCursorRight(1);
 
             var oParagraph = Api.CreateParagraph();
-            oParagraph.AddLineBreak();
-            //var oDrawing = Api.CreateImage(Asc.scope.img, 6000, 6000);
-            //oParagraph.AddDrawing(oDrawing);
+
+            // spacer will add a smaller linebreak between ole object and text/license
+            var spacerParagraph = Api.CreateParagraph()
+            var spacer = Api.CreateRun();
+            spacerParagraph.SetFontSize(1);
+            spacer.SetFontSize(1);
+            spacer.AddText(" ");
+            spacer.AddLineBreak();
+            spacerParagraph.AddElement(spacer);
+
+
             var oRun = Api.CreateRun();
             oRun.SetFontSize(24);
             oRun.SetHighlight(221, 221, 221);
@@ -202,34 +219,39 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
             oRun.AddText(Asc.scope.text);
             oParagraph.AddElement(oRun);
 
+
             // 16pt font-size * 12700 ~ pt -> EMU (english metric unit)
             const fontsize = 16;
             let width = fontsize * 12700;
             let height = fontsize * 12700;
 
-            var img = Api.CreateImage(Asc.scope.nodeLicenseIcon, width, height)
-            oParagraph.AddDrawing(img);
+            var oLicenseImg = Api.CreateImage(Asc.scope.nodeLicenseIcon, width, height)
+
+            oParagraph.AddDrawing(oLicenseImg);
+
+
             // oParagraph.AddHyperlink(Asc.scope.nodeLicenseUrl)
-            oDocument.InsertContent([oParagraph]);
+            oDocument.InsertContent([spacerParagraph, oParagraph]);
 
 
             new Promise((resolve, reject) => {
                 try {
-                    const img2 = new Image()
-                    img2.onload = () => {
-                        Asc.scope.nodeLicenseIconRatio = img2.width / img2.height
+                    const img = new Image()
+                    img.onload = () => {
+                        Asc.scope.nodeLicenseIconRatio = img.width / img.height
                         resolve(Asc.scope.nodeLicenseIconRatio)
                     }
-                    img2.src = Asc.scope.nodeLicenseIcon
+                    img.src = Asc.scope.nodeLicenseIcon
                 } catch (e) {
-                    reject(e)
+                    resolve(-1)
                 }
             }).then((r) => {
-                width = fontsize * Asc.scope.nodeLicenseIconRatio * 12700;
-                //height = fontsize * 12700;
-                const allDrawingObjects = oParagraph.GetAllDrawingObjects()
-                const lastDrawing = allDrawingObjects[allDrawingObjects.length - 1]
-                img.SetSize(width, height)
+                if (r > 0) {
+                    // only resize if ratio is positive
+                    width = fontsize * Asc.scope.nodeLicenseIconRatio * 12700;
+                    oLicenseImg.SetSize(width, height)
+                }
+
             })
 
 
