@@ -3,91 +3,184 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
 ?>
 (function (window, undefined) {
     let repoConfig, viewEduObject;
-    function changeBranding(string){
+
+    function changeBranding(string) {
         return string.replace('${brandingName}', repoConfig?.brandingName || 'edu-sharing');
     }
+
     window.Asc.plugin.init = function (objectData) {
-        if(objectData) {
+        if (objectData) {
             objectData = JSON.parse(objectData);
         }
-        document.getElementById("textbox_button").onclick = function(e){
+        document.getElementById("textbox_button").onclick = function (e) {
 
-            if (!viewEduObject){
+            if (!viewEduObject) {
                 document.getElementById("eduViewer").innerHTML = '<div id="content"></div>';
                 viewEduObject = true;
                 window.Asc.plugin.resizeWindow(620, 480);
             }
 
-            const inline = 	'<div class="eduContainer" data-type="esObject">' +
+            const inline = '<div class="eduContainer" data-type="esObject">' +
                 '<div class="edusharing_spinner_inner"><div class="edusharing_spinner1"></div></div>' +
-                '<div class="edusharing_spinner_inner"><div class="edusharing_spinner2"></div></div>'+
+                '<div class="edusharing_spinner_inner"><div class="edusharing_spinner2"></div></div>' +
                 '<div class="edusharing_spinner_inner"><div class="edusharing_spinner3"></div></div>' +
                 '</div>';
 
             document.getElementById("content").innerHTML = inline;
 
             const windowHeight = (620 * objectData.nodeHeight) / objectData.nodeWidth;
-            window.Asc.plugin.resizeWindow(620, parseInt( windowHeight, 10 ) + 150);
+            window.Asc.plugin.resizeWindow(620, parseInt(windowHeight, 10) + 150);
         };
-        window.document.getElementById("repo_btn").onclick = function(e){
+        window.document.getElementById("repo_btn").onclick = function (e) {
             open_repo();
         }
 
         const pluginRef = this;
         fetch("repo_config.php?id=<?php echo $id; ?>")
             .then(response => response.json())
-            .then(function(response) {
+            .then(function (response) {
                 repoConfig = response;
-                if(objectData && objectData.id) {
-                    getRenderData(objectData);
-                    document.getElementById("repoMenu").style.display = "none";
+                if (objectData && objectData.id) {
+                    getRenderData(objectData).then(() => {
+
+                        document.getElementById("repoMenu").style.display = "none";
+
+                    });
                 }
-                if (!(objectData.url == "" || objectData.url == null)){
+                if (!(objectData.url == "" || objectData.url == null)) {
                     document.getElementById("textbox_button").onclick();
                 }
 
             });
 
+        async function checkRenderer2() {
+            try {
+                const response = await fetch(repoConfig.repoUrl + 'rest/_about');
+                const jsonResponse = await response.json()
 
-        function getRenderData(objectData) {
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", repoConfig.repoUrl + "rest/rendering/v1/details/"+objectData.nodeRepo+"/"+objectData.id+'?displayMode=inline', true);
-            xhr.setRequestHeader("Content-type", "application/json");
-            xhr.setRequestHeader("Accept", "application/json");
-            xhr.crossDomain = true;
-            xhr.withCredentials = true;
-            xhr.setRequestHeader("Authorization", "EDU-TICKET " + repoConfig.ticket);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status === 200) {
-                    const response = JSON.parse(xhr.response);
-
-                    const renderData = response.detailsSnippet.replace('{{{LMS_INLINE_HELPER_SCRIPT}}}&closeOnBack=true', objectData.nodePermaLink);
-                    const eduObject = '<div id="eduContainer" class="eduContainer" data-type="esObject" data-url="' +
-                        '?mimetype=' + objectData.nodeMimeType +
-                        '&caption=' + objectData.nodeCaption +
-                        '&width=' + objectData.nodeWidth +
-                        '">' + renderData + '</div>';
-                    document.getElementById("content").innerHTML = eduObject;
+                if (jsonResponse.renderingService2.url) {
+                    window.__env = {
+                        EDU_SHARING_API_URL: repoConfig.repoUrl + "/rest"
+                    }
+                    return true;
+                } else {
+                    return false;
                 }
+            } catch (e) {
+                // console.log(e);
+                return false;
             }
-            //xhr.send('{"width":"'+ objectData.nodeWidth +'"}');
-            xhr.send('{"width":"'+ 620 +'"}');
+
         }
 
-//open the repo & get data
+        async function getRenderData(objectData) {
+            function loadRenderer1() {
+                let xhr = new XMLHttpRequest();
+                xhr.open("POST", repoConfig.repoUrl + "rest/rendering/v1/details/" + objectData.nodeRepo + "/" + objectData.id + '?displayMode=inline', true);
+                xhr.setRequestHeader("Content-type", "application/json");
+                xhr.setRequestHeader("Accept", "application/json");
+                xhr.crossDomain = true;
+                xhr.withCredentials = true;
+                xhr.setRequestHeader("Authorization", "EDU-TICKET " + repoConfig.ticket);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status === 200) {
+                        const response = JSON.parse(xhr.response);
+
+                        const renderData = response.detailsSnippet.replace('{{{LMS_INLINE_HELPER_SCRIPT}}}&closeOnBack=true', objectData.nodePermaLink);
+                        const eduObject = '<div id="eduContainer" class="eduContainer" data-type="esObject" data-url="' +
+                            '?mimetype=' + objectData.nodeMimeType +
+                            '&caption=' + objectData.nodeCaption +
+                            '&width=' + objectData.nodeWidth +
+                            '">' + renderData + '</div>';
+                        document.getElementById("content").innerHTML = eduObject;
+                    }
+                }
+                //xhr.send('{"width":"'+ objectData.nodeWidth +'"}');
+                xhr.send('{"width":"' + 620 + '"}');
+            }
+
+            async function loadRenderer2() {
+                const mainScript = document.createElement('script')
+                mainScript.type = "module"
+                mainScript.src = repoConfig.repoUrl + 'web-components/rendering-service/main.js'
+
+                const styleScript = document.createElement('link')
+                styleScript.rel = "stylesheet"
+                styleScript.href = repoConfig.repoUrl + 'web-components/rendering-service/styles.css'
+
+                document.body.appendChild(mainScript)
+                document.body.appendChild(styleScript)
+
+
+                const serviceWorkerScript = "./service_worker.php?id=<?php echo $id; ?>"
+
+                if ('serviceWorker' in navigator) {
+                    await navigator.serviceWorker.register(serviceWorkerScript, {
+                        scope: '/'
+                    })
+                    await navigator.serviceWorker.ready
+                }
+
+                const nodeId = objectData.id;
+                const repoId = objectData.nodeRepo;
+
+                const securedNodeUrl = `${repoConfig.repoUrl}rest/node/v1/nodes/${repoId}/${nodeId}/metadata/secured?ticket=${repoConfig.ticket}`;
+                const rawResponse = await fetch(securedNodeUrl, {credentials: 'include'});
+                const response = await rawResponse.json();
+
+                const renderComponent = document.createElement('edu-sharing-render');
+                renderComponent.classList.add('edu-sharing-render');
+                renderComponent.encoded_node = response.signedNode;
+                renderComponent.signature = response.signature;
+                renderComponent.jwt = response.jwt;
+                renderComponent.render_url = response.renderingBaseUrl;
+                //renderComponent.encoded_user = btoa(JSON.stringify(eduUser));
+                renderComponent.service_worker_url = '';
+                renderComponent.activate_service_worker = false;
+                renderComponent.assets_url = repoConfig.repoUrl + '/web-components/rendering-service/assets';
+                renderComponent.resource_url = objectData.nodePermaLink;
+                renderComponent.preview_url = objectData.nodePreviewUrl;
+
+                const contentHeight = 600; // px
+                const footerHeight = 60;
+
+                renderComponent.target_blank = true;
+                renderComponent.component_height = contentHeight;
+                renderComponent.footer_height = footerHeight;
+
+                window.Asc.plugin.resizeWindow(620, contentHeight + footerHeight);
+
+
+                let contentElement = document.getElementById("content");
+                contentElement.innerHTML = ''
+                contentElement.appendChild(renderComponent);
+
+
+            }
+
+            let renderer2Active = await checkRenderer2()
+
+            if (renderer2Active) {
+                await loadRenderer2();
+            } else {
+                loadRenderer1();
+            }
+
+        }
+
+        //open the repo & get data
         function open_repo() {
             //Window-Event-Listener gets the Objects data and sets the usage
             window.addEventListener('message', function handleRepo(event) {
                 if (event.data.event == "APPLY_NODE") {
                     const node = event.data.data;
                     window.win.close();
-
                     nodeID = node.ref.id;
                     nodePreviewUrl = node.preview.url;
-                    if(!node.properties["ccm:height"]){
+                    if (!node.properties["ccm:height"]) {
                         nodeWidth = 266;
                         nodeHeight = 200;
-                    }else{
+                    } else {
                         nodeWidth = node.properties["ccm:width"][0];
                         nodeHeight = node.properties["ccm:height"][0];
                     }
@@ -159,7 +252,6 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
             height = (150 * height) / width;
             width = 150;
         }
-
         const _param = {
             guid: _info.guid,
             width: _info.width ? _info.width : parseInt(width, 10),
