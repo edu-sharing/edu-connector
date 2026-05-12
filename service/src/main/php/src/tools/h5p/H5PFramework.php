@@ -1234,4 +1234,8 @@ class H5PFramework implements \H5PFrameworkInterface
     public function setForceLibraryLoad(bool $forceLibraryLoad): void {
         $this->forceLibraryLoad = $forceLibraryLoad;
     }
+
+    public function resetHubOrganizationData() {
+        // TODO: Implement resetHubOrganizationData() method.
+    }
 }
