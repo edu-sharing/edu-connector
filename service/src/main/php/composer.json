@@ -34,7 +34,7 @@
     "twig/twig": "^1.0",
     "slim/twig-view": "2.3",
     "tinymce/tinymce": "5.10.3",
-    "h5p/h5p-core": "1.27.*",
+    "h5p/h5p-core": "1.28.*",
     "h5p/h5p-editor": "1.25",
     "mobiledetect/mobiledetectlib": "^4.8.09",
     "edu-sharing/auth-plugin": "10.0.x-dev"
