@@ -279,7 +279,7 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
 
 
         let authorText = nodeAuthors ? ` ${window.Asc.plugin.tr("by_author")} ${nodeAuthors}  ` : '  ';
-        var text = changeBranding('edu-sharing: ' + nodeTitle + authorText);
+        var text = nodeTitle + authorText;
         var eduIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHCUExURTFip8LH5MHG44CSxYCRxYCSxIGSxcHG5HqMwr7E4r3C4fn6/CVZotLW6sDF4+fp83+QxMLG4y1fpYunzr/E4r/F4r/I4XiLwSRYotHY6iRYoXmLwoGSxniKwfDx99LX5d3h7zBip8DP5NHV6naIwLO93PT3+niLwCBVn0Rwr36PxHeKwevt9e3v9XmMwvT1+TZmqenu9d7m8Jmx0+nu9jBhpsPS5cbN5HuNws/W6cLQ5MjV536cx3aWxM3R6PL1+bvB4cHG4nSHv97i8JKgxy1fpvn5+dLV6uLm8S9gpnybxypdpCtdpGKIvHyOwsrP5xpRniZZotre7oqmzcLI4+Pl8XeKwOzu9klzsd7j74CRxIShyu7w9/j5/MPR5dba7NHc6tjd7Zuz1CVYorDD3a3A29PW6tDT6b/F48bL5XyOwx5Tn8LH4zhnqsTS5tDX6Shco4eXyOHo8r7E4efq83yNwyhbo3+Rw2OHvClcpJakz7W/3dPZ6sPS5r7D4o2dyoumzcHH47/E49ve7svQ59DW6IqZxMTM46iz1r3D4rzF4MLI5MXK5CBVoPL0+b7H4SdaomOIvH+Rxdjc53qMwQAAAM1wQbgAAACWdFJOU///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////AGkSznoAAAEmSURBVHjaVNFVb8NQDAXgC0maJmXu2o6ZmbeOmZmZmZmZ2f93N520pn78pGMd2QggI6Zer583QnAQwFyFTauVXmQ19m8TQjB57FLjjQ0zxKQyPIi9kiKEmLXlQUy7NLAwxvisGgreHY6nEyV+LZkZ4YV2uK3q8yXE7qcylBevNBqisY+MnrfxAqXpD0olo2Gl59k+DsdOynsFgYoR6H/74O4XN+TlBH7pjqG8NpZ/Gp27Q02UpxxHC2sYTiXuHW68HsC9h+OZmZK/EWxlWhBCUdMzcCQyFXxxdQjKdEiZliR/pNMj/qRsvgEqbs4LIAprgsl1t7uogZWfdf0Z6vxUHaT1I2CW1WwVTtQ2BtI5IUcu7XDpdMsD8SGY1X1htQ6XqN7xK8AAYpOAIExuNXEAAAAASUVORK5CYII=';
         Asc.scope.text = text;
         Asc.scope.img = eduIcon;
