@@ -194,7 +194,7 @@ class EduRestClient
 
     private function getTicketHeader() {
         $additionalfields = [
-            'firstName' => $_SESSION[$this->connectorId]['user']->profile->lastName,
+            'firstName' => $_SESSION[$this->connectorId]['user']->profile->firstName,
             'lastName'  => $_SESSION[$this->connectorId]['user']->profile->lastName,
             'email'     => $_SESSION[$this->connectorId]['user']->profile->email,
         ];
