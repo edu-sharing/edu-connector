@@ -25,7 +25,7 @@ class TinyMce extends \connector\lib\Tool {
             $_SESSION[$this->connectorId]['content'] = $data;
         }
 
-        if (in_array('Write', $node->node->access)) {
+        if ($this->apiClient->isWritable($node)) {
             $_SESSION[$this->connectorId]['readonly'] = 0;
             $this->apiClient->createTextContent($_SESSION[$this->connectorId]['node'], $_SESSION[$this->connectorId]['content'], $node->node->mimetype, 'EDITOR_UPLOAD,TINYMCE');
         } else {

@@ -13,10 +13,10 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>edu_sharing-community-services-connector-deploy-docker-helm-tracker</artifactId>
+  <artifactId>edu_sharing-community-services-connector-deploy-docker-helm-service</artifactId>
   <packaging>jar</packaging>
 
-  <name>edu_sharing-community-services-connector-deploy-docker-helm-tracker</name>
+  <name>edu_sharing-community-services-connector-deploy-docker-helm-service</name>
 
   <build>
 
