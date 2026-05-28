@@ -67,6 +67,9 @@ class OnlyOffice extends \connector\lib\Tool {
         if ($this->isNewDocument) {
             $location .= '&initDoc=true';
         }
+        if (!empty($_SESSION[$this->connectorId]['preferEdit'])) {
+            $location .= '&requestEdit=true';
+        }
         header('Location: ' . $location);
         exit();
     }
