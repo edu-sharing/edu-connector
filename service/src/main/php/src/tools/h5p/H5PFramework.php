@@ -66,11 +66,14 @@ class H5PFramework implements \H5PFrameworkInterface
     public function fetchExternalData($url, $data = NULL, $blocking = TRUE, $stream = NULL, $fullData = FALSE, $headers = array(), $files = array(), $method = 'POST')
     {
         @set_time_limit(0);
+        // The H5P hub (hub-api.h5p.org) is WAF-fronted and rejects requests without a
+        // User-Agent with HTTP 403, so one must always be sent.
+        $userAgent = "User-Agent: edu-sharing-h5p-connector\r\n";
         if ($data !== NULL) {
             // Post
             $options = array(
                 'http' => array(
-                    'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+                    'header' => "Content-type: application/x-www-form-urlencoded\r\n" . $userAgent,
                     'method' => 'POST',
                     'content' => http_build_query($data)
                 )
@@ -78,7 +81,8 @@ class H5PFramework implements \H5PFrameworkInterface
             $context = stream_context_create($options);
             $response['body'] = file_get_contents($url, false, $context);
         } else {
-            $response['body'] = file_get_contents($url, false);
+            $context = stream_context_create(array('http' => array('header' => $userAgent)));
+            $response['body'] = file_get_contents($url, false, $context);
             file_put_contents($stream, $response['body']);
         }
         return empty($response['body']) ? NULL : $response['body'];
@@ -962,8 +966,12 @@ class H5PFramework implements \H5PFrameworkInterface
      */
     public function getOption($name, $default = NULL)
     {
-        return true;
-        // TODO: Implement getOption() method.
+        global $db;
+        $this->ensureOptionsTable();
+        $st = $db->prepare("SELECT value FROM h5p_options WHERE name = ?");
+        $st->execute(array($name));
+        $value = $st->fetchColumn();
+        return $value === FALSE ? $default : $value;
     }
 
     /**
@@ -977,7 +985,29 @@ class H5PFramework implements \H5PFrameworkInterface
      */
     public function setOption($name, $value)
     {
-        // TODO: Implement setOption() method.
+        global $db;
+        $this->ensureOptionsTable();
+        if ($db->getDriver() === 'pgsql') {
+            $query = "INSERT INTO h5p_options (name, value) VALUES (?, ?)
+                      ON CONFLICT (name) DO UPDATE SET value = EXCLUDED.value";
+        } else {
+            $query = "INSERT INTO h5p_options (name, value) VALUES (?, ?)
+                      ON DUPLICATE KEY UPDATE value = VALUES(value)";
+        }
+        $st = $db->prepare($query);
+        $st->execute(array($name, $value));
+    }
+
+    /**
+     * Make sure the key/value options table exists. Existing installations were
+     * created before this table was added to the DDL, so create it lazily.
+     */
+    private function ensureOptionsTable()
+    {
+        global $db;
+        $db->exec("CREATE TABLE IF NOT EXISTS h5p_options (
+            name varchar(191) PRIMARY KEY,
+            value text)");
     }
 
     /**
