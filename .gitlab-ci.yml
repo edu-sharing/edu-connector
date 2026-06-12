@@ -32,29 +32,6 @@ php security audit warnings:
     - /usr/local/bin/phpcs --standard=/usr/local/lib/composer/vendor/pheromone/phpcs-security-audit/example_base_ruleset.xml .
   allow_failure: true
 
-deploy_release:
-  image: php:latest
-  stage: deploy
-  artifacts:
-    name: "educonnector_release-$CI_PIPELINE_CREATED_AT-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
-    paths:
-      - ./service/src/main/php
-  before_script:
-    - apt-get update -yqq
-    - apt-get install -yqq git
-    # Install and run Composer
-    - cd service/src/main/php
-    - curl -sS https://getcomposer.org/installer | php
-    - php composer.phar install
-    - date=$(date --iso-8601=seconds)
-    - sed -i "s|#BUILD_DATE|$date|g" install/version_info.php
-    - sed -i "s|#BUILD_COMMIT|$CI_COMMIT_SHORT_SHA|g" install/version_info.php
-    - sed -i "s|#BUILD_BRANCH|$CI_COMMIT_REF_NAME|g" install/version_info.php
-  script:
-    - rm -rf .git/
-    - find ./vendor/ -name ".git" -exec rm -rf {} \; || true
-    - ls ./
-
 deploy:
   image: maven:3.8.4-jdk-8
   services:
