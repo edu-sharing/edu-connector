@@ -28,7 +28,7 @@ class OnlyOffice extends \connector\lib\Tool {
             try {
                 $originalId = $node->node->properties->{'ccm:original'}[0];
                 $originalNode = $this->apiClient->getNode($originalId);
-                if (in_array('Write', $originalNode->node->access)) {
+                if ($this->apiClient->isWritable($node)) {
                     $_SESSION[$this->connectorId]['edit'] = true;
                 } else {
                     $_SESSION[$this->connectorId]['edit'] = false;
@@ -40,7 +40,7 @@ class OnlyOffice extends \connector\lib\Tool {
                 return $node;
             }
         }
-        if (in_array('Write', $node->node->access)) {
+        if ($this->apiClient->isWritable($node)) {
             $_SESSION[$this->connectorId]['edit'] = true;
         } else {
             $_SESSION[$this->connectorId]['edit'] = false;
@@ -66,6 +66,9 @@ class OnlyOffice extends \connector\lib\Tool {
         $location = WWWURL . '/src/tools/onlyoffice/doceditor.php?id=' . $this->connectorId . '&ref=' . base64_encode($_SESSION[$this->connectorId]['node']->node->properties->{'virtual:permalink'}[0]);
         if ($this->isNewDocument) {
             $location .= '&initDoc=true';
+        }
+        if (!empty($_SESSION[$this->connectorId]['preferEdit'])) {
+            $location .= '&requestEdit=true';
         }
         header('Location: ' . $location);
         exit();

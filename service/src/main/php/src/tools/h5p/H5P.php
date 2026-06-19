@@ -85,7 +85,32 @@ class H5P extends \connector\lib\Tool {
                     $titleShow = $_SESSION[$this->connectorId]['node']->node->name;
                 }
 
-                $this->H5PStorage->savePackage(array('title' => $titleShow, 'disable' => 0));
+                $content = ['title' => $titleShow, 'disable' => 0];
+                $data = $this->H5PValidator->h5pC->mainJsonData;
+                if (!empty($data)) {
+                    $metadatafields = [
+                        'title',
+                        'a11yTitle',
+                        'changes',
+                        'authors',
+                        'source',
+                        'license',
+                        'licenseVersion',
+                        'licenseExtras',
+                        'authorComments',
+                        'yearFrom',
+                        'yearTo',
+                        'defaultLanguage',
+                    ];
+                    $content['metadata'] = array_reduce($metadatafields, function ($array, $field) use ($data) {
+                        if (array_key_exists($field, $data)) {
+                            $array[$field] = $data[$field];
+                        }
+                        return $array;
+                    }, []);
+                }
+
+                $this->H5PStorage->savePackage($content);
                 $content = $this->H5PCore->loadContent($this->H5PStorage->contentId);
                 $this->library = $this->H5PCore->libraryToString($content['library']);
 
