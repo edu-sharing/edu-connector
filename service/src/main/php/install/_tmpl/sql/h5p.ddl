@@ -83,3 +83,7 @@ CREATE TABLE h5p_libraries_hub_cache (
     patch_version integer NOT NULL,
     is_recommended integer NOT NULL,
     example varchar(511) NOT NULL);
+
+CREATE TABLE h5p_options (
+    name varchar(191) PRIMARY KEY,
+    value text);
