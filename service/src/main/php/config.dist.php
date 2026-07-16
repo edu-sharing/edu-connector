@@ -3,6 +3,8 @@
 /*general (without trailing slashes)*/
 define('VERSION', '');
 define('WWWURL', '');
+// comma separated list of additional hostnames/ips this connector is reachable as
+define('HOST_ALIASES', '');
 define('DOCROOT', '');
 define('DATA', '');
 
