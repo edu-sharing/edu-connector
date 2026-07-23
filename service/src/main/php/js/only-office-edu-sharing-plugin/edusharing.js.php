@@ -60,7 +60,7 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
 
                 if (jsonResponse.renderingService2.url) {
                     window.__env = {
-                        EDU_SHARING_API_URL: repoConfig.repoUrl + "/rest"
+                        EDU_SHARING_API_URL: repoConfig.repoUrl + "rest"
                     }
                     return true;
                 } else {
@@ -137,7 +137,7 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
                 //renderComponent.encoded_user = btoa(JSON.stringify(eduUser));
                 renderComponent.service_worker_url = '';
                 renderComponent.activate_service_worker = false;
-                renderComponent.assets_url = repoConfig.repoUrl + '/web-components/rendering-service/assets';
+                renderComponent.assets_url = repoConfig.repoUrl + 'web-components/rendering-service/assets';
                 renderComponent.resource_url = objectData.nodePermaLink;
                 renderComponent.preview_url = objectData.nodePreviewUrl;
 
@@ -221,7 +221,7 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
                 }
             }, false);
 
-            window.win = window.open(repoConfig.repoUrl + '/components/search?&applyDirectories=true&reurl=WINDOW&ticket=' + repoConfig.ticket);
+            window.win = window.open(repoConfig.repoUrl + 'components/search?&applyDirectories=true&reurl=WINDOW&ticket=' + repoConfig.ticket);
         }
 
         function scaleImage(scale) {
