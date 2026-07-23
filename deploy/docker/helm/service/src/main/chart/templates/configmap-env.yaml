@@ -22,6 +22,10 @@ data:
   SERVICES_CONNECTOR_H5P_SUPPRESS_CLEANUP: {{ .Values.config.h5p.cache.suppressCleanup | quote }}
   SERVICES_CONNECTOR_SERVICE_HOST_EXTERNAL: {{ .Values.ingress.hosts | first | quote }}
   SERVICES_CONNECTOR_SERVICE_HOST_INTERNAL: {{ include "edusharing_common_lib.names.name" . | quote }}
+  {{- with .Values.config.server.host.aliases }}
+  SERVICES_CONNECTOR_SERVICE_HOST_ALIASES: '{{- join "," . }}'
+  {{- end }}
+  SERVICES_CONNECTOR_SERVICE_HOST_ALLOW_INTERNAL_IP: {{ .Values.config.server.host.allowInternalIp | quote }}
   SERVICES_CONNECTOR_SERVICE_MEMORY_LIMIT: {{ .Values.config.server.memoryLimit | quote }}
   SERVICES_CONNECTOR_SERVICE_PATH_EXTERNAL: {{ if eq (.Values.ingress.paths | first) "/" -}}{{ "" | quote }}{{- else -}}{{ .Values.ingress.paths | first | quote }}{{- end }}
   SERVICES_CONNECTOR_SERVICE_PORT_EXTERNAL: {{ if .Values.ingress.tls }}"443"{{ else }}"80"{{ end }}

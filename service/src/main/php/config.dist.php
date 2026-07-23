@@ -5,6 +5,8 @@ define('VERSION', '');
 define('WWWURL', '');
 // comma separated list of additional hostnames/ips this connector is reachable as
 define('HOST_ALIASES', '');
+// if true, internal/private ip addresses are treated as trusted hosts by the repository
+define('HOST_ALLOW_INTERNAL_IP', false);
 define('DOCROOT', '');
 define('DATA', '');
 
