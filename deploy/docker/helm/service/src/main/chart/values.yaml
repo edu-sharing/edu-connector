@@ -267,6 +267,11 @@ config:
     password: ""
 
   server:
+    host:
+      ## @param config.server.host.aliases Set additional trusted host aliases (list of hostnames/ips) registered at the repository
+      aliases: []
+      ## @param config.server.host.allowInternalIp Treat internal/private ip addresses as trusted hosts at the repository
+      allowInternalIp: true
     ## @param config.server.memoryLimit Set memory limit for server
     memoryLimit: 1024M
     ## @param config.server.postMaxSize Set payload max size
