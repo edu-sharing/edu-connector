@@ -31,6 +31,7 @@ class EduRestClient
             $privateKeyString,
             APPID
         );
+        $baseHelper->registerSignatureHandler(new MySignatureHandler());
         $nodeConfig       = new EduSharingNodeHelperConfig(new UrlHandling(false));
         $this->authHelper = new EduSharingAuthHelper($baseHelper);
         $this->nodeHelper = new EduSharingNodeHelper($baseHelper, $nodeConfig);
@@ -42,7 +43,7 @@ class EduRestClient
         $cryptographer = new \connector\lib\Cryptographer();
         $privkey = $cryptographer->getPrivateKey();
         $pkeyid = openssl_get_privatekey($privkey);
-        openssl_sign($signdata, $signature, $pkeyid);
+        openssl_sign($signdata, $signature, $pkeyid,OPENSSL_ALGO_SHA512);
         $signature = base64_encode($signature);
         openssl_free_key($pkeyid);
 
@@ -51,6 +52,7 @@ class EduRestClient
             'X-Edu-App-Id:' . APPID,
             'X-Edu-App-Sig:'.$signature,
             'X-Edu-App-Signed:'.$signdata,
+            'X-Edu-App-SignedAlg:' . 'SHA512withRSA',
             'X-Edu-App-Ts:'.$timestamp,
             'Accept: application/json'
         );

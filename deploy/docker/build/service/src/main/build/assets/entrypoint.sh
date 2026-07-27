@@ -15,6 +15,11 @@ my_path_external="${SERVICES_CONNECTOR_SERVICE_PATH_EXTERNAL:-}"
 my_base_external="${my_prot_external}://${my_host_external}:${my_port_external}${my_path_external}";
 my_base_external=${my_base_external//\/&/\\&}
 
+my_host_aliases="${SERVICES_CONNECTOR_SERVICE_HOST_ALIASES:-}"
+my_host_aliases=${my_host_aliases//\/&/\\&}
+
+my_host_allow_internal_ip="${SERVICES_CONNECTOR_SERVICE_HOST_ALLOW_INTERNAL_IP:-false}"
+
 my_prot_internal="${SERVICES_RENDERING_SERVICE_PROT_INTERNAL:-http}"
 my_host_internal="${SERVICES_RENDERING_SERVICE_HOST_INTERNAL:-services-connector-service}"
 my_port_internal="${SERVICES_RENDERING_SERVICE_PORT_INTERNAL:-8080}"
@@ -117,6 +122,8 @@ conf="config.php"
 cp config.dist.php "${conf}"
 
 sed -i "s|define('WWWURL', '.*')|define('WWWURL', '${my_base_external}')|g" "${conf}"
+sed -i "s|define('HOST_ALIASES', '.*')|define('HOST_ALIASES', '${my_host_aliases}')|g" "${conf}"
+sed -i "s|define('HOST_ALLOW_INTERNAL_IP', .*)|define('HOST_ALLOW_INTERNAL_IP', ${my_host_allow_internal_ip})|g" "${conf}"
 sed -i "s|define('DOCROOT', '.*')|define('DOCROOT', '${ROOT}')|g" "${conf}"
 sed -i "s|define('DATA', '.*')|define('DATA', '${DATA}')|g" "${conf}"
 sed -i "s|define('LOG_MODE', '.*')|define('LOG_MODE', 'stdout')|g" "${conf}"
