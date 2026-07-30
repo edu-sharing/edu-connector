@@ -67,8 +67,10 @@ class EduRestClient
     }
 
     private function getApiUrl() {
-        if(defined('FORCED_APIURL') && FORCED_APIURL)
-            return FORCED_APIURL;
+        if(defined('FORCE_INTERN_COM') && FORCE_INTERN_COM) {
+            if (defined('FORCED_APIURL') && FORCED_APIURL)
+                return FORCED_APIURL;
+        }
         return $_SESSION[$this->connectorId]['api_url'];
     }
 

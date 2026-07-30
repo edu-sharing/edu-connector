@@ -10,6 +10,8 @@ data:
   CACHE_PORT: {{ .Values.config.cache.port | quote }}
   REPOSITORY_SERVICE_HOST: {{ .Values.config.repository.host | quote }}
   REPOSITORY_SERVICE_PORT: {{ .Values.config.repository.port | quote }}
+  SERVICES_CONNECTOR_REPOSITORY_FORCE_INTERN_COM: {{ .Values.config.repository.forceInternalCommunication | quote }}
+  SERVICES_CONNECTOR_REPOSITORY_FORCED_APIURL: {{ .Values.config.repository.apiUrl | quote }}
   SERVICES_CONNECTOR_DATABASE_HOST: {{ .Values.config.database.host | quote }}
   SERVICES_CONNECTOR_DATABASE_NAME: {{ .Values.config.database.database | quote }}
   SERVICES_CONNECTOR_DATABASE_PORT: {{ .Values.config.database.port | quote }}

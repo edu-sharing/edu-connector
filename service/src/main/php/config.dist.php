@@ -7,6 +7,12 @@ define('WWWURL', '');
 define('HOST_ALIASES', '');
 // if true, internal/private ip addresses are treated as trusted hosts by the repository
 define('HOST_ALLOW_INTERNAL_IP', false);
+// if true, content requests to the repository are routed via the internal api url
+define('FORCE_INTERN_COM', false);
+// fixed api url to communicate with the repository, only applied when FORCE_INTERN_COM is true
+// if not set, the (on-the-fly) provided public api of the repository itself will be used
+// e.g. http://repository-service:8080/edu-sharing/rest/
+define('FORCED_APIURL', '');
 define('DOCROOT', '');
 define('DATA', '');
 

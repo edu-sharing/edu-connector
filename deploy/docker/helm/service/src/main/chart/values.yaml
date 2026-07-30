@@ -263,6 +263,12 @@ config:
     host: edusharing-repository-service
     ## @param config.repository.port Set repository port
     port: 8080
+    ## @param config.repository.forceInternalCommunication Route content requests to the repository via the internal api url
+    forceInternalCommunication: true
+    ## Fixed api url to communicate with the repository. Only applied when forceInternalCommunication is true.
+    ## If not set, the (on-the-fly) provided public api of the repository itself will be used.
+    ## @param config.repository.apiUrl Set fixed repository api url, applied when forceInternalCommunication is true
+    apiUrl: http://edusharing-repository-service:8080/edu-sharing/rest/
     ## @param config.repository.password Set repository password
     password: ""
 
