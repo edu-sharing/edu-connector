@@ -23,6 +23,14 @@ class MetadataGenerator {
         $entry->addAttribute('key', 'public_key');
         $entry = $xml->addChild('entry', $_SERVER['SERVER_ADDR']);
         $entry->addAttribute('key', 'host');
+        if (defined('HOST_ALIASES') && HOST_ALIASES !== '') {
+            $entry = $xml->addChild('entry', HOST_ALIASES);
+            $entry->addAttribute('key', 'host_aliases');
+        }
+        if (defined('HOST_ALLOW_INTERNAL_IP') && HOST_ALLOW_INTERNAL_IP) {
+            $entry = $xml->addChild('entry', 'true');
+            $entry->addAttribute('key', 'host_allow_internal_ip');
+        }
         $entry = $xml->addChild('entry', WWWURL);
         $entry->addAttribute('key', 'contenturl');
         header('Content-type: text/xml');
