@@ -1,8 +1,13 @@
 <?php
 require_once __DIR__ . '/../../config.php';
 $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
+$phpsessid = preg_replace('/[^a-zA-Z0-9,-]/', '', $_GET['PHPSESSID'] ?? '');
 if (!defined("ONLYOFFICE_EDUSHARING_PLUGIN") || ONLYOFFICE_EDUSHARING_PLUGIN !== true) {
     die("ONLYOFFICE_EDUSHARING_PLUGIN is disabled");
+}
+// see repo_config.php: in the iframe the query parameter has to win over the session cookie
+if ($phpsessid !== '') {
+    session_id($phpsessid);
 }
 session_start();
 
@@ -10,6 +15,11 @@ header('Content-Type: text/javascript');
 header('Service-Worker-Allowed: /');
 header('Cache-Control: no-cache, no-store, must-revalidate');
 
+
+if (empty($_SESSION[$id]["api_url"])) {
+    http_response_code(500);
+    die('/* no session data for connector id ' . $id . ' */');
+}
 
 $apiUrl = str_replace("/rest", "", $_SESSION[$id]["api_url"]);
 

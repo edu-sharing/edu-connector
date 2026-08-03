@@ -398,7 +398,7 @@ class EduRestClient
      * @throws \JsonException
      * @throws AppAuthException
      */
-    public function getSecuredNode(string $nodeId, string $repoId): SecuredNode {
-        return $this->nodeHelper->getSecuredNode($this->getTicket(), $nodeId, $repoId);
+    public function getSecuredNode(string $nodeId, string $repoId, string $version = '-1'): SecuredNode {
+        return $this->nodeHelper->getSecuredNode($this->getTicket(), $nodeId, $repoId, $version);
     }
 }
