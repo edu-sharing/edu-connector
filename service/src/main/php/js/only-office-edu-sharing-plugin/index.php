@@ -1,5 +1,6 @@
 <?php
 $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
+$phpsessid = preg_replace('/[^a-zA-Z0-9,-]/', '', $_GET['PHPSESSID'] ?? '');
 ?>
 
 <!DOCTYPE html>
@@ -8,8 +9,8 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>edu-sharing</title>
 
-  <script type="text/javascript" src="plugins.js.php?id=<?php echo $id; ?>"></script>
-  <script type="text/javascript" src="edusharing.js.php?id=<?php echo $id; ?>"></script>
+  <script type="text/javascript" src="plugins.js.php?id=<?php echo $id; ?>&PHPSESSID=<?php echo $phpsessid; ?>"></script>
+  <script type="text/javascript" src="edusharing.js.php?id=<?php echo $id; ?>&PHPSESSID=<?php echo $phpsessid; ?>"></script>
 
   <link rel="stylesheet" href="edu-style.css" />
 

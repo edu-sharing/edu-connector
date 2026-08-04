@@ -273,7 +273,10 @@ $_SESSION['id_' . getDocEditorKey($id)] = $id;
                         //"asc.{b3a20a66-c974-4aa0-8bce-c691d00d558c}",
                     ],
                     "pluginsData" => [
+                        // pass the session id explicitly: the plugin runs in a third-party iframe
+                        // on the document server's origin, where the session cookie is not sent
                         WWWURL . "/js/only-office-edu-sharing-plugin/config.json.php?id=" . $id
+                            . "&" . session_name() . "=" . urlencode(session_id())
                     ],
                 ];
             }

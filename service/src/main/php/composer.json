@@ -30,14 +30,14 @@
   "require": {
     "monolog/monolog": "^1.22",
     "predis/predis": "v1.1.1",
-    "slim/slim": "3.8.1",
-    "twig/twig": "^1.0",
-    "slim/twig-view": "2.3",
-    "tinymce/tinymce": "5.10.3",
+    "slim/slim": "^3.13",
+    "twig/twig": "v3.28.0",
+    "slim/twig-view": "2.5.1",
+    "tinymce/tinymce": "8.8.2",
     "h5p/h5p-core": "1.28.*",
     "h5p/h5p-editor": "1.25",
     "mobiledetect/mobiledetectlib": "^4.8.09",
-    "edu-sharing/auth-plugin": "10.0.x-dev"
+    "edu-sharing/auth-plugin": "11.0.0"
   },
   "repositories": [
     {

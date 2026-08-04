@@ -1,5 +1,6 @@
 <?php
 $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
+$phpsessid = preg_replace('/[^a-zA-Z0-9,-]/', '', $_GET['PHPSESSID'] ?? '');
 ?>
 (function (window, undefined) {
     let repoConfig, viewEduObject;
@@ -36,9 +37,12 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
         }
 
         const pluginRef = this;
-        fetch("repo_config.php?id=<?php echo $id; ?>")
+        fetch("repo_config.php?id=<?php echo $id; ?>&PHPSESSID=<?php echo $phpsessid; ?>")
             .then(response => response.json())
             .then(function (response) {
+                if (!response || response.error) {
+                    throw new Error(response && response.error ? response.error : 'empty repository configuration');
+                }
                 repoConfig = response;
                 if (objectData && objectData.id) {
                     getRenderData(objectData).then(() => {
@@ -51,6 +55,9 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
                     document.getElementById("textbox_button").onclick();
                 }
 
+            })
+            .catch(function (error) {
+                console.error('edu-sharing: could not load the repository configuration', error);
             });
 
         async function checkRenderer2() {
@@ -112,7 +119,7 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
                 document.body.appendChild(styleScript)
 
 
-                const serviceWorkerScript = "./service_worker.php?id=<?php echo $id; ?>"
+                const serviceWorkerScript = "./service_worker.php?id=<?php echo $id; ?>&PHPSESSID=<?php echo $phpsessid; ?>"
 
                 if ('serviceWorker' in navigator) {
                     await navigator.serviceWorker.register(serviceWorkerScript, {
@@ -170,6 +177,10 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
 
         //open the repo & get data
         function open_repo() {
+            if (!repoConfig) {
+                console.error('edu-sharing: no repository configuration, cannot open the repository');
+                return;
+            }
             //Window-Event-Listener gets the Objects data and sets the usage
             window.addEventListener('message', function handleRepo(event) {
                 if (event.data.event == "APPLY_NODE") {
