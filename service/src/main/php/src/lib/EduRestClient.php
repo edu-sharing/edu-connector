@@ -31,7 +31,6 @@ class EduRestClient
             $privateKeyString,
             APPID
         );
-        $baseHelper->registerSignatureHandler(new MySignatureHandler());
         $nodeConfig       = new EduSharingNodeHelperConfig(new UrlHandling(false));
         $this->authHelper = new EduSharingAuthHelper($baseHelper);
         $this->nodeHelper = new EduSharingNodeHelper($baseHelper, $nodeConfig);
@@ -401,7 +400,7 @@ class EduRestClient
      * @throws \JsonException
      * @throws AppAuthException
      */
-    public function getSecuredNode(string $nodeId, string $repoId): SecuredNode {
-        return $this->nodeHelper->getSecuredNode($this->getTicket(), $nodeId, $repoId);
+    public function getSecuredNode(string $nodeId, string $repoId, string $version = '-1'): SecuredNode {
+        return $this->nodeHelper->getSecuredNode($this->getTicket(), $nodeId, $repoId, $version);
     }
 }

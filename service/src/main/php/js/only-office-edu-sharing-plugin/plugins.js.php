@@ -17,6 +17,7 @@
  */
 <?php
 $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
+$phpsessid = preg_replace('/[^a-zA-Z0-9,-]/', '', $_GET['PHPSESSID'] ?? '');
 ?>
 (function(window, undefined){
 
@@ -99,7 +100,7 @@ $id = preg_replace('/[^a-f0-9]/', '', $_GET["id"]);
       return;
 
     var xhr = new XMLHttpRequest();
-    xhr.open("get", "./config.json.php?id=<?php echo $id; ?>", true);
+    xhr.open("get", "./config.json.php?id=<?php echo $id; ?>&PHPSESSID=<?php echo $phpsessid; ?>", true);
     xhr.responseType = "json";
     xhr.onload = function() {
       if (!window.Asc || !window.Asc.plugin)
