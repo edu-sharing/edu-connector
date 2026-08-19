@@ -234,13 +234,14 @@ class EduRestClient
         try {
             return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
         } catch(\Exception $e) {
-            if($e->getCode() === 401 || $e->getCode() === 403) {
+            if($e->getCode() === 401 || $e->getCode() === 403 || $e->getCode() === 500))  {
                 $this->setAuthHeader($this->getTicketHeader());
                 return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
             }
             $errorStr = $_SESSION[$this->connectorId]['tool'] . ' Error creating content for node "' . $nodeId . '" - repo "' . $_SESSION[$this->connectorId]['node'] -> node -> ref -> repo
-                . '" - parent "' . $_SESSION[$this->connectorId]['node'] -> node -> parent -> id . '" - ' . $e->getCode() . ' - user "' . $_SESSION[$this->connectorId]['user'] -> authorityName . '" - content path "' . $contentpath . '"';
-            throw new \Exception($errorStr, $e->getCode());
+                . '" - parent "' . $_SESSION[$this->connectorId]['node'] -> node -> parent -> id . '" - user "' . $_SESSION[$this->connectorId]['user'] -> authorityName . '" - content path "' . $contentpath . '"'
+                . ' - api error (HTTP ' . $e->getCode() . '): ' . $e->getMessage();
+            throw new \Exception($errorStr, $e->getCode(), $e);
         }
     }
 
@@ -271,7 +272,7 @@ class EduRestClient
 
         $error = curl_error($ch);
         curl_close($ch);
-        throw new \Exception('Error creating content node HTTP STATUS ' . $httpcode . '. Curl error ' . $error, $httpcode);
+        throw new \Exception('Error creating content node HTTP STATUS ' . $httpcode . '. Curl error "' . $error . '". Response "' . substr((string)$res, 0, 200) . '"', $httpcode);
     }
 
     /*
