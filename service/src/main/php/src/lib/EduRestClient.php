@@ -236,7 +236,7 @@ class EduRestClient
         try {
             return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
         } catch(\Exception $e) {
-            if($e->getCode() === 401 || $e->getCode() === 403 || $e->getCode() === 500))  {
+            if($e->getCode() === 401 || $e->getCode() === 403 || $e->getCode() === 500)  {
                 $this->setAuthHeader($this->getTicketHeader());
                 return self::createContentNode($nodeId, $contentpath, $mimetype, $versionComment);
             }
