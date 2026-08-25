@@ -2,15 +2,15 @@ $(document).ready(function() {
 
     tinymce.init({
         selector: '#theTextarea',
-        plugins: [
-            'advlist autolink lists link charmap hr anchor pagebreak',
-            'searchreplace wordcount visualblocks visualchars fullscreen',
-            'insertdatetime nonbreaking save table directionality',
-            'emoticons paste print image'
-        ],
-        toolbar: 'save | print | undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link',
+        license_key: 'gpl',
+        plugins: 'advlist autolink lists link charmap anchor pagebreak' +
+            ' searchreplace wordcount visualblocks visualchars fullscreen' +
+            ' insertdatetime nonbreaking save table directionality' +
+            ' emoticons image',
+        toolbar: 'save print | undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link',
         image_advtab: true,
         branding: false,
+        promotion: false,
         height: 600,
         readonly: readonly,
         language : lang,
