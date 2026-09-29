@@ -51,6 +51,12 @@
             }
 
             h5peditor = new ns.Editor(library, JSON.stringify(params), $editor[0]);
+
+            // The title field is hidden (customEdu.css), fall back to the node title
+            const isMainTitleSet = h5peditor.isMainTitleSet;
+            h5peditor.isMainTitleSet = function () {
+                return isMainTitleSet.call(h5peditor) || document.querySelector(".h5pTitle").innerHTML;
+            };
         }
 
         $create.show();
@@ -92,13 +98,22 @@
             }
 
             if (h5peditor !== undefined && !formIsUpdated) {
-                var params = h5peditor.getParams();
+                // Stop default submit, the form is submitted again once the content is ready
+                event.preventDefault();
 
-                $library.val(h5peditor.getLibrary());
-                $params.val(JSON.stringify(params));
-                $title.val(h5peditor.isMainTitleSet() === false ? document.querySelector(".h5pTitle").innerHTML : h5peditor.isMainTitleSet());
+                // getContent() also upgrades the content if a newer version of its library is installed
+                h5peditor.getContent(function (content) {
+                    $library.val(content.library);
+                    $params.val(content.params);
+                    $title.val(content.title);
 
-                formIsUpdated = true;
+                    formIsUpdated = true;
+                    // form.submit is shadowed by the submit buttons named "submit", use the native method
+                    HTMLFormElement.prototype.submit.call($form.get(0));
+                }, function (error) {
+                    console.error('H5P content could not be saved', error);
+                    $form.find('input.h5pSaveBtn').prop('disabled', false);
+                });
             }
         });
 
