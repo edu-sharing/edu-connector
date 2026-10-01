@@ -198,6 +198,9 @@ class H5P extends \connector\lib\Tool {
         $integration['hubIsEnabled'] = true;
         $integration['user'] = array();
         $integration['core'] = array('style'=>\H5PCore::$styles, 'scripts'=>\H5PCore::$scripts);
+        // Used by the editor to load the content upgrade scripts when saving content of an outdated library version
+        $integration['libraryUrl'] = WWWURL . '/vendor/h5p/h5p-core/js';
+        $integration['pluginCacheBuster'] = '';
         $integration['loadedJs'] = '';
         $integration['loadedCss'] = '';
         //$integration['editor']['filesPath'] = WWWURL . '/src/tools/h5p/editor';

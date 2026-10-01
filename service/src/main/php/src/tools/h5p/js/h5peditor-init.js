@@ -51,6 +51,12 @@
             }
 
             h5peditor = new ns.Editor(library, JSON.stringify(params), $editor[0]);
+
+            // The title field is hidden (customEdu.css), fall back to the node title
+            const isMainTitleSet = h5peditor.isMainTitleSet;
+            h5peditor.isMainTitleSet = function () {
+                return isMainTitleSet.call(h5peditor) || document.querySelector(".h5pTitle").innerHTML;
+            };
         }
 
         $create.show();
@@ -92,13 +98,62 @@
             }
 
             if (h5peditor !== undefined && !formIsUpdated) {
-                var params = h5peditor.getParams();
+                // Stop default submit, the form is submitted again once the content is ready
+                event.preventDefault();
 
-                $library.val(h5peditor.getLibrary());
-                $params.val(JSON.stringify(params));
-                $title.val(h5peditor.isMainTitleSet() === false ? document.querySelector(".h5pTitle").innerHTML : h5peditor.isMainTitleSet());
+                // The editor does not report failed library requests or script errors during the upgrade, it just stops
+                const iframeWindow = h5peditor.iframeWindow;
+                const $iframeDocument = iframeWindow.H5PEditor.$(iframeWindow.document);
+                const onAjaxError = function (event, jqXHR, settings) {
+                    submitWithoutUpgrade(settings.url);
+                };
+                const onScriptError = function (event) {
+                    submitWithoutUpgrade(event.message);
+                };
+                const stopWatchingUpgrade = function () {
+                    $iframeDocument.off('ajaxError', onAjaxError);
+                    iframeWindow.removeEventListener('error', onScriptError);
+                };
 
-                formIsUpdated = true;
+                const submitContent = function (content) {
+                    if (formIsUpdated) {
+                        return;
+                    }
+                    formIsUpdated = true;
+                    stopWatchingUpgrade();
+
+                    $library.val(content.library);
+                    $params.val(content.params);
+                    $title.val(content.title);
+
+                    // form.submit is shadowed by the submit buttons named "submit", use the native method
+                    HTMLFormElement.prototype.submit.call($form.get(0));
+                };
+
+                // If the upgrade fails, e.g. because a library version it needs is not installed, save as before
+                const submitWithoutUpgrade = function (reason) {
+                    console.warn('H5P content could not be upgraded, saving it without upgrade', reason);
+                    submitContent({
+                        library: h5peditor.getLibrary(),
+                        params: JSON.stringify(h5peditor.getParams()),
+                        title: h5peditor.isMainTitleSet()
+                    });
+                };
+
+                $iframeDocument.on('ajaxError', onAjaxError);
+                iframeWindow.addEventListener('error', onScriptError);
+
+                // getContent() also upgrades the content if a newer version of its library is installed
+                h5peditor.getContent(submitContent, function (error) {
+                    if (typeof error !== 'string') {
+                        // Errors of the upgrade are objects, the validation errors of getContent() are strings
+                        submitWithoutUpgrade(error);
+                        return;
+                    }
+                    stopWatchingUpgrade();
+                    console.error('H5P content could not be saved', error);
+                    $form.find('input.h5pSaveBtn').prop('disabled', false);
+                });
             }
         });
 
