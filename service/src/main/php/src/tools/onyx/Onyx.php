@@ -33,6 +33,7 @@ class Onyx extends \connector\lib\Tool {
         $hash-> inst = $_SESSION[$this->connectorId]['user']->homeFolder->repo;
         $hash-> username = $_SESSION[$this->connectorId]['user']->userName;
         $hash-> nodeid = $_SESSION[$this->connectorId]['node']->node->ref->id;
+        // TODO: accessToken/refreshToken are no longer provided by the repository ConnectorServlet, these values do not exist anymore
         $hash-> accessToken = $_SESSION[$this->connectorId]['accessToken'];
         $hash-> refreshToken = $_SESSION[$this->connectorId]['refreshToken'] ;
         $hash = json_encode($hash);
