@@ -57,8 +57,24 @@ class OnlyOffice extends \connector\lib\Tool {
             $node = $this->apiClient->getNode($node->node->ref->id);
         } else {
             $this->isNewDocument = false;
+            $this->resolveProtectedFiletype($node);
         }
         $_SESSION[$this->connectorId]['node'] = $node;
+    }
+
+    /*
+     * Tika reports all encrypted OOXML files (docx, xlsx, pptx) as application/x-tika-ooxml-protected,
+     * so the filetype sent by the repository is ambiguous. Use the file extension of the node instead.
+     */
+    private function resolveProtectedFiletype($node)
+    {
+        if (($_SESSION[$this->connectorId]['mimetype'] ?? null) !== 'application/x-tika-ooxml-protected') {
+            return;
+        }
+        $extension = strtolower(pathinfo($node->node->name ?? '', PATHINFO_EXTENSION));
+        if (in_array($extension, ['docx', 'xlsx', 'pptx'], true)) {
+            $_SESSION[$this->connectorId]['filetype'] = $extension;
+        }
     }
 
     private function forwardToEditor()
