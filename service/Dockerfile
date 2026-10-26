@@ -1,4 +1,4 @@
-FROM dockerio.mirror.docker.edu-sharing.com/php:8.3-apache as builder
+FROM dockerio.mirror.docker.edu-sharing.com/php:8.3.36-apache as builder
 
 RUN  set -eux \
      && apt-get update \
@@ -17,7 +17,7 @@ RUN composer install && rm -f composerinstaller.php composer.phar
 
 ########################################################################################################################
 
-FROM dockerio.mirror.docker.edu-sharing.com/php:8.3-apache
+FROM dockerio.mirror.docker.edu-sharing.com/php:8.3.36-apache
 
 RUN  set -eux \
     && apt-get update \
