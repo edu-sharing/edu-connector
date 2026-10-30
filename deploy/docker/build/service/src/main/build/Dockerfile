@@ -2,8 +2,10 @@ FROM ${docker.from.apache.server}
 
 ########################################################################################################################
 
+# apt-get upgrade: pick up os package fixes (e.g. brotli CVE-2026-111497) the base image does not ship yet.
 RUN set -eux \
 	&& apt-get update -y \
+	&& apt-get upgrade -y \
 	&& apt-get install -y --no-install-recommends \
         curl \
         jq \
