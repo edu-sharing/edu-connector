@@ -24,6 +24,10 @@ php security audit errors:
     name: tophfr/phpcs-security-audit
     entrypoint: [""]
   stage: test
+  rules:
+    - if: $SKIP_TESTS == "true"
+      when: never
+    - when: on_success
   script:
     - cd service/src/main/php
     - /usr/local/bin/phpcs --standard=/usr/local/lib/composer/vendor/pheromone/phpcs-security-audit/example_base_ruleset.xml -n .
@@ -33,6 +37,10 @@ php security audit warnings:
     name: tophfr/phpcs-security-audit
     entrypoint: [""]
   stage: test
+  rules:
+    - if: $SKIP_TESTS == "true"
+      when: never
+    - when: on_success
   script:
     - cd service/src/main/php
     - /usr/local/bin/phpcs --standard=/usr/local/lib/composer/vendor/pheromone/phpcs-security-audit/example_base_ruleset.xml .
@@ -57,6 +65,10 @@ deploy:
 
 check-helmreadme:
   stage: test
+  rules:
+    - if: $SKIP_TESTS == "true"
+      when: never
+    - when: on_success
   image: node:lts-alpine3.20
   before_script:
     - ln -s $CI_PROJECT_DIR/deploy/docker/helm/bundle/src/main/chart /tmp/bundle && cp /tmp/bundle/README.md /tmp/README_bundle.md
