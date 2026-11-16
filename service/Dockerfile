@@ -17,8 +17,10 @@ RUN composer install && rm -f composerinstaller.php composer.phar
 
 FROM dockerio.mirror.docker.edu-sharing.com/php:8.3.36-apache
 
+# apt-get upgrade: pick up os package fixes (e.g. apache2 CVE-2026-119618) the base image does not ship yet.
 RUN  set -eux \
          && apt-get update \
+         && apt-get upgrade -yqq --no-install-recommends \
          && apt-get install -yqq wait-for-it libpq-dev libzip-dev curl xmlstarlet jq nano \
          && a2enmod rewrite \
          && ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini \
