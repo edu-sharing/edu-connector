@@ -58,6 +58,7 @@ database_pass=${SERVICES_CONNECTOR_DATABASE_PASS//\/&/\\&}
 database_port=${SERVICES_CONNECTOR_DATABASE_PORT//\/&/\\&}
 database_user=${SERVICES_CONNECTOR_DATABASE_USER//\/&/\\&}
 
+
 repository_service_host="${REPOSITORY_SERVICE_HOST:-repository-service}"
 repository_service_port="${REPOSITORY_SERVICE_PORT:-8080}"
 repository_service_base="http://${repository_service_host}:${repository_service_port}/edu-sharing"
