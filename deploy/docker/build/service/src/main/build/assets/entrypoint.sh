@@ -58,17 +58,6 @@ database_pass=${SERVICES_CONNECTOR_DATABASE_PASS//\/&/\\&}
 database_port=${SERVICES_CONNECTOR_DATABASE_PORT//\/&/\\&}
 database_user=${SERVICES_CONNECTOR_DATABASE_USER//\/&/\\&}
 
-# legacy: options appended to the database name, e.g. "connector;sslmode=disable"
-# -> use the plain name and pass sslmode via PGSSLMODE (read by libpq for psql and php pdo_pgsql)
-if [[ "${database_name}" == *";"* ]]; then
-	database_options="${database_name#*;}"
-	database_name="${database_name%%;*}"
-	if [[ -z "${PGSSLMODE:-}" && "${database_options}" =~ sslmode=([a-z-]+) ]]; then
-		PGSSLMODE="${BASH_REMATCH[1]}"
-		[[ "${PGSSLMODE}" == "disabled" ]] && PGSSLMODE="disable"
-		export PGSSLMODE
-	fi
-fi
 
 repository_service_host="${REPOSITORY_SERVICE_HOST:-repository-service}"
 repository_service_port="${REPOSITORY_SERVICE_PORT:-8080}"
