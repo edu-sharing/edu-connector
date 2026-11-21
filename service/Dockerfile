@@ -1,4 +1,4 @@
-FROM dockerio.mirror.docker.edu-sharing.com/php:8.3.36-apache as builder
+FROM dockerio.mirror.docker.edu-sharing.com/php:8.3.37-apache as builder
 
 RUN  set -eux \
          && apt-get update \
@@ -15,7 +15,7 @@ RUN composer install && rm -f composerinstaller.php composer.phar
 
 ########################################################################################################################
 
-FROM dockerio.mirror.docker.edu-sharing.com/php:8.3.36-apache
+FROM dockerio.mirror.docker.edu-sharing.com/php:8.3.37-apache
 
 # apt-get upgrade: pick up os package fixes (e.g. apache2 CVE-2026-119618) the base image does not ship yet.
 RUN  set -eux \
