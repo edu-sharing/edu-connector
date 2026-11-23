@@ -77,9 +77,12 @@ class H5P extends \connector\lib\Tool {
             if($this->H5PValidator->isValidPackage()){
                 $content['language'] = $this -> h5pLang;
 
+                // The title field of the editor is hidden (customEdu.css), so the title of the node is the master:
+                // it becomes the content title and is written into the package on save. Preferring the package's
+                // own title here froze it, as nobody can change it in the editor.
                 $titleShow = $_SESSION[$this->connectorId]['node']->node->title;
-                if (!empty($this->H5PValidator->h5pC->mainJsonData['title'])) {
-                    $titleShow = $this->H5PValidator->h5pC->mainJsonData['title'];
+                if (empty($titleShow)) {
+                    $titleShow = $this->H5PValidator->h5pC->mainJsonData['title'] ?? null;
                 }
                 if(empty($titleShow)){
                     $titleShow = $_SESSION[$this->connectorId]['node']->node->name;
@@ -122,9 +125,11 @@ class H5P extends \connector\lib\Tool {
                 $this->copyr($this->H5PFramework->get_h5p_path().'/content/'.$content['id'], $this->H5PFramework->get_h5p_path().'/editor/');
                 $_SESSION[$this->connectorId]['viewContentId'] = $content['id'];
             }else{
-                $h5p_error_array = array_values($this->H5PFramework->getMessages('error'));
-                $h5p_error = end($h5p_error_array);
-                $log->error('eduConnector: There was a problem with the H5P-file: '.$h5p_error->code);
+                $h5pErrors = array_map(
+                    fn($error) => $error->code . ': ' . strip_tags($error->message),
+                    $this->H5PFramework->getMessages('error') ?? []
+                );
+                $log->error('eduConnector: There was a problem with the H5P-file: ' . implode(' | ', $h5pErrors));
             }
 
         }

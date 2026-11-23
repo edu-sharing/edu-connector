@@ -1080,9 +1080,26 @@ class H5PFramework implements \H5PFrameworkInterface
         return !$st->fetchColumn();
     }
 
+    /**
+     * Checks if a newer major/minor version of the given library is installed.
+     *
+     * Used by H5PValidator::isValidPackage: if a package references dependencies which are neither bundled nor
+     * installed, the package is still accepted as long as its main library has an upgrade. Packages exported
+     * from other platforms are not always self-contained (e.g. H5PEditor.BranchingScenario 1.5 depends on
+     * H5P.InteractiveVideo 1.26, while the package only bundles 1.27), so returning false here made such
+     * packages uneditable as soon as the old dependency version was no longer installed.
+     *
+     * @param array $library machineName, majorVersion, minorVersion
+     * @return boolean
+     */
     public function libraryHasUpgrade($library)
     {
-        return false;
+        global $db;
+        $major = (int)$library['majorVersion'];
+        $minor = (int)$library['minorVersion'];
+        $statement = $db->query('SELECT id FROM h5p_libraries WHERE name = ' . $db->quote($library['machineName'])
+            . ' AND (major_version > ' . $major . ' OR (major_version = ' . $major . ' AND minor_version > ' . $minor . ')) LIMIT 1');
+        return $statement->fetch() !== false;
     }
 
 
