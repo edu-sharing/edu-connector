@@ -49,6 +49,7 @@
                 let metadata = JSON.parse($metadata.val());
                 params.metadata = metadata;
             }
+            normalizeAuthors(params);
 
             h5peditor = new ns.Editor(library, JSON.stringify(params), $editor[0]);
 
@@ -158,6 +159,39 @@
         });
 
         clearInterval(window.i);
+    };
+
+    /**
+     * The author name is optional in the metadata semantics, so content may contain authors without a name
+     * (e.g. {"role": "Author"}). The author widget of the editor calls htmlspecialchars(author.name) on them and
+     * throws. As this happens while the queued sub contents of a library are initialized, all following sub
+     * contents are never set up and the editor (and saving) stalls.
+     */
+    const normalizeAuthors = function (value) {
+        if (Array.isArray(value)) {
+            value.forEach(normalizeAuthors);
+            return;
+        }
+        if (value === null || typeof value !== 'object') {
+            return;
+        }
+        const metadata = value.metadata;
+        if (metadata !== null && typeof metadata === 'object' && Array.isArray(metadata.authors)) {
+            metadata.authors = metadata.authors.filter(function (author) {
+                return author !== null && typeof author === 'object';
+            });
+            metadata.authors.forEach(function (author) {
+                if (typeof author.name !== 'string') {
+                    author.name = author.name === undefined || author.name === null ? '' : String(author.name);
+                }
+                if (typeof author.role !== 'string') {
+                    author.role = 'Author';
+                }
+            });
+        }
+        Object.keys(value).forEach(function (key) {
+            normalizeAuthors(value[key]);
+        });
     };
 
     H5PEditor.getAjaxUrl = function (action, parameters) {
