@@ -7,6 +7,9 @@ define('WWWURL', '');
 define('HOST_ALIASES', '');
 // if true, internal/private ip addresses are treated as trusted hosts by the repository
 define('HOST_ALLOW_INTERNAL_IP', false);
+// metadata of the repository (contains its public key), used to verify signed requests of the repository, e.g. to version.php
+// if not set, it is derived from FORCED_APIURL, e.g. http://repository-service:8080/edu-sharing/metadata?format=lms
+define('REPOSITORY_METADATA_URL', '');
 define('DOCROOT', '');
 define('DATA', '');
 
