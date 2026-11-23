@@ -132,6 +132,7 @@ sed -i "s|define('HOST_ALIASES', '.*')|define('HOST_ALIASES', '${my_host_aliases
 sed -i "s|define('HOST_ALLOW_INTERNAL_IP', .*)|define('HOST_ALLOW_INTERNAL_IP', ${my_host_allow_internal_ip})|g" "${conf}"
 sed -i "s|define('FORCE_INTERN_COM', .*)|define('FORCE_INTERN_COM', ${my_force_intern_com})|g" "${conf}"
 sed -i "s|define('FORCED_APIURL', '.*')|define('FORCED_APIURL', '${my_forced_apiurl}')|g" "${conf}"
+sed -i "s|define('REPOSITORY_METADATA_URL', '.*')|define('REPOSITORY_METADATA_URL', '${repository_service_base}/metadata?format=lms')|g" "${conf}"
 sed -i "s|define('DOCROOT', '.*')|define('DOCROOT', '${ROOT}')|g" "${conf}"
 sed -i "s|define('DATA', '.*')|define('DATA', '${DATA}')|g" "${conf}"
 sed -i "s|define('LOG_MODE', '.*')|define('LOG_MODE', 'stdout')|g" "${conf}"

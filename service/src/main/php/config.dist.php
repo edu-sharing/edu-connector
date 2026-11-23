@@ -13,6 +13,9 @@ define('FORCE_INTERN_COM', false);
 // if not set, the (on-the-fly) provided public api of the repository itself will be used
 // e.g. http://repository-service:8080/edu-sharing/rest/
 define('FORCED_APIURL', '');
+// metadata of the repository (contains its public key), used to verify signed requests of the repository, e.g. to version.php
+// if not set, it is derived from FORCED_APIURL, e.g. http://repository-service:8080/edu-sharing/metadata?format=lms
+define('REPOSITORY_METADATA_URL', '');
 define('DOCROOT', '');
 define('DATA', '');
 
