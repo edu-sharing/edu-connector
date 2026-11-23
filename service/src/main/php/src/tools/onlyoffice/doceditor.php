@@ -77,23 +77,34 @@ function getDocEditorKey($id) {
     // use the unique id (which is the original id in case of a collection) to make sure everyone edits the real content
     $nodeId = $node->originalId ? $node->originalId : $node->ref->id;
     $logger->setNodeId($nodeId);
-    $contentVersion = null;
+    // the document server caches the (edited) document per key, so the key must change whenever
+    // the content that is opened changes. Version labels alone are not sufficient:
+    // - a revert does not create a new version, so the latest version stays the same
+    // - the active version (cclom:version) is reused after a revert, but the document server may have cached
+    //   the result of an earlier editing session under the key of that version
+    // so the key combines the latest version (changes with every save) and the active version (cclom:version,
+    // changes on revert / forward).
+    // Do NOT use the content hash: a forced save (ONLYOFFICE_FORCE_SAVE_ENABLED) replaces the content without
+    // creating a version, so the hash would change during an open session and users joining later would end up
+    // in a separate editing session
+    $activeVersion = !empty($node->contentVersion) ? $node->contentVersion : $node->content->version;
+    try {
+        // the session node may be outdated (e.g. the editor is reloaded after a revert)
+        // fetch the original: for collection references, content->version is the label of the original's head version
+        $activeVersion = $apiClient->getNode($nodeId)->node->content->version;
+    } catch(Exception $exception) {
+        $log->warn('Could not fetch current version of node ' . $nodeId . ': ' . $exception->getMessage());
+    }
+    $latestVersion = null;
     try {
         $versions = $apiClient->getNodeVersions($nodeId);
         $v = $versions[array_key_last($versions)];
-        $contentVersion = $v->major . '.' . $v->minor;
-        $log->info('Using latest content version ' . $contentVersion);
+        $latestVersion = $v->major . '.' . $v->minor;
     } catch(Exception $exception) {
         $log->warn('Could not fetch versions of node ' . $exception->getMessage());
-    if (!empty($node->contentVersion)) {
-        $contentVersion = $node->contentVersion;
-    } else {
-        // since  repo 6.0
-        $contentVersion = $node->content->version;
     }
-    }
-    //$revisionId = GenerateRevisionId(md5($nodeId));
-    $revisionId = GenerateRevisionId(md5($contentVersion . $nodeId));
+    $log->info('Using latest content version ' . $latestVersion . ' and active version ' . $activeVersion);
+    $revisionId = GenerateRevisionId(md5($latestVersion . '_' . $activeVersion . '_' . $nodeId));
     return $revisionId;
 }
 
